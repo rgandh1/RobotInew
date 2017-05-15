@@ -1,0 +1,32 @@
+Short Description:
+===================
+This iSig TC simulates a standard MOC of 136s duration 
+charged in 3 slices (2*60s + 16s) and released by the
+A-Party (i.e. callSubscriber()).
+
+Flow details:
+==============
+- After session initiation and call establishment (answer) the 
+  TC waits 60s to simulate the first slice of the ongoing chat.
+- Then the TC reports to IN that 60s have been elapsed 
+- This is (or should be) responded by IN with a superviseReq 
+  for a further 60s slice 
+- TC waits additional 60s to simulate the 2nd slice of the ongoing chat  
+  and then reports to IN that further 60s have been elapsed 
+- This is (or should be) responded by IN with a superviseReq 
+  for a further 60s slice   
+- TC waits additional 16s to simulate the 3rd slice of the 
+  ongoing chat ...
+- ... and finally reports to IN that the A-Party released the call 
+- This is (or should be) responded by IN with a final release 
+  meaning that the MOC leg is finished. 
+
+Parameters: 
+============
+  mscAddress         of the A-Party (callSubscriber()) 
+  mocBPartyMsisdn
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/03/12  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

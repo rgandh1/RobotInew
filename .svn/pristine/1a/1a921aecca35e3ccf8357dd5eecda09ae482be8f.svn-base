@@ -1,0 +1,141 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_PP_MOC_010 - Prepaid MOC NoAnswer TC
+...               ---------------------------------------------------------------
+...               Run Prepaid MOC NoAnswer
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+Run Unanswered Dialing And Return Duration
+    [Documentation]  Dials the passed number and monitors the duration the phone stays in DIALING state before it switches back to IDLE
+    ...              If the call is not switched back to IDLE the function actively releases the call after the passed max_duration_secs elapsed.
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi             IMSI of the phone that shall act as the calling phone
+    ...                cd_device_msisdn           MSISDN that shall be dialed on the calling device
+    ...                max_duration_secs          timeout interval
+    ...
+    ...              Returns:       
+    ...                elapsed_secs              The duration the phone stayed in DIALING state
+    ...              
+    ...              Fails:
+    ...                1. In case the Phone doesn't switch to DIALING state 
+    ...                2. In case the phone switches from DIALING to any other state than IDLE
+    ...                3. In case of any Android Remoting System error
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_msisdn}  ${max_duration_secs}    
+    Comment         ********************* Dial ***********************************      
+    ${resultCode}=    ARS Dial                      ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   ${cd_device_msisdn}
+                      Should Be Equal As Strings    ${resultCode}              OK
+    Comment         ********************* Wait until state changed OR max time elapsed ***********************************   
+    ${elapsed_secs}=     Set Variable    0 
+                         : FOR    ${second}    IN RANGE    0    ${max_duration_secs}   #ATTENTION: FOR ... IN RANGE loops from the range start to range end minus 1 - therefore we have start at 0 to get the full amount 
+                         \    Sleep                        1s
+                         \    ${elapsed_secs}    Evaluate  ${elapsed_secs}+1
+                         \    ${resultCode}                ${voice_state}                ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}    
+                         \    Should Be Equal As Strings    ${resultCode}                OK     msg=Querying caling device (IMSI=${cg_device_imsi}) state failed with resultCode=${resultCode}
+                         \    Run Keyword If               '${voice_state}' == 'IDLE'    Exit For Loop
+    Comment         ********************* Release Call if it isn't yet ***********************************      
+                        Run Keyword If   '${voice_state}'!='IDLE'         ARS Release       ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}
+                        Run Keyword If   '${voice_state}'=='CONNECTED'    Fail    msg=Unexpected CCONNECTION established
+                        Run Keyword If   '${voice_state}'=='RINGING'      Fail    msg=Unexpected switch to RINGING
+    [return]            ${elapsed_secs}   
+                    
+
+
+Run Duration Monitored NoAnswer Call And Check Nonexistent Ticket
+    [Documentation]  Runs an unanswered call attempt between the passed devices and
+    ...              verifies that NO CRM ticket was written for Phone 1
+    ...
+    ...              Arguments:               
+    ...                cg_device_imsi                 IMSI of the phone that shall act as the calling phone
+    ...                cd_device_msisdn               MSISDN that shall be dialed on the calling device 
+    ...                target_dialing_duration_secs   duration the DIALING state is expected to last 
+    ...
+    ...              Returns:                         Nothing 
+    ...
+    ...              Fails:
+    ...                1. In case the call doesn't fit the NoAnswer flow
+    ...                2. In case CRM query doesn't succeed
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${cd_device_msisdn}    ${target_dialing_duration_secs}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${cg_device_imsi} with the faked call subscriber imsi
+                     ...             ELSE                      Set Variable             ${cg_device_imsi}
+    ${marker_ticket_timestamp}       ${type_dummy}=            CRM Get Latest Ticket    ${phone1_imsi}
+    ${DIALING_DURATION_TOLERANCE_SECS}=    Set Variable    3
+    ${max_limes}=                          Evaluate        ${target_dialing_duration_secs}+${DIALING_DURATION_TOLERANCE_SECS}
+    ${min_limes}=                          Evaluate        ${target_dialing_duration_secs}-${DIALING_DURATION_TOLERANCE_SECS}
+    ${max_limes_overflow}=                 Evaluate        ${target_dialing_duration_secs}+2*${DIALING_DURATION_TOLERANCE_SECS}
+    ${duration_secs}=                      Run Keyword If  '${FAKE_CALLS}'=='true'    Run Unanswered Dialing And Return Duration         ${cg_device_imsi}     ${cd_device_msisdn}        ${target_dialing_duration_secs}
+    ...                                    ELSE                                       Run Unanswered Dialing And Return Duration         ${cg_device_imsi}     ${cd_device_msisdn}        ${max_limes_overflow}
+                                           Run Keyword If  ${duration_secs} < ${min_limes}    Fail                  msg=Call duration of ${duration_secs}s < configured target duration of ${target_dialing_duration_secs}s
+                                           Run Keyword If  ${max_limes} < ${duration_secs}    Fail                  msg=Call duration of ${duration_secs}s exceeded the configured target duration of ${target_dialing_duration_secs}s 
+                                           Run Keyword If  '${FAKE_CALLS}'=='true'            Fake Voice Call Impact On Testbed                       
+                                           CRM New Ticket Should Not Exist                    ${phone1_imsi}           ${marker_ticket_timestamp}      ticket_type=Voice     
+  
+
+Fake Voice Call Impact On Testbed
+    [Documentation]  Runs a CG MOC NoAnswer session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MOC NoAnswer    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_DESTINATION_MSISDN}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE} 
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+
+Run Prepaid MOC NoAnswer
+    [Documentation]  Runs a NoAnswer szenario from on-net Phone 1 to on-net Phone 2 what expects that the call attempt is released after the configured BCSM_NOANSWER_EVENT_TIMER_SECS elapsed without Phone 2 answering.
+    ...              Plus verification that NO ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Duration Monitored NoAnswer Call And Check Nonexistent Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_PHONE_2_MSISDN_FORMAT1}   ${BCSM_NOANSWER_EVENT_TIMER_SECS}    
+    [Teardown]       Close Browser    

@@ -1,0 +1,323 @@
+*** Settings ***
+Documentation     Main goal of the test suite is to check behaviour of XDR in several basic positive cases and a few negative (NOK) cases.
+...               It uses Robot Framework's JMSLibrary to send tickets of different types (MOC, SMS, DATA,...) to AMQ where XDR consumers should process them.
+...               After that XDR's log will be analysed and finally DB should be checked if ticket has landed also there.
+...               Negative tests (NOK) test different (but not all) mandatory fields (empty field, different values than predefined) according to 
+...               XDR Specification v5.3.2. Each NOK test has modified different fields - which exactly is specified in test description of the test itself
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        matko.sanseovic   ComponentTest  XDR_only   TNZ_supported   SMARTSPACE_supported  MTEL_supported   MVNA_MEX_supported  #in general, suite is able to work on any test bed that has XDR, DB and AMQ
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ${SUT RELEASE TAG PREFIX}_tickets-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+${XDR PROCESSING TIME MS}	10000ms   # during this time XDR should be able to process the ticket
+${TAILED_XDR_LOG_FILE}    	ssh_tail_log-xdr.log
+${UNIQUE_SEARCH_STRING}		%XdrComponentTest
+# JMS configuration
+${INITIAL_CONTEXT_FACTORY}  org.apache.activemq.jndi.ActiveMQInitialContextFactory
+${JNDI_PROVIDER_URL}        ${EMPTY}     # SUT variable not available here, value assigned in Suite Setup
+
+*** Keywords ***
+Send Ticket To Queue
+    [Documentation]    	Keyword using JMSLibrary to send ticket to JMS queue
+	...
+    ...    		Arguments:
+	...            ticket - actual  ticket string
+	...         Returns:
+    ...            nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]  ${ticket}
+    Create Text Message  ${ticket}
+    Send To Queue  ${AMQ-XDR CRCE CDR QUEUE}
+
+Check log
+    [Documentation]    Checks the tailed log file created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_text - passed log file text 
+	...             test_type - OK or NOK test type
+	...				ticket - actual  ticket string
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...             in OK case when analysed log file contains string "Ticket successfully routed..."
+	...             in NOK case string mentioned above is not there
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_text}   ${test_type}   ${ticket}
+	Run Keyword If	'${test_type}' == 'OK'   Should Contain      ${log_text}  Ticket successfully routed [ticket=${ticket}  msg='Ticket successfully routed...' not found in XDR log
+	Run Keyword If	'${test_type}' == 'NOK'  Should Not Contain  ${log_text}  Ticket successfully routed [ticket=${ticket}  msg='Ticket successfully routed' unexpectedly found in XDR log
+
+AnalyseDBTable
+    [Documentation]    	Look into the ${table} and check if entry exists. Entry is searched by sessionid that has to contain "ticket_signature" and XdrComponentTest string
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             search key - column name where should be searched
+	...             test_type - OK or NOK test type
+	...				test_sig - test signature
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+    [Arguments]    ${table}   ${search_key}   ${test_type}  ${test_sig}
+	@{queryRows}=      	DBLIB Query  select * from ${table} where ${search_key} like '${test_sig}${UNIQUE_SEARCH_STRING}';
+	${length}=		   	Get Length  ${queryRows}
+	${length_s}=		Convert To String  ${length}
+	Run Keyword If		'${test_type}' == 'OK'  Should Be Equal		${length_s}  1    msg=DB check failed
+	Run Keyword If		'${test_type}' == 'NOK'  Should Be Equal		${length_s}  0		msg=DB check failed
+	
+CleanDBTable
+    [Documentation]    Runs the sql query  - deletes only selected rows of the ${table} 
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             search key - column name where should be searched
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             
+    ...    =========================================================
+    [Arguments]    ${table}  ${search_key}
+    ExecuteSQL  delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';
+
+Log The XDR Version
+    [Documentation]    Called at suite setup procedure to check if XDR is running and to see which version is there.
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+    ...
+    ...    =========================================================
+    Open Connection    ${XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	Log  ${output_login}
+    ${output}=  Execute Command    sudo service inew-mvno-xdr status
+	Log    XDR Version and pid: ${output}    console=yes
+	Should Contain   ${output}   is running PID:
+	SSHLibrary.Close Connection
+
+Check AMQ Availability
+    [Documentation]    Called at suite setup procedure to check if AMQ is UP
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             when AMQ listening port is not up, when number of listeners in crce_cdr queue is not bigger then 0
+	...             
+    ...    =========================================================
+    Open Connection    ${AMQ-XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	${output}=   Execute Command   netstat -an | grep ${AMQ-XDR PORT}
+	Should Contain  ${output}  LISTEN	
+    Comment		${output}=  Execute Command    sudo /etc/init.d/${AMQ-XDR SERVICE SCRIPT NAME} query -QQueue=${AMQ-XDR CRCE CDR QUEUE} | grep ConsumerCount
+	${output}=  Execute Command    sudo /etc/init.d/${AMQ-XDR SERVICE SCRIPT NAME} status
+	Should Contain   ${output}   ActiveMQ is running
+	Comment		${count}=  Get Substring  ${output}  16
+	Comment		Evaluate	0 < ${count}
+	SSHLibrary.Close Connection
+	
+NTP Check on XDR	
+	[Documentation]    Called at suite setup to check if ntp is up and running
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             when ntp is not up
+	...             
+    ...
+    ...    =========================================================
+    Open Connection    ${XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	Log  ${output_login}
+    ${output}=  Execute Command    ntpstat
+	SSHLibrary.Close Connection
+	Should Contain   ${output}   synchronised to NTP server  msg=NTP sync problem!
+	Log    NTP is synced    console=yes
+
+Setup Suite
+    ${time}=    Run    date
+    Log    	Date and time: ${time}    console=yes
+	NTP Check on XDR
+    Log The XDR Version
+	Log    	SUT:${SUT_RESOURCE}	console=yes
+	Log	   	XDR IP address:${XDR HOST}   console=yes
+	Log		Using ${SUT RELEASE TAG PREFIX} tickets		console=yes
+	Check AMQ Availability
+	Log	   	AMQ and consumers are UP  console=yes
+    # connect to DB
+    Connect To Database    org.postgresql.Driver  jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}   ${XDR DB USER}  ${XDR DB PWD}
+    # cleaning DB table(s)
+    CleanDBTable    crce_cdr_2015w08  sessionid
+	CleanDBTable    crce_cdr  sessionid
+	# connect to AMQ
+	${JNDI_PROVIDER_URL}=  BuiltIn.Set Variable  tcp://${AMQ-XDR HOST}:${AMQ-XDR PORT}?jms.useAsyncSend=false
+	Init Provider  ${INITIAL_CONTEXT_FACTORY}  ${JNDI_PROVIDER_URL}  connect=true  start=true	
+
+Teardown Suite
+    Disconnect From Database
+	# move tailed log files to log dir
+	# Run mv *_ssh_tailed.log ./log/
+	Close All Connections
+
+Send Ticket And Analyse
+    [Documentation]    General test case skeleton to be executed. Contains all steps for single test case
+    ...
+    ...    		Arguments:
+	...				ticket - actual ticket string
+	...				logFileSignature - variable used for naming XDR log files
+	...             affectedDbTable - table used when XDR is processing ticket type sent by the test case
+	...             affectedDbTableKeyColumnName - column to be searched for
+	...             test_case_type - is it positive (OK) test or negative (NOK
+	...         Returns:
+    ...             nothing 
+	...         Fails:
+	...             described in all previously defined keywords that are used within this one
+    ...
+    ...    =========================================================
+    [Arguments]	  ${ticket}  ${logFileSignature}  ${affectedDbTable}  ${affectedDbTableKeyColumnName}  ${test_case_type}
+	${ssh_connection}=  SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR LOG FILE PATH}    host=${XDR HOST}
+    CleanDBTable    	${affectedDbTable}   ${affectedDbTableKeyColumnName}
+    Send Ticket To Queue	${ticket}
+	Sleep				${XDR PROCESSING TIME MS}
+	${tailed_text}=    	SSH Close File Monitor and Logout    ${ssh_connection}	./log/${logFileSignature}_ssh_tailed.log
+    AnalyseDBTable    	${affectedDbTable}   ${affectedDbTableKeyColumnName}    ${test_case_type}  ${logFileSignature}
+	# log analysis makes sense in 5.3
+	Run Keyword If		'${SUT RELEASE TAG PREFIX}'=='R5.3'	Check log    ${tailed_text}   ${test_case_type}  ${ticket}
+	
+	
+*** Test Cases ***
+Test MOC ticket processing
+    [Documentation]    Send the MOC XDR ticket and analyse results. It is expected that ticket is processed without errors and database row is added in corresponding table. Test is PASSing when this conditions are fulfilled. \n
+    ...    
+    ...    =========================================================
+	[Tags]		VIRGIN_COLUMBIA_supported
+	Send Ticket And Analyse	 	${MOC}	 MOC	crce_cdr_2015w08   	sessionid		OK
+
+
+Test SMS ticket processing
+	[Tags]		VIRGIN_COLUMBIA_supported
+    [Documentation]    Send the SMS XDR ticket and analyse results
+    ...    
+    ...    =========================================================
+	Send Ticket And Analyse		${SMS}   SMS		crce_cdr_2015w08   	sessionid		OK		
+	
+Test DATA ticket processing
+    [Documentation]    Send the DATA XDR ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]		VIRGIN_COLUMBIA_supported
+	Send Ticket And Analyse		${DATA} 	DATA		crce_cdr   	sessionid		OK	
+
+Test CRCE Recharge ticket processing
+    [Documentation]    Send the CRCE Recharge XDR ticket and analyse results
+    ...    
+    ...    =========================================================
+	Send Ticket And Analyse		${CRCE_Rec}  CRCE_Rec		crce_recharge   	sessionid		OK	
+	
+Test CRCE Confirmation ticket processing
+    [Documentation]    Send the CRCE Confirmation XDR ticket and analyse results
+    ...    
+    ...    =========================================================
+	Send Ticket And Analyse		${CRCE_Conf}	CRCE_Conf	crce_conf	sessionid	OK	
+
+Test CRCE AccountChange ticket processing
+    [Documentation]    Send the CRCE AccountChange ticket and analyse results
+    ...    
+    ...    =========================================================	
+	Send Ticket And Analyse		${CRCE_Acc}	 CRCE_Acc	crce_accountchange	sessionid	OK	
+	
+Test Customer EDR ticket processing
+    [Documentation]    Send the CRM EDR ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]	test	
+	Send Ticket And Analyse		${Cust_EDR}	 Cust_EDR	customer_edr	customerid	OK
+	
+Test Customer SDR ticket processing
+    [Documentation]    Send the CRM SDR IME ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]	test
+	Send Ticket And Analyse		${SDR_IME}	SDR_IME	  inotif_sdr	sessionid	OK
+	
+Test Customer IVR SDR ticket processing
+    [Documentation]    Send the IVR SDR ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]	test
+	Send Ticket And Analyse		${IVR_SDR}  IVR_SDR	  ivr_sdr	sessionid	OK	
+	
+Test Customer PROV SDR ticket processing
+    [Documentation]    Send the PROV SDR ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]	test
+	Send Ticket And Analyse	 	${PROV_SDR} 	PROV_SDR	  prov_sdr	sessionid	OK		
+	
+Test MoneyTX ticket processing
+    [Documentation]    Send the MoneyTX CRCE ticket and analyse results
+    ...    
+    ...    =========================================================	
+	[Tags]	test
+	Send Ticket And Analyse		${MoneyTX} 	MoneyTX	  crce_moneytx		sessionid	OK
+	
+Test SwapSIM ticket processing
+    [Documentation]    Send the swapSIM CRCE ticket and analyse results
+    ...    
+    ...    =========================================================
+	[Tags]	test
+	Send Ticket And Analyse		${swapSIM}	 swapSIM	  crce_simswap		sessionid	OK
+
+Test MOC NOK ticket processing
+    [Documentation]    Send the invalid MOC XDR ticket with following changes: Version (Header, Mandatory, changed), Provider (H,M,empty), Success (H,M,changed), CRCE Operation (B,M, changed), TrafficType (B,M, empty). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================
+	[Tags]		VIRGIN_COLUMBIA_supported	
+	Run Keyword If		'${SUT RELEASE TAG PREFIX}'=='R5.3'	   Fail		SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE IF 	'${SUT RELEASE TAG PREFIX}'=='R6.1'	   Fail		SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE  Send Ticket And Analyse		${MOC_NOK}  	MOC_NOK	  crce_cdr_2015w08		sessionid	NOK
+
+Test SMS NOK ticket processing
+    [Documentation]    Send the invalid SMS XDR ticket with following changes: Version (Header, Mandatory, changed), TrafficType (B, M, mpty), CRCE Result Code (B, M, changed). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================	
+	[Tags]		VIRGIN_COLUMBIA_supported	
+	Run Keyword If		'${SUT RELEASE TAG PREFIX}'=='R5.3'	   	Fail		SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE IF	 '${SUT RELEASE TAG PREFIX}'=='R6.1'	   	Fail		SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE 	Send Ticket And Analyse		${SMS_NOK}	SMS_NOK	  crce_cdr_2015w08		sessionid	NOK
+	
+Test DATA NOK ticket processing
+    [Documentation]    Send the invalid DATA XDR ticket with following changes: Application (Header, Mandatory, empty), Tariff (B, M, empty). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================
+	[Tags]		VIRGIN_COLUMBIA_supported	
+	Run Keyword If		'${SUT RELEASE TAG PREFIX}'=='R5.3'	  Fail	SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE IF  '${SUT RELEASE TAG PREFIX}'=='R6.1'	  Fail		SKIPPED until defect D-05171 is closed		noncritical
+	...			ELSE	Send Ticket And Analyse		${DATA_NOK}	 DATA_NOK	  crce_cdr		sessionid	NOK	
+
+	
+Test MOC NOK - Invalid ASCII ticket processing
+    [Documentation]    Send the MOC XDR ticket with invalid ASCII garbage in it
+    ...    
+    ...    =========================================================
+	[Tags]		VIRGIN_COLUMBIA_supported	
+	Send Ticket And Analyse		${MOC_NOK_ASCII}	MOC_NOK_ASCII	crce_cdr_2015w08	sessionid	NOK

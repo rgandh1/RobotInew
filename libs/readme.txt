@@ -1,0 +1,1 @@
+This folder is meant to hold all libraries (Java archives, Phyton scripts, ...) that are needed by the workspace's test suites but are not part of the RobotFramework standard installation.

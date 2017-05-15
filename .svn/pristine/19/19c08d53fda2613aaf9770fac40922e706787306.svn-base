@@ -1,0 +1,126 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_BST_004 - Call Toll-Free Number TC
+...               ATTENTION: This test suite uses the MOC_TOLL_FREE_NUMBER_FORMATx variables from the configuration-resource.txt file
+...                          that must fit certain conditions to ensure that the TCs are able to dedect the expected CONNECTION establishment.
+...                          Please read the corresponding comments in configuration-resource.txt 
+...               ---------------------------------------------------------------
+...               Run MOC Toll Free Number Format1
+...               Run MOC Toll Free Number Format2
+...               Run MOC Toll Free Number Format3
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+${CALL_DURATION_MILLIS}=              1000  #1 second
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+
+Run Voice Call Phone 1 To Toll Free Number
+    [Documentation]  executes a Phone 1 call to a passed toll-free msisdn 
+    ...
+    ...              Arguments:
+    ...                dial_msisdn            Toll-Free MSISDN that shall be dialed on the calling phone 
+    ...
+    ...              Returns:                 Nothing - the function fails if the call did not succeed (did not connect)
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${dial_msisdn}  
+    ${resultCode}=  ARS Voice Call To Unattached Phone            ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${dial_msisdn}    ${CALL_DURATION_MILLIS}   
+                     Should Be Equal As Strings            ${resultCode}              OK
+    Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Toll Free Call Impact On Testbed
+
+
+
+Run Tool Free Call And Check Nonexistent Ticket
+    [Documentation]  Runs a Phone 1 call to the passed charge free number and verifies that NO CRM ticket was written
+    ...
+    ...              Arguments:               
+    ...                dial_msisdn       
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'      Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+                     ...             ELSE                         Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}       ${type_dummy}=               CRM Get Latest Ticket    ${phone1_imsi}
+                     Run Voice Call Phone 1 To Toll Free Number   ${dial_msisdn}
+                     CRM New Ticket Should Not Exist              ${phone1_imsi}           ${marker_ticket_timestamp}
+
+
+Fake Toll Free Call Impact On Testbed
+    [Documentation]  Runs a CG MOC FinalRerouting session for the faked phone 1 to the faked toll free number
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MOC Final Rerouting    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_MOC_TOLL_FREE_NUMBER}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+
+
+Run MOC Toll Free Number Format1
+    [Documentation]  Runs a call on phone 1 to the toll free number format 1
+    ...              Plus verification that NO ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Tool Free Call And Check Nonexistent Ticket    ${MOC_TOLL_FREE_NUMBER_FORMAT1}
+    [Teardown]       Close Browser    
+
+Run MOC Toll Free Number Format2
+    [Documentation]  Runs a call on phone 1 to the toll free numberr format 2
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Tool Free Call And Check Nonexistent Ticket    ${MOC_TOLL_FREE_NUMBER_FORMAT2}
+    [Teardown]       Close Browser    
+
+Run MOC Toll Free Number Format3
+    [Documentation]  Runs a call on phone 1 to the toll free number format 3
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Tool Free Call And Check Nonexistent Ticket    ${MOC_TOLL_FREE_NUMBER_FORMAT3}
+    [Teardown]       Close Browser    
+
+

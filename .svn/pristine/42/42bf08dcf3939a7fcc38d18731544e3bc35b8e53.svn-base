@@ -1,0 +1,179 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing CRM related functions
+...               ============================================================
+...                 CRM Portal Screenshot             
+...
+...                 CRM Portal Login                  
+...                 CRM Portal Logout                 
+...
+...                 CRM Get Latest Ticket             
+...                 CRM New Ticket Should Exist       
+...                 CRM New Ticket Should Not Exist   
+...               ============================================================
+Library           ../../py/InewSelenium2Library.py
+Library           OperatingSystem
+Library           String
+
+
+*** Variables ***
+
+${LOG_SCREENSHOTS}=   false     #set to true for debugging purposes only
+
+
+*** Keywords ***
+
+CRM Portal Screenshot
+    [Documentation]  Creates a screenshot of the browsers current content for debugging purposes
+    ...
+    ...              Arguments:    
+    ...                hint        any string that shall be part of the resulting file name
+    ...
+    ...              Returns:      Nothing 
+    ...
+    ...              Fails:        when no screenshot could be created
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${hint}  
+    ${secs}=         Get Time           epoch 
+                     Save Screenshot    screenshots/${secs}_${hint}.png
+
+
+CRM Portal Login
+    [Documentation]  Logs into the CRM portal via login page
+    ...              If already logged in then first a logout is done before re-login 
+    ...
+    ...              Arguments:   
+    ...                crm_portal_login_url
+    ...                crm_portal_user
+    ...                crm_portal_pswd
+    ...  
+    ...              Returns:      Nothing 
+    ...
+    ...              Fails:        when portal login did not succeed
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${crm_portal_login_url}  ${crm_portal_user}  ${crm_portal_pswd}  
+    Comment          ****** Ensure beeing in Login page ******
+    ${isLoginPage}=  Page Contains Element              name=login_submit
+                     Run Keyword If                     '${isLoginPage}'!='true'    CRM Portal Logout                                   
+    ${isLoginPage}=  Page Contains Element              name=login_submit
+                     Run Keyword If                     '${isLoginPage}'!='true'    Go To               ${crm_portal_login_url}         #this establishes the login page again if the browser was blank
+                     Wait Until Page Contains Element   name=login_submit           timeout=10s         error=Login Page not displayed
+    Comment          ****** log in to CRM as Customer Care user ******
+                     Run Keyword If    '${LOG_SCREENSHOTS}'=='true'    CRM Portal Screenshot    BeforeLogin
+                     Input Text       id=username                      ${crm_portal_user}
+                     Input Text       id=password                      ${crm_portal_pswd}
+                     Click Element    name=login_submit
+                     Run Keyword If    '${LOG_SCREENSHOTS}'=='true'    CRM Portal Screenshot    AfterLogin
+
+
+
+CRM Portal Logout
+    [Documentation]  Clicks the logout button of the current page if it is available
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        when portal logout did not succeed
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+                             Run Keyword If           '${LOG_SCREENSHOTS}'=='true'     CRM Portal Screenshot    BeforeLogout
+    ${pageContainsLogout}=   Page Contains Element    id=logout
+                             Run Keyword If           '${pageContainsLogout}'=='true'  Click Element            id=logout      #this would lead to a blank browser if the login page was already displayed
+                             Run Keyword If           '${LOG_SCREENSHOTS}'=='true'     CRM Portal Screenshot    AfterLogout
+
+
+
+CRM Get Latest Ticket
+    [Documentation]  queries the passed subscriber's latest CRM ticket
+    ...
+    ...              Arguments:                
+    ...                device_imsi            IMSI of the subscriber to be queried
+    ...
+    ...              Returns:                 
+    ...                datetime               ${None} if no ticket exists at all OR the latest ticket's date/time column 
+    ...                callingcalled          ${None} if no ticket exists at all OR the latest ticket's calling/called column
+    ...                type                   ${None} if no ticket exists at all OR the latest ticket's type column (e.g. "Voice", "SMS", ...)
+    ...                channel                ${None} if no ticket exists at all OR the latest ticket's channel column (e.g. "MOC", " MOC forbidden", ...)
+    ...
+    ...              Fails:        when ticket retrieval doesn't succeed
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${device_imsi}    
+                     CRM Portal Login    ${CRM_PORTAL_LOGIN_URL}   ${CRM_PORTAL_USER}  ${CRM_PORTAL_PSWD}   
+           
+    Comment          ****** CRM: in dashboard enter IMSI and press Submit  ******
+                     Run Keyword If    '${LOG_SCREENSHOTS}'=='true'    CRM Portal Screenshot    BeforeSubscriberFilterInput
+                     Input Text        id=filter_imsi                  ${device_imsi}
+
+    Comment          ****** in History tab, get the interesting cells of the first data row  ******
+                     Run Keyword If                     '${LOG_SCREENSHOTS}'=='true'    CRM Portal Screenshot      BeforeSubscriberFilterSubmit
+                     Click Element                      //input[@value='Submit']
+                     Wait Until Page Contains Element   link=History                    timeout=10s                error=History Tab NOT displayed
+                     Click Element                      link=History
+                     Select Frame                       contentiframe
+                     Wait Until Page Contains Element   //input[@value='Search']        timeout=10s                error=History Search button NOT displayed
+                     Click Element                      //input[@value='Search']
+                     Wait Until Page Contains Element   id=mytable                      timeout=10s                error=History Table not displayed
+    ${HISTORY_NEWEST_ROW}=           Set Variable         2   #HeaderRow is row index 1  FooterRow is last row index + 1 
+    ${HISTORY_DATETIME_COL}=         Set Variable         1
+    ${HISTORY_CALLINGCALLED_COL}=    Set Variable         2
+    ${HISTORY_TYPE_COL}=             Set Variable         5
+    ${HISTORY_CANNEL_COL}=           Set Variable         9
+    ${execution_status_dummy}        ${datetime}=         Run Keyword And Ignore Error    Get Table Cell       id=mytable    ${HISTORY_NEWEST_ROW}      ${HISTORY_DATETIME_COL} 
+    ${execution_status_dummy}        ${callingcalled}=    Run Keyword And Ignore Error    Get Table Cell       id=mytable    ${HISTORY_NEWEST_ROW}      ${HISTORY_CALLINGCALLED_COL} 
+    ${execution_status_dummy}        ${type}=             Run Keyword And Ignore Error    Get Table Cell       id=mytable    ${HISTORY_NEWEST_ROW}      ${HISTORY_TYPE_COL} 
+    ${execution_status_dummy}        ${channel}=          Run Keyword And Ignore Error    Get Table Cell       id=mytable    ${HISTORY_NEWEST_ROW}      ${HISTORY_CANNEL_COL} 
+                                     Unselect Frame
+                                     CRM Portal Logout
+   [return]                          ${datetime}          ${callingcalled}          ${type}       ${channel}   
+
+
+
+CRM New Ticket Should Exist 
+    [Documentation]  checks whether a previous call of device_imsi resulted in a CRM history ticket 
+    ...              Before the voice call is executed (and then veryfied with this function)
+    ...              "CRM Get Latest Ticket" has to be called to get the "marker timestamp"
+    ...              to be passed as ${marker_timestamp}
+    ...
+    ...              Arguments:               
+    ...                device_imsi            IMSI of the subscriber to be queried
+    ...                marker_timestamp       date/time cell value of the latest ticket before the call was executed
+    ...                ticket_type            OPTIONAL - the expected type (TYPE column values: Voice, SMS, ...) of the new ticket - Default=${EMPTY}
+    ...                ticket_channel         OPTIONAL - the expected channel (CHANNEL column values: MOC, MOC forbidden, ...) of the new ticket - Default=${EMPTY}
+    ...                calling_called_number  OPTIONAL - the expected Called/Calling column value of the new ticket - Default=${EMPTY}
+    ...
+    ...              Returns:                 Nothing 
+    ...
+    ...              Fails:                   when ticket retrieval doesn't succeed
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${device_imsi}   ${marker_timestamp}    ${ticket_type}=${EMPTY}    ${ticket_channel}=${EMPTY}    ${calling_called_number}=${EMPTY}
+    Log    Parameters: device_imsi=${device_imsi} marker_timestamp=${marker_timestamp} (ticket_type)=${ticket_type} (ticket_channel)=${ticket_channel} (calling_called_number)=${calling_called_number}
+    ${current_datetime}     ${current_calling_called_number}    ${current_type}    ${current_channel}=    CRM Get Latest Ticket    ${device_imsi}
+                            Should Not Be Equal As Strings    ${current_datetime}                      ${marker_timestamp}           msg=No ticket written for IMSI ${device_imsi}
+                            Run Keyword If                    '$ticket_type}'!='${EMPTY}'              Should Be Equal As Strings    ${current_type}                                  ${ticket_type}                  msg=No ${ticket_type} ticket written for IMSI ${device_imsi}
+                            Run Keyword If                    '${ticket_channel}'!='${EMPTY}'          Should Be Equal As Strings    ${current_channel}                               ${ticket_channel}               msg=No ${ticket_channel} channel ticket written for IMSI ${device_imsi}
+                            Run Keyword If                    '${calling_called_number}'!='${EMPTY}'   Should Be Equal As Strings    ${current_calling_called_number}                 ${calling_called_number}        msg=No ${calling_called_number} Calling/Called ticket written for IMSI ${device_imsi}
+
+CRM New Ticket Should Not Exist 
+    [Documentation]  Is same as "CRM New Ticket Should Exist" except that it fails if the ticket DOES exist and NOo ticket type or channel can be specified
+    ...
+    ...              Arguments:               
+    ...                device_imsi            IMSI of the subscriber to be queried
+    ...                marker_timestamp       date/time cell value of the latest ticket before the call was executed
+    ...
+    ...              Returns:                 Nothing 
+    ...
+    ...              Fails:                   when a new ticket DOES exist or an error occured during ticket querying process
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${device_imsi}   ${marker_timestamp}    ${ticket_type}=Voice
+    ${current_datetime}     ${current_type}=    CRM Get Latest Ticket    ${device_imsi}
+                            Should Be Equal As Strings    ${current_datetime}       ${marker_timestamp}   msg=New ticket UNEXPECTEDLY written for IMSI ${device_imsi}
+

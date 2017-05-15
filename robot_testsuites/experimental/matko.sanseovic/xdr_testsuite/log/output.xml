@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20160205 10:52:43.405">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/XDR_Test-robot-suite.txt" id="s1" name="XDR Test-robot-suite">
+<kw type="setup" name="Setup Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${time} = OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>date</arg>
+</arguments>
+<msg timestamp="20160205 10:52:44.751" level="INFO">Running command 'date 2&gt;&amp;1'</msg>
+<msg timestamp="20160205 10:52:44.755" level="INFO">${time} = Fri Feb  5 10:52:44 CET 2016</msg>
+<status status="PASS" endtime="20160205 10:52:44.754" starttime="20160205 10:52:44.737"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Date and time: ${time}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:44.761" level="INFO">Date and time: Fri Feb  5 10:52:44 CET 2016</msg>
+<status status="PASS" endtime="20160205 10:52:44.762" starttime="20160205 10:52:44.757"></status>
+</kw>
+<kw type="kw" name="NTP Check on XDR">
+<doc>Called at suite setup to check if ntp is up and running</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:44.937" starttime="20160205 10:52:44.784"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20160205 10:52:44.944" level="INFO">Logging into '10.105.120.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20160205 10:52:46.162" level="INFO">Read output: Last login: Thu Feb  4 11:44:04 2016 from 10.107.82.83
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m</msg>
+<msg timestamp="20160205 10:52:46.166" level="INFO">${output_login} = Last login: Thu Feb  4 11:44:04 2016 from 10.107.82.83
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m </msg>
+<status status="PASS" endtime="20160205 10:52:46.164" starttime="20160205 10:52:44.940"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20160205 10:52:46.172" level="INFO">Last login: Thu Feb  4 11:44:04 2016 from 10.107.82.83
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m </msg>
+<status status="PASS" endtime="20160205 10:52:46.173" starttime="20160205 10:52:46.169"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>ntpstat</arg>
+</arguments>
+<msg timestamp="20160205 10:52:46.178" level="INFO">Executing command 'ntpstat'.</msg>
+<msg timestamp="20160205 10:52:46.229" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160205 10:52:46.231" level="INFO">${output} = synchronised to NTP server (10.189.251.100) at stratum 3 
+   time correct to within 43 ms
+   polling server every 1024 s</msg>
+<status status="PASS" endtime="20160205 10:52:46.230" starttime="20160205 10:52:46.176"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:46.239" starttime="20160205 10:52:46.235"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>synchronised to NTP server</arg>
+<arg>msg=NTP sync problem!</arg>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:46.246" starttime="20160205 10:52:46.242"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>NTP is synced</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:46.251" level="INFO">NTP is synced</msg>
+<status status="PASS" endtime="20160205 10:52:46.252" starttime="20160205 10:52:46.248"></status>
+</kw>
+<status status="PASS" endtime="20160205 10:52:46.254" starttime="20160205 10:52:44.765"></status>
+</kw>
+<kw type="kw" name="Log The XDR Version">
+<doc>Called at suite setup procedure to check if XDR is running and to see which version is there.</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:46.303" starttime="20160205 10:52:46.276"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20160205 10:52:46.308" level="INFO">Logging into '10.105.120.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20160205 10:52:47.579" level="INFO">Read output: Last login: Fri Feb  5 09:52:45 2016 from 10.105.101.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m</msg>
+<msg timestamp="20160205 10:52:47.583" level="INFO">${output_login} = Last login: Fri Feb  5 09:52:45 2016 from 10.105.101.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m </msg>
+<status status="PASS" endtime="20160205 10:52:47.581" starttime="20160205 10:52:46.305"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.588" level="INFO">Last login: Fri Feb  5 09:52:45 2016 from 10.105.101.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb02 ~]$[m </msg>
+<status status="PASS" endtime="20160205 10:52:47.590" starttime="20160205 10:52:47.586"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-xdr status</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.594" level="INFO">Executing command 'sudo service inew-mvno-xdr status'.</msg>
+<msg timestamp="20160205 10:52:47.755" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160205 10:52:47.757" level="INFO">${output} = I-New UMS MVNO - XDR - Server 6.1.4.27744 is running PID: 11135 </msg>
+<status status="PASS" endtime="20160205 10:52:47.756" starttime="20160205 10:52:47.592"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR Version and pid: ${output}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.763" level="INFO">XDR Version and pid: I-New UMS MVNO - XDR - Server 6.1.4.27744 is running PID: 11135 </msg>
+<status status="PASS" endtime="20160205 10:52:47.764" starttime="20160205 10:52:47.759"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>is running PID:</arg>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:47.770" starttime="20160205 10:52:47.767"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:47.775" starttime="20160205 10:52:47.772"></status>
+</kw>
+<status status="PASS" endtime="20160205 10:52:47.777" starttime="20160205 10:52:46.258"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>SUT:${SUT_RESOURCE}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.783" level="INFO">SUT:/opt/robot/robotworkspace/suts/TIGO-resource.txt</msg>
+<status status="PASS" endtime="20160205 10:52:47.784" starttime="20160205 10:52:47.779"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR IP address:${XDR HOST}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.790" level="INFO">XDR IP address:10.105.120.171</msg>
+<status status="PASS" endtime="20160205 10:52:47.791" starttime="20160205 10:52:47.786"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Using ${SUT RELEASE TAG PREFIX} tickets</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 10:52:47.797" level="INFO">Using R6.1 tickets</msg>
+<status status="PASS" endtime="20160205 10:52:47.798" starttime="20160205 10:52:47.793"></status>
+</kw>
+<kw type="kw" name="Check AMQ Availability">
+<doc>Called at suite setup procedure to check if AMQ is UP</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${AMQ-XDR HOST}</arg>
+</arguments>
+<msg timestamp="20160205 10:52:49.708" level="FAIL">IOException: There was a problem while connecting to 10.105.120.124:22</msg>
+<status status="FAIL" endtime="20160205 10:52:49.712" starttime="20160205 10:52:47.817"></status>
+</kw>
+<status status="FAIL" endtime="20160205 10:52:49.717" starttime="20160205 10:52:47.802"></status>
+</kw>
+<status status="FAIL" endtime="20160205 10:52:49.721" starttime="20160205 10:52:44.718"></status>
+</kw>
+<test id="s1-t1" name="Test DATA NOK ticket processing">
+<doc>Send the invalid DATA XDR ticket with following changes: Application (Header, Mandatory, empty), Tariff (B, M, empty). It is expected that ticket processing fails (and test should PASS in that case)
+=========================================================</doc>
+<tags>
+<tag>ComponentTest</tag>
+<tag>matko.sanseovic</tag>
+<tag>MTEL_supported</tag>
+<tag>MVNA_MEX_supported</tag>
+<tag>SMARTSPACE_supported</tag>
+<tag>TNZ_supported</tag>
+<tag>VIRGIN_COLUMBIA_supported</tag>
+<tag>XDR_only</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20160205 10:52:49.779" starttime="20160205 10:52:49.725">Parent suite setup failed:
+IOException: There was a problem while connecting to 10.105.120.124:22</status>
+</test>
+<kw type="teardown" name="Teardown Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Disconnect From Database">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20160205 10:52:49.855" level="FAIL">IllegalStateException: No connection open. Did you forget to run 'Connect To Database' before?</msg>
+<status status="FAIL" endtime="20160205 10:52:49.857" starttime="20160205 10:52:49.822"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20160205 10:52:49.865" starttime="20160205 10:52:49.861"></status>
+</kw>
+<status status="FAIL" endtime="20160205 10:52:49.869" starttime="20160205 10:52:49.794">IllegalStateException: No connection open. Did you forget to run 'Connect To Database' before?</status>
+</kw>
+<doc>Main goal of the test suite is to check behaviour of XDR in several basic positive cases and a few negative (NOK) cases.
+It uses Robot Framework's JMSLibrary to send tickets of different types (MOC, SMS, DATA,...) to AMQ where XDR consumers should process them.
+After that XDR's log will be analysed and finally DB should be checked if ticket has landed also there.
+Negative tests (NOK) test different (but not all) mandatory fields (empty field, different values than predefined) according to
+XDR Specification v5.3.2. Each NOK test has modified different fields - which exactly is specified in test description of the test itself</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20160205 10:52:49.872" starttime="20160205 10:52:43.414">Suite setup failed:
+IOException: There was a problem while connecting to 10.105.120.124:22
+
+Also suite teardown failed:
+IllegalStateException: No connection open. Did you forget to run 'Connect To Database' before?</status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1">Critical Tests</stat>
+<stat pass="0" fail="1">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">ComponentTest</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">matko.sanseovic</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">MTEL_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">MVNA_MEX_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">SMARTSPACE_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">TNZ_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">VIRGIN_COLUMBIA_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">XDR_only</stat>
+</tag>
+<suite>
+<stat pass="0" id="s1" fail="1" name="XDR Test-robot-suite">XDR Test-robot-suite</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20160205 10:52:43.888" level="ERROR">Error in file '/opt/robot/robotworkspace/suts/TIGO-resource.txt': Setting variable '${TESTSUBCRIBERS IMSI RANGE START}' failed: Creating a scalar variable with a list value in the Variable table is no longer possible. Create a list variable '@{TESTSUBCRIBERS IMSI RANGE START}' and use it as a scalar variable '${TESTSUBCRIBERS IMSI RANGE START}' instead.</msg>
+</errors>
+</robot>

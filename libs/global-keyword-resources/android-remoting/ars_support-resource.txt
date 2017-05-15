@@ -1,0 +1,600 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing Android Remoting System related functions for end-to-end testing.
+...               It uses a special SoapUI project whose TCs act as bridge to an Android Remoting server.
+...               By using this keywords resource the bridge details are cleanly decoupled from tha using testsuite 
+...               whose scope is limited only to keyword specific arguments.
+...               ============================================================
+...                 ARS Voice Call
+...                 ARS Voice Call To Unattached Phone 
+...
+...                 ARS Ussd Request
+...
+...                 ARS Sms
+...                 ARS Sms To Unattached Phone
+...                 ------------------------------------
+...                 ARS Dial 
+...                 ARS Answer 
+...                 ARS Release 
+...                 ARS Get Current Voice State 
+...                 ------------------------------------
+...                 ARS Reset Phone
+...                 ARS Enable Call Forwarding
+...                 ARS Disable Call Forwarding
+...               ============================================================
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSoapUILibrary.py
+Library           OperatingSystem
+Library           String
+
+
+
+*** Variables ***
+${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}=  libs/global-keyword-resources/android-remoting/robot_ars_bridge-soapui-project.xml
+${ARS BRIDGE SOAPUI GROOVY LOG}=                        global-groovy.log
+${ARS BRIDGE SOAPUI LOG}=                               soapui.log
+${ARS BRIDGE SOAPUI ERROR LOG}=                         soapui-errors.log
+
+
+*** Keywords ***
+
+################################################## PUBLIC kewords ############################################
+
+ARS Voice Call   
+    [Documentation]  executes a voice call between 2 Android Phones attached to an Android Remoting Server.
+    ...
+    ...              Arguments:
+    ...                ars_host               IP adress of the Android Remoting server to be used 
+    ...                ars_port               Port where ars_host exposes his services
+    ...                cg_device_imsi         IMSI of the attached phone that shall act as the calling phone
+    ...                cd_device_imsi         IMSI of the attached phone that should be called when dialMsisdn (see below) is dialed on the calling phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...                                       This parameter is exposed instead of automatically being taken from the called device (specified in cdDeviceImsi) to be able to use different numbering formats.
+    ...                                       The TC fails if the dialed MSISDN doesn't contact the called device (specified in cdDeviceImsi) within 20 seconds after dialing.
+    ...                call_duration_millis   Specifies the duration in milliseconds the successfull connection shall be held open until it's released.
+    ...                                       This parameter is exposed instead of simply taking a hardcoded constant to offer the possibility of testing also charging results related to the call's duration.
+    ...                releasedByCg           OPTIONAL - Flag ("true" or "false") indicating whether the calling or the called device shall release the established call - Default is true
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "Testcases.Call.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         OK 
+    ...                                         ARS_NOT_AVAILABLE
+    ...                                         TC_PRECONDITION_VIOLATION__CALLING_DEVICE_NOT_IDLE
+    ...                                         TC_PRECONDITION_VIOLATION__CALLED_DEVICE_NOT_IDLE
+    ...                                         DIAL_ON_CALLING_DEVICE_FAILED
+    ...                                         CALLED_DEVICE_NOT_RINGING
+    ...                                         ANSWER_ON_CALLED_DEVICE_FAILED
+    ...                                         CONNECT_AFTER_ANSWER_ON_CALLED_DEVICE_FAILED
+    ...                                         FINAL_RELEASE_ON_CALLING_DEVICE_FAILED
+    ...                                         FINAL_RELEASE_ON_CALLED_DEVICE_FAILED
+    ...                                         TC_POSTCONDITION_VIOLATION__CALLING_DEVICE_NOT_IDLE
+    ...                                         TC_POSTCONDITION_VIOLATION__CALLED_DEVICE_NOT_IDLE
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${ars_host}  ${ars_port}  ${cg_device_imsi}  ${cd_device_imsi}  ${dial_msisdn}  ${call_duration_millis}  ${released_by_cg}=true   
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         Testcases
+                            SoapUI Case                          Call
+                            SoapUI Set Project Property          Testcases.Call.input.cgDeviceImsi=${cg_device_imsi} 
+                            SoapUI Set Project Property          Testcases.Call.input.cdDeviceImsi=${cd_device_imsi}
+                            SoapUI Set Project Property          Testcases.Call.input.dialMsisdn=${dial_msisdn}
+                            SoapUI Set Project Property          Testcases.Call.input.callDurationMillis=${call_duration_millis}
+                            SoapUI Set Project Property          Testcases.Call.input.releasedByCg=${released_by_cg}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                       SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   Testcases.Call.output.resultCode                                   UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              Testcases-Call
+    [return]                ${resultCode}   
+                     
+
+ARS Voice Call To Unattached Phone  
+    [Documentation]  This function is similar to "ARS Voice Call" except that only the calling phone (A-party) needs to be attached to the Android Remoting server.
+    ...              It can be used to test connections to fix-net subscribers or to any phones (or services) that are not attachable to an Android Remoting System.
+    ...
+    ...              Arguments:
+    ...                ars_host               IP adress of the Android Remoting server to be used 
+    ...                ars_port               Port where ars_host exposes his services
+    ...                cg_device_imsi         IMSI of the attached phone that shall act as the calling phone (A-party)
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling device (specified via cg_device_imsi).
+    ...                                       The TC fails if the dialed MSISDN doesn't result in a connection within 20 seconds after dialing.
+    ...                call_duration_millis   Specifies the duration in seconds the established connection shall be held open until it's released by the calling device (specified via cgDeviceImsi).
+    ...                                       ATTENTION: The SoapUI TC fails if the connection is released by the called party.
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "Testcases.Call.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         OK 
+    ...                                         ARS_NOT_AVAILABLE
+    ...                                         TC_PRECONDITION_VIOLATION__CALLING_DEVICE_NOT_IDLE
+    ...                                         DIAL_ON_CALLING_DEVICE_FAILED
+    ...                                         CONNECT_FAILED
+    ...                                         FINAL_RELEASE_ON_CALLING_DEVICE_FAILED
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${cg_device_imsi}    ${dial_msisdn}   ${call_duration_millis}            
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         Testcases
+                            SoapUI Case                          CallUnattached
+                            SoapUI Set Project Property          Testcases.CallUnattached.input.cgDeviceImsi=${cg_device_imsi} 
+                            SoapUI Set Project Property          Testcases.CallUnattached.input.dialMsisdn=${dial_msisdn}
+                            SoapUI Set Project Property          Testcases.CallUnattached.input.callDurationMillis=${call_duration_millis}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                       SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   Testcases.CallUnattached.output.resultCode                         UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              Testcases-CallUnattached
+    [return]                ${resultCode}   
+
+ARS Ussd Request  
+    [Documentation]  Sends a USSD request from an Android Phones attached to an Android Remoting Server and returns ther response text
+    ...
+    ...              Arguments:
+    ...                ars_host           IP adress of the Android Remoting server to be used 
+    ...                ars_port           Port where ars_host exposes his services
+    ...                device_imsi        IMSI of the attached phone where the ussdCode shall be dialed
+    ...                ussd_code          USSD code to be dialed
+    ...                timeout_seconds    Specifies the max duration in seconds that shall be waited for the response.    
+    ...
+    ...              Returns:           
+    ...                resultCode        The xxx value of the SoapUI Groovy log's "Testcases.Ussd.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                   Where xxx could be:
+    ...                                     OK 
+    ...                                     ARS_NOT_AVAILABLE
+    ...                                     DEVICE_NOT_FOUND
+    ...                                     DEVICE_NOT_ONLINE
+    ...                                     TIMEOUT
+    ...                                  When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                response_text     In case of resultCode=OK this result value ("Testcases.Ussd.output.responseText=xxx") provides the received response text.
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${device_imsi}    ${ussd_code}   ${timeout_seconds}    
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         Testcases
+                            SoapUI Case                          Ussd
+                            SoapUI Set Project Property          Testcases.Ussd.input.deviceImsi=${device_imsi} 
+                            SoapUI Set Project Property          Testcases.Ussd.input.ussdCode=${ussd_code}
+                            SoapUI Set Project Property          Testcases.Ussd.input.timeoutSeconds=${timeout_seconds}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                       SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   Testcases.Ussd.output.resultCode                                   UNKNOWN_ERROR
+    ${response_text}=       ARS Get Groovy Log Return Property   Testcases.Ussd.output.responseText                                 ${EMPTY}
+                            ARS Cleanup SoapUI Logs              Testcases-Ussd
+    [return]                ${resultCode}                       ${response_text}
+
+
+
+
+
+ARS Sms    
+    [Documentation]  sends an SMS between 2 Android Phones attached to an Android Remoting Server.
+    ...
+    ...              Arguments:
+    ...                ars_host                  IP adress of the Android Remoting server to be used 
+    ...                ars_port                  Port where ars_host exposes his services
+    ...                originating_device_imsi   IMSI of the attached phone that shall act as the SMS originating phone
+    ...                destination_device_imsi   IMSI of the attached phone that should receive the SMS when it's submitted via destination_msisdn (see below) on the originating phone
+    ...                destination_msisdn        MSISDN that shall be used to submit the SMS on the originating phone.
+    ...                                          This parameter is exposed instead of automatically being taken from the destination device to be able to use different numbering formats.
+    ...                                          The TC fails if the SMS submitted via this MSISDN is not received on destination device.   
+    ...                message                   Specifies the SMS body to be sent.
+    ...                                          ATTENTION: Line breaks have to be coded as HTML br tag 
+    ...                ensure_delivery           This flag ("true" or "false") specifies whether the SoapUI TC shall wait on the originating device for submission report AND delivery report or for the submission report only.
+    ...                send_timeout_seconds      Specifies the max duration in seconds that shall be waited on the originating device for the submission or delivery report (depending on ensure-delivery).
+    ...                receive_timeout_seconds   Specifies the max duration in seconds that shall be waited on the destination device for the SMS receival.
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "Testcases.Sms.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         OK 
+    ...                                         ARS_NOT_AVAILABLE
+    ...                                         TC_PRECONDITION_VIOLATION__DESTINATION_DEVICE_NOT_AVAILABLE   (instead of DEVICE_NOT_FOUND or DEVICE_NOT_ONLINE failureReason received from ARS for originating device)
+    ...                                         TC_PRECONDITION_VIOLATION__ORIGINATING_DEVICE_NOT_AVAILABLE   (instead of DEVICE_NOT_FOUND or DEVICE_NOT_ONLINE failureReason received from ARS for destination device)
+    ...                                         SMS_SUBMISSION_ERROR
+    ...                                         SMS_DELIVERY_ERROR
+    ...                                         TIMEOUT
+    ...                                         RECEIVE_TIMEOUT
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                received_message       In case of resultCode=OK this result value ("Testcases.Sms.output.receivedMessage=xxx") provides the received SMS body.
+    ...                                       This can be analyzed by the calling testsuite to dedermine if the received message text fits the expectations (think of inserted propotions) and thus the whole TC execution is really successful.
+    ...                                       ATTENTION: To ensure that the log entry is limited to one line all occurencies of line breaks within the received response text are replaced by <br> before it's written to the log
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${ars_host}  ${ars_port}  ${originating_device_imsi}  ${destination_device_imsi}  ${destination_msisdn}  ${message}  ${ensure_delivery}  ${send_timeout_seconds}  ${receive_timeout_seconds}  
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         Testcases
+                            SoapUI Case                          Sms
+                            SoapUI Set Project Property          Testcases.Sms.input.origDeviceImsi=${originating_device_imsi} 
+                            SoapUI Set Project Property          Testcases.Sms.input.destDeviceImsi=${destination_device_imsi}
+                            SoapUI Set Project Property          Testcases.Sms.input.destMsisdn=${destination_msisdn}
+                            SoapUI Set Project Property          Testcases.Sms.input.message=${message}
+                            SoapUI Set Project Property          Testcases.Sms.input.ensureDelivery=${ensure_delivery}
+                            SoapUI Set Project Property          Testcases.Sms.input.sendTimeoutSeconds=${send_timeout_seconds}
+                            SoapUI Set Project Property          Testcases.Sms.input.receiveTimeoutSeconds=${receive_timeout_seconds}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                           SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   Testcases.Sms.output.resultCode                                        UNKNOWN_ERROR
+    ${received_message}=    ARS Get Groovy Log Return Property   Testcases.Sms.output.receivedMessage                                   ${EMPTY}
+                            ARS Cleanup SoapUI Logs              Testcases-Sms
+    [return]                ${resultCode}                       ${received_message}
+
+
+
+ARS Sms To Unattached Phone   
+    [Documentation]  This function is similar to "ARS Sms" except that only the originating phone needs to be attached to an Android Remoting Server.
+    ...              It can be used to test SMS transmissions to any phones (or services) that are not attachable to an Android Remoting System.
+    ...
+    ...              Arguments:
+    ...                ars_host                  IP adress of the Android Remoting server to be used 
+    ...                ars_port                  Port where ars_host exposes his services
+    ...                originating_device_imsi   IMSI of the attached phone that shall act as the SMS originating phone
+    ...                destination_msisdn        MSISDN that shall be used to submit the SMS on the originating phone 
+    ...                                          The TC fails if the SMS submitted via this MSISDN is not replied by a submission or delivery report (depending on ensure_delivery) within the specified timeoutSeconds
+    ...                message                   Specifies the SMS body to be sent.
+    ...                                          ATTENTION: Line breaks have to be coded as HTML br tag 
+    ...                ensure_delivery           This flag ("true" or "false") specifies whether the SoapUI TC shall wait on the originating device for submission report AND delivery report or for the submission report only.
+    ...                timeout_seconds           Specifies the max duration in seconds that shall be waited on the originating device for the submission or delivery report (depending on ensure-delivery).
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "Testcases.Sms.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         OK 
+    ...                                         ARS_NOT_AVAILABLE
+    ...                                         DEVICE_NOT_FOUND
+    ...                                         DEVICE_NOT_ONLINE
+    ...                                         SMS_SUBMISSION_ERROR
+    ...                                         SMS_DELIVERY_ERROR
+    ...                                         TIMEOUT
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${ars_host}  ${ars_port}  ${originating_device_imsi}  ${destination_msisdn}  ${message}  ${ensure_delivery}  ${timeout_seconds}   
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         Testcases
+                            SoapUI Case                          SmsUnattached
+                            SoapUI Set Project Property          Testcases.SmsUnattached.input.origDeviceImsi=${originating_device_imsi} 
+                            SoapUI Set Project Property          Testcases.SmsUnattached.input.destMsisdn=${destination_msisdn}
+                            SoapUI Set Project Property          Testcases.SmsUnattached.input.message=${message}
+                            SoapUI Set Project Property          Testcases.SmsUnattached.input.ensureDelivery=${ensure_delivery}
+                            SoapUI Set Project Property          Testcases.SmsUnattached.input.timeoutSeconds=${timeout_seconds}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                                     SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   Testcases.SmsUnattached.output.resultCode                                        UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              Testcases-SmsUnattached
+    [return]                ${resultCode}                       
+
+
+
+
+
+
+
+ARS Dial  
+    [Documentation]  Dials a phone number on an Android Phones attached to an Android Remoting Server 
+    ...              This is a direct delegator to the dial operation of the Android Remoting voice service. 
+    ...              See detailed documentation at: https://portal.inew-cs.com/redmine/projects/qa-technology-corner/wiki/AndroidRemoting_
+    ...
+    ...              Arguments:
+    ...                ars_host           IP adress of the Android Remoting server to be used 
+    ...                ars_port           Port where ars_host exposes his services
+    ...                device_imsi        specifies the (IDLE) device to be used for dialing
+    ...                phone number       specifies the MSISDN to be dialed
+    ...
+    ...              Returns:           
+    ...                resultCode         The xxx value of the SoapUI Groovy log's "LowLevelOps.Voice.dial.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                   Where xxx could be:
+    ...                                     OK 
+    ...                                     ARS_NOT_AVAILABLE
+    ...                                     DEVICE_NOT_FOUND
+    ...                                     DEVICE_NOT_ONLINE
+    ...                                     VOICE_STATE_PRECONDITION_VIOLATION
+    ...                                     VOICE_STATE_POSTCONDITION_VIOLATION
+    ...                                     UNKNOWN
+    ...                                  When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${device_imsi}    ${phone number}           
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          Voice.dial
+                            SoapUI Set Project Property          LowLevelOps.Voice.dial.input.deviceImsi=${device_imsi} 
+                            SoapUI Set Project Property          LowLevelOps.Voice.dial.input.phoneNumber=${phone number}
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                       SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   LowLevelOps.Voice.dial.output.resultCode                           UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              LowLevelOps-Voicedial
+    [return]                ${resultCode}                     
+
+
+ARS Answer  
+    [Documentation]  Answers an incomming call on an Android Phones attached to an Android Remoting Server 
+    ...              This is a direct delegator to the answer operation of the Android Remoting voice service. 
+    ...              See detailed documentation at: https://portal.inew-cs.com/redmine/projects/qa-technology-corner/wiki/AndroidRemoting_
+    ...
+    ...              Arguments:
+    ...                ars_host           IP adress of the Android Remoting server to be used 
+    ...                ars_port           Port where ars_host exposes his services
+    ...                device_imsi        specifies the (RINGING) device to be used for answering
+    ...
+    ...              Returns:           
+    ...                resultCode         The xxx value of the SoapUI Groovy log's "LowLevelOps.Voice.answer.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                   Where xxx could be:
+    ...                                     OK 
+    ...                                     ARS_NOT_AVAILABLE
+    ...                                     DEVICE_NOT_FOUND
+    ...                                     DEVICE_NOT_ONLINE
+    ...                                     VOICE_STATE_PRECONDITION_VIOLATION
+    ...                                     VOICE_STATE_POSTCONDITION_VIOLATION
+    ...                                     UNKNOWN
+    ...                                  When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${device_imsi}             
+    Log    msg=ars_host=${ars_host} ars_port=${ars_port} device_imsi=${device_imsi}
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          Voice.answer
+                            SoapUI Set Project Property          LowLevelOps.Voice.answer.input.deviceImsi=${device_imsi} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                         SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   LowLevelOps.Voice.answer.output.resultCode                           UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              LowLevelOps-Voiceanswer
+    [return]                ${resultCode}                     
+
+
+ARS Release  
+    [Documentation]  Releases an incomming/outgoing call attempt or an already established call on an Android Phones attached to an Android Remoting Server 
+    ...              This is a direct delegator to the release operation of the Android Remoting voice service. 
+    ...              See detailed documentation at: https://portal.inew-cs.com/redmine/projects/qa-technology-corner/wiki/AndroidRemoting_
+    ...
+    ...              Arguments:
+    ...                ars_host           IP adress of the Android Remoting server to be used 
+    ...                ars_port           Port where ars_host exposes his services
+    ...                device_imsi        specifies the (DIALING, RINGING or CONNECTED) device to be used for releasing the active call (or call attempt)    
+    ...
+    ...              Returns:           
+    ...                resultCode         The xxx value of the SoapUI Groovy log's "LowLevelOps.Voice.release.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                   Where xxx could be:
+    ...                                     OK 
+    ...                                     ARS_NOT_AVAILABLE
+    ...                                     DEVICE_NOT_FOUND
+    ...                                     DEVICE_NOT_ONLINE
+    ...                                     VOICE_STATE_PRECONDITION_VIOLATION
+    ...                                     VOICE_STATE_POSTCONDITION_VIOLATION
+    ...                                     UNKNOWN
+    ...                                  When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${device_imsi}             
+    Log    msg=ars_host=${ars_host} ars_port=${ars_port} device_imsi=${device_imsi}
+                           ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          Voice.release
+                            SoapUI Set Project Property          LowLevelOps.Voice.release.input.deviceImsi=${device_imsi} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                         SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   LowLevelOps.Voice.release.output.resultCode                          UNKNOWN_ERROR
+                            ARS Cleanup SoapUI Logs              LowLevelOps-Voicerelease
+    [return]                ${resultCode}                     
+
+
+ARS Get Current Voice State  
+    [Documentation]  Retrieves the actual state of an Android Phone's voice system attached to an Android Remoting Server 
+    ...              This is a direct delegator to the getCurrentVoiceState operation of the Android Remoting voice service. 
+    ...              See detailed documentation at: https://portal.inew-cs.com/redmine/projects/qa-technology-corner/wiki/AndroidRemoting_
+    ...
+    ...              Arguments:
+    ...                ars_host           IP adress of the Android Remoting server to be used 
+    ...                ars_port           Port where ars_host exposes his services
+    ...                device_imsi        specifies the device to be queried    
+    ...
+    ...              Returns:           
+    ...                resultCode         The xxx value of the SoapUI Groovy log's "LowLevelOps.Voice.getCurrentVoiceState.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                   Where xxx could be:
+    ...                                     OK 
+    ...                                     ARS_NOT_AVAILABLE
+    ...                                     DEVICE_NOT_FOUND
+    ...                                     DEVICE_NOT_ONLINE
+    ...                                     VOICE_STATE_PRECONDITION_VIOLATION
+    ...                                     VOICE_STATE_POSTCONDITION_VIOLATION
+    ...                                     UNKNOWN
+    ...                                   When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                voice_state        In case of resultCode=OK this result value ("LowLevelOps.Voice.getCurrentVoiceState.output.voiceStatee=xxx") provides the current state.
+    ...                                   Where xxx could be:
+    ...                                     IDLE
+    ...                                     DIALING
+    ...                                     RINGING
+    ...                                     CONNECTED
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ars_host}    ${ars_port}    ${device_imsi}           
+    Log    msg=ars_host=${ars_host} ars_port=${ars_port} device_imsi=${device_imsi}
+                            ARS Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${ARS BRIDGE SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          arsHost=${ars_host}
+                            SoapUI Set Project Property          arsPort=${ars_port}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          Voice.getCurrentVoiceState
+                            SoapUI Set Project Property          LowLevelOps.Voice.getCurrentVoiceState.input.deviceImsi=${device_imsi} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                                      SoapUI Run  
+    ${resultCode}=          ARS Get Groovy Log Return Property   LowLevelOps.Voice.getCurrentVoiceState.output.resultCode                          UNKNOWN_ERROR
+    ${voice_state}=         ARS Get Groovy Log Return Property   LowLevelOps.Voice.getCurrentVoiceState.output.voiceState                          ${EMPTY}
+                            ARS Cleanup SoapUI Logs              LowLevelOps-VoicegetCurrentVoiceState
+    [return]                ${resultCode}                        ${voice_state}
+
+
+ARS Reset Phone
+    [Documentation]  This function ensures that the voice state of the passed attached phone is IDLE 
+    ...              and its call forwarding is disabled
+    ...
+    ...              Arguments:               
+    ...                ars_host                IP adress of the Android Remoting server to be used 
+    ...                ars_port                Port where ars_host exposes his services
+    ...                device_imsi             specifies the device to be reset    
+    ...                ussd_timeout_seconds   
+    ...                ussd_success_response   the (Mobile Network specific) USSD disabled response text
+    ...                                        that is expected to be received in case of success  
+    ... 
+    ...              Returns:           
+    ...                resultCode          OK if the request succeeded otherwise 
+    ...                                    otherwise one of the ARS Bridge error codes or 
+    ...                                    UNEXPECTED_USSD_RESPONSE if the USSD response doesn't match ussd_success_response
+    ...                                    UNEXPECTED_VOICE_STATE if the voice state could not be set to IDLE
+    ...                                    
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${ars_host}    ${ars_port}    ${device_imsi}   ${ussd_timeout_seconds}  ${ussd_success_response}          
+    Log    msg=ars_host=${ars_host} ars_port=${ars_port} device_imsi=${device_imsi} ussd_timeout_seconds=${ussd_timeout_seconds}  ussd_success_response=${ussd_success_response}
+                                         ARS Release                     ${ars_host}    ${ars_port}    ${device_imsi}
+    ${resultCode}    ${voice_state}=    ARS Get Current Voice State     ${ars_host}    ${ars_port}    ${device_imsi}
+    ${resultCode}=                      Run Keyword If      '${resultCode}'=='OK' and '${voice_state}'=='IDLE'    ARS Disable Call Forwarding    ${ars_host}    ${ars_port}    ${device_imsi}    ${ussd_timeout_seconds}  ${ussd_success_response}
+    ...                                  ELSE IF             '${resultCode}'=='OK'                                 Set Variable    UNEXPECTED_VOICE_STATE
+    ...                                  ELSE                                                                       Set Variable    ${resultCode}   #auto-assignement necessary otherwise ${NONE} would be assigned
+    [return]          ${resultCode}             
+
+   
+ARS Enable Call Forwarding
+    [Documentation]  executes a USSD call forwarding request on the passed phone to the passed MSISDN
+    ...
+    ...              Arguments:               
+    ...                ars_host                IP adress of the Android Remoting server to be used 
+    ...                ars_port                Port where ars_host exposes his services
+    ...                device_imsi             specifies the device to be forwarded    
+    ...                forwarded_msisdn        specifies the msisdn to forward to
+    ...                ussd_timeout_seconds
+    ...                ussd_success_response   the (Mobile Network specific) response text
+    ...                                        that is expected to be received in case of success  
+    ... 
+    ...              Returns:           
+    ...                resultCode          OK if the request succeeded 
+    ...                                    otherwise one of the ARS Bridge error codes or 
+    ...                                    UNEXPECTED_USSD_RESPONSE if the USSD response doesn't match ussd_success_response
+    ...              =========================================================
+    [Arguments]        ${ars_host}    ${ars_port}    ${device_imsi}   ${forwarded_msisdn}    ${ussd_timeout_seconds}  ${ussd_success_response}
+    ${ussd_code_enable_forwarding}=        Set Variable                  **21*${forwarded_msisdn}\#
+    ${resultCode}      ${response_text}=   ARS Ussd Request    ${ars_host}    ${ars_port}    ${device_imsi}    ${ussd_code_enable_forwarding}    ${ussd_timeout_seconds}
+    ${resultCode}=                         Run Keyword If      '${resultCode}'=='OK' and '${response_text}'!='${ussd_success_response}'    Set Variable   UNEXPECTED_USSD_RESPONSE
+    ...                                    ELSE                                                                                             Set Variable    ${resultCode}   #auto-assignement necessary otherwise ${NONE} would be assigned
+    [return]           ${resultCode}             
+
+
+ARS Disable Call Forwarding
+    [Documentation]  executes a USSD disable call forwarding request on the passed phone
+    ...
+    ...              Arguments:               
+    ...                ars_host                IP adress of the Android Remoting server to be used 
+    ...                ars_port                Port where ars_host exposes his services
+    ...                device_imsi             specifies the device to be reset    
+    ...                ussd_timeout_seconds
+    ...                ussd_success_response   the (Mobile Network specific) response text
+    ...                                        that is expected to be received in case of success  
+    ... 
+    ...              Returns:           
+    ...                resultCode          OK if the request succeeded 
+    ...                                    otherwise one of the ARS Bridge error codes or 
+    ...                                    UNEXPECTED_USSD_RESPONSE if the USSD response doesn't match ussd_success_response
+    ...              =========================================================
+    [Arguments]        ${ars_host}    ${ars_port}    ${device_imsi}    ${ussd_timeout_seconds}  ${ussd_success_response}
+    ${ussd_code_disable_forwarding}=       Set Variable        \#\#21\#
+    ${resultCode}      ${response_text}=   ARS Ussd Request    ${ars_host}    ${ars_port}    ${device_imsi}    ${ussd_code_disable_forwarding}   ${ussd_timeout_seconds}
+    ${resultCode}=                         Run Keyword If      '${resultCode}'=='OK' and '${response_text}'!='${ussd_success_response}'    Set Variable   UNEXPECTED_USSD_RESPONSE
+    ...                                    ELSE                                                                                            Set Variable   ${resultCode}   #auto-assignement necessary otherwise ${NONE} would be assigned
+    [return]           ${resultCode}             
+
+
+################################################## PRIVATE kewords ############################################
+
+
+
+
+ARS Get Groovy Log Return Property
+    [Documentation]  This is a PRIVATE helper function to retrieve return values placed into the Groovy log by the SoaupUI TCs .
+    ...
+    ...              Arguments:
+    ...                property_name    Property name to be searched in the Groovy log 
+    ...                default_value    Default value to be returned in case that the property or the log file at all could NOT be found
+    ...           
+    ...              Returns:           
+    ...                resultCode       The xxx value of the Groovy log's property_name'=xxx' entry or
+    ...                                 default_value in case the property or even the log file was not found
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]             ${property_name}   ${default_value}      
+    ${return_marker}=       Set Variable               ${property_name}=    #ATTENTION: This trailing equation sign is INTENTIONAL otherwise ther resultCode will include the equation sign
+    ${resultCode}=          Set Variable               ${EMPTY}               
+    ${return_log_entry}=    Set Variable               ${EMPTY}
+    ${execution_status}     ${return_log_entry}        Run Keyword And Ignore Error          Grep File           ${ARS BRIDGE SOAPUI GROOVY LOG}   ${return_marker} 
+    ${return_log_entry}=    Run Keyword If             '${execution_status}'=='FAIL'         Set Variable        ${EMPTY}   
+                            ...                        ELSE                                  Set Variable        ${return_log_entry}    #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${return_log_entry}=    Run Keyword If             '${return_log_entry}'=='${NONE}'      Set Variable        ${EMPTY}   
+                            ...                        ELSE                                  Set Variable        ${return_log_entry}    #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${resultCode}=          Run Keyword If             '${return_log_entry}'!='${EMPTY}'     Fetch From Right    ${return_log_entry}    ${return_marker}
+                            ...                        ELSE                                  Set Variable        ${resultCode}          #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${resultCode}=          Run Keyword If             '${resultCode}'=='${NONE}'            Set Variable        ${default_value}   
+                            ...    ELSE IF             '${resultCode}'=='${EMPTY}'           Set Variable        ${default_value}  
+                            ...                        ELSE                                  Set Variable        ${resultCode}         #auto-assignement necessary otherwise ${NONE} would be assigned
+    [return]                ${resultCode}   
+   
+
+
+
+ARS Setup SoapUI Logs
+    [Documentation]  This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them 
+    ...              when multiple SoapUI TCs are executed within one Robot testsuite and each deletes the produced log files (with ARS Cleanup SoapUI Logs)
+    ...              Addintional background infos:
+    ...                The ${ARS BRIDGE SOAPUI GROOVY LOG} is used for retrieving the resultCode and other optional return values.
+    ...                Therefore the setup of a SoapUI TC must ensure that contents of a previous run is removed since otherwise the TC could accidentally retrieve return values of the previous run.
+    ...                An alternative approach of deleting the file in "ARS Cleanup SoapUI Logs" at the end of the TC had strange side effects when 2 runs of a SoaupUI TCs occure within one robot testsuite:
+    ...                In this case SoapUI SOMETIMES did NOT write into the newly created file on the 2nd run.
+    ...                Therefore we relinguish a DELETION of reused log files and simply clear them here (with "Create File" keyword) at the beginning of a new run.
+    ...
+    ...              Arguments:   None
+    ...              Returns:     Nothing
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+                     Run Keyword And Ignore Error          Create File      ${ARS BRIDGE SOAPUI GROOVY LOG}   
+                     Run Keyword And Ignore Error          Create File      ${ARS BRIDGE SOAPUI LOG}   
+                     Run Keyword And Ignore Error          Create File      ${ARS BRIDGE SOAPUI ERROR LOG}   
+
+
+ARS Cleanup SoapUI Logs
+    [Documentation]  This is a PRIVATE helper function to cleanup the testsuite directory from logs created by a SoapUI testcase.
+    ...
+    ...              Arguments:
+    ...                tc_specific_files_prefix    OPTIONAL - Prefix of all TC specific log files 
+   ...           
+    ...              Returns:                      Nothing
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]      ${tc_specific_files_prefix}=${EMPTY}
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${ARS BRIDGE SOAPUI GROOVY LOG}  
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${ARS BRIDGE SOAPUI LOG} 
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${ARS BRIDGE SOAPUI ERROR LOG}  
+                     Run Keyword If                        '${tc_specific_files_prefix}'!='${EMPTY}'     Run Keyword And Ignore Error          Remove File    ${tc_specific_files_prefix}*.*  
+

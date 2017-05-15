@@ -1,0 +1,1133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20130606 11:49:02.346" generator="Robot 2.7.6 (Python 2.6.6 on linux2)">
+<suite source="/opt/robot/testcases/SoapUi/suds/soaptest.txt" id="s1" name="Soaptest">
+<test id="s1-t1" timeout="" name="TestSoap">
+<kw type="kw" name="resource.Check Balance" timeout="">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SudsLibrary.Create Soap Client" timeout="">
+<doc>Loads a WSDL from the given URL/path and creates a Suds SOAP client.</doc>
+<arguments>
+<arg>${ACCOUNTSWSDL}</arg>
+<arg>Accounting</arg>
+</arguments>
+<msg timestamp="20130606 11:49:02.734" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<msg timestamp="20130606 11:49:02.862" level="INFO">Using WSDL at http://10.0.20.13:9090/accounting/accounts?wsdl
+Suds ( https://fedorahosted.org/suds/ )  version: 0.4 GA  build: R699-20100913
+
+Service ( AccountPeer ) tns="http://provisioning.published.accounting.negret.tryge.com/"
+   Prefixes (4)
+      ns0 = "http://provisioning.published.accounting.negret.tryge.com"
+      ns2 = "http://provisioning.published.accounting.negret.tryge.com/"
+      ns3 = "http://published.accounting.crce.inewcs.com"
+      ns4 = "http://services.profiler.negret.tryge.com"
+   Ports (1):
+      (AccountPeerPort)
+         Methods (10):
+            getAccount(xs:long arg0, xs:long arg1, )
+            getAccountDescriptor(xs:int arg0, )
+            getAccountDescriptors()
+            getAccountSummary(xs:long arg0, xs:string arg1, )
+            getAccounts(xs:long arg0, )
+            getAccountsByCurrency(xs:long arg0, xs:string arg1, )
+            getMainAccount(xs:long arg0, )
+            getMainAccountAsSummary(xs:long arg0, )
+            getSummaryByCurrency(xs:long arg0, )
+            getSummaryByCurrencyGroup(xs:long arg0, ns0:CurrencyGroup arg1, )
+         Types (55):
+            ns3:AccountCategory
+            ns3:AccountDescriptor
+            ns0:AccountDetailsType
+            ns0:AccountResType
+            ns3:AccountType
+            ns0:AccountType
+            ns3:ArrayOfAccountDescriptor
+            ns0:ArrayOfAccountType
+            ns4:ArrayOfChargeExt
+            ns4:ArrayOfQuotaType
+            ns4:ArrayOfSelectableQuotaType
+            ns0:ArrayOfSummaryType
+            ns4:BaseQuotaType
+            ns4:Charge
+            ns4:ChargeExt
+            ns0:CurrencyGroup
+            ns0:CurrencyUnitType
+            ns4:QuotaType
+            ns0:ResultCode
+            ns4:ResultCode
+            ns4:SelectableQuotaType
+            ns0:SummaryListType
+            ns0:SummaryResType
+            ns0:SummaryType
+            ns4:TariffCalendarPeriod
+            ns4:TariffCategory
+            ns4:TariffCycle
+            ns4:TariffIntervalPeriod
+            ns4:TariffPeriod
+            ns4:TariffPeriodType
+            ns4:TariffPlanStatus
+            ns4:TariffPlanType
+            ns4:TariffTimeInterval
+            ns4:TariffType
+            ns4:UserDefinablePlanType
+            getAccount
+            getAccountDescriptor
+            getAccountDescriptorResponse
+            getAccountDescriptors
+            getAccountDescriptorsResponse
+            getAccountResponse
+            getAccountSummary
+            getAccountSummaryResponse
+            getAccounts
+            getAccountsByCurrency
+            getAccountsByCurrencyResponse
+            getAccountsResponse
+            getMainAccount
+            getMainAccountAsSummary
+            getMainAccountAsSummaryResponse
+            getMainAccountResponse
+            getSummaryByCurrency
+            getSummaryByCurrencyGroup
+            getSummaryByCurrencyGroupResponse
+            getSummaryByCurrencyResponse
+
+</msg>
+<msg timestamp="20130606 11:49:02.862" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<status status="PASS" endtime="20130606 11:49:02.862" starttime="20130606 11:49:02.733"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Create Soap Client" timeout="">
+<doc>Loads a WSDL from the given URL/path and creates a Suds SOAP client.</doc>
+<arguments>
+<arg>${SUBSCRIBERWSDL}</arg>
+<arg>Subscribers</arg>
+</arguments>
+<msg timestamp="20130606 11:49:02.864" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<msg timestamp="20130606 11:49:03.079" level="INFO">Using WSDL at http://10.0.20.13:9090/profiler/subscriber?wsdl
+Suds ( https://fedorahosted.org/suds/ )  version: 0.4 GA  build: R699-20100913
+
+Service ( SubscriberPeer ) tns="http://services.profiler.negret.tryge.com/"
+   Prefixes (4)
+      ns0 = "http://commons.api.plugins.profiler.inewcs.com"
+      ns2 = "http://services.profiler.negret.tryge.com"
+      ns3 = "http://services.profiler.negret.tryge.com/"
+      ns4 = "http://util.java"
+   Ports (1):
+      (SubscriberPeerPort)
+         Methods (21):
+            activateSubscriber(xs:long arg0, xs:string arg1, )
+            addFlag(xs:long arg0, xs:string arg1, )
+            blockSubscriber(xs:long arg0, xs:string arg1, xs:string arg2, xs:string arg3, )
+            changeAdditionalStateInfo(xs:long arg0, xs:string arg1, xs:string arg2, )
+            changeChargingMode(xs:long arg0, xs:string arg1, xs:string arg2, )
+            changeExternalId(xs:long arg0, xs:string arg1, )
+            changeLanguageRequest(xs:long arg0, xs:long arg1, xs:string arg2, )
+            changeNotification(ns2:NotificationChangeRequest arg0, )
+            getSubscriberProfile(xs:string arg0, )
+            getSubscriberProfileByExternalId(xs:string arg0, )
+            getSubscriberProfileById(xs:long arg0, )
+            getSubscriberProfileByImsi(xs:string arg0, )
+            getSubscriberProfiles(ns2:SubscriberBulkLookupRequest arg0, )
+            removeExternalProperty(ns2:SubscriberPropertyRemovalRequest arg0, )
+            removeFlag(xs:long arg0, xs:string arg1, )
+            setAccountLimit(ns2:AccountLimitChangeRequest arg0, )
+            setBillingDate(ns2:BillingDateChangeRequest arg0, )
+            setBillingId(ns2:BillingIdChangeRequest arg0, )
+            setExpiryDate(ns2:ExpiryDateChangeRequest arg0, )
+            setExternalProperty(ns2:SubscriberPropertyChangeRequest arg0, )
+            unblockSubscriber(xs:long arg0, xs:string arg1, xs:string arg2, xs:string arg3, )
+         Types (91):
+            ns2:AccountLimitChangeRequest
+            ns2:ActionResultType
+            ns2:ArrayOfChargeExt
+            ns2:ArrayOfFeatureActivationType
+            ns2:ArrayOfQuotaType
+            ns2:ArrayOfSelectableQuotaType
+            ArrayOfString
+            ns0:ArrayOfSubscriberMatcher
+            ns2:ArrayOfSubscriberPropertyType
+            ns2:BaseQuotaType
+            ns2:BillingDateChangeRequest
+            ns2:BillingIdChangeRequest
+            ns2:Charge
+            ns2:ChargeExt
+            ns2:ExpiryDateChangeRequest
+            ns2:FeatureActivationType
+            ns2:LanguageType
+            ns2:NotificationCategory
+            ns2:NotificationChangeRequest
+            ns2:NotificationType
+            ns2:QuotaType
+            ns2:ResultCode
+            ns2:SelectableQuotaType
+            ns0:SimType
+            ns2:SubscriberBulkLookupRequest
+            ns2:SubscriberBulkLookupResponse
+            ns0:SubscriberHeader
+            ns0:SubscriberMatcher
+            ns2:SubscriberNotificationType
+            ns2:SubscriberProfileType
+            ns2:SubscriberPropertyChangeRequest
+            ns2:SubscriberPropertyRemovalRequest
+            ns2:SubscriberPropertyType
+            ns0:SubscriberState
+            ns2:SubscriberType
+            ns0:SubscriberType
+            ns2:TariffCalendarPeriod
+            ns2:TariffCategory
+            ns2:TariffCycle
+            ns2:TariffIntervalPeriod
+            ns2:TariffPeriod
+            ns2:TariffPeriodType
+            ns2:TariffPlanStatus
+            ns2:TariffPlanType
+            ns2:TariffTimeInterval
+            ns2:TariffType
+            ns4:TimeZone
+            ns2:UserDefinablePlanType
+            activateSubscriber
+            activateSubscriberResponse
+            addFlag
+            addFlagResponse
+            blockSubscriber
+            blockSubscriberResponse
+            changeAdditionalStateInfo
+            changeAdditionalStateInfoResponse
+            changeChargingMode
+            changeChargingModeResponse
+            changeExternalId
+            changeExternalIdResponse
+            changeLanguageRequest
+            changeLanguageRequestResponse
+            changeNotification
+            changeNotificationResponse
+            getSubscriberProfile
+            getSubscriberProfileByExternalId
+            getSubscriberProfileByExternalIdResponse
+            getSubscriberProfileById
+            getSubscriberProfileByIdResponse
+            getSubscriberProfileByImsi
+            getSubscriberProfileByImsiResponse
+            getSubscriberProfileResponse
+            getSubscriberProfiles
+            getSubscriberProfilesResponse
+            removeExternalProperty
+            removeExternalPropertyResponse
+            removeFlag
+            removeFlagResponse
+            setAccountLimit
+            setAccountLimitResponse
+            setBillingDate
+            setBillingDateResponse
+            setBillingId
+            setBillingIdResponse
+            setExpiryDate
+            setExpiryDateResponse
+            setExternalProperty
+            setExternalPropertyResponse
+            string2SubscriberHeaderMap
+            unblockSubscriber
+            unblockSubscriberResponse
+
+</msg>
+<msg timestamp="20130606 11:49:03.079" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<status status="PASS" endtime="20130606 11:49:03.080" starttime="20130606 11:49:02.863"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Return Xml" timeout="">
+<doc>Sets whether to return XML in future requests.</doc>
+<arguments>
+<arg>true</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.081" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20130606 11:49:03.081" starttime="20130606 11:49:03.080"></status>
+</kw>
+<kw type="kw" name="${RESP} = SudsLibrary.Call Soap Method" timeout="">
+<doc>Calls the SOAP method with the given `name` and `args`.</doc>
+<arguments>
+<arg>getSubscriberProfile</arg>
+<arg>${MSISDN}</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.091" level="INFO">Sending:
+&lt;?xml version="1.0" ?&gt;
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://services.profiler.negret.tryge.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;SOAP-ENV:Header/&gt;
+  &lt;ns0:Body&gt;
+    &lt;ns1:getSubscriberProfile&gt;
+      &lt;ns1:arg0&gt;579510888804&lt;/ns1:arg0&gt;
+    &lt;/ns1:getSubscriberProfile&gt;
+  &lt;/ns0:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+</msg>
+<msg timestamp="20130606 11:49:03.187" level="INFO">Received:
+&lt;?xml version="1.0" ?&gt;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;soap:Body&gt;
+    &lt;ns1:getSubscriberProfileResponse xmlns:ns1="http://services.profiler.negret.tryge.com/"&gt;
+      &lt;ns1:return xmlns:ns2="http://services.profiler.negret.tryge.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SubscriberProfileType"&gt;
+        &lt;ns2:accountLimit&gt;0&lt;/ns2:accountLimit&gt;
+        &lt;ns2:activationDate&gt;2012-08-28T12:56:58.854Z&lt;/ns2:activationDate&gt;
+        &lt;ns2:additionalStateInfo xsi:nil="true"/&gt;
+        &lt;ns2:billingId xsi:nil="true"/&gt;
+        &lt;ns2:callChargeNotification&gt;NONE&lt;/ns2:callChargeNotification&gt;
+        &lt;ns2:chargingMode&gt;ONLINE&lt;/ns2:chargingMode&gt;
+        &lt;ns2:code&gt;OK&lt;/ns2:code&gt;
+        &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+        &lt;ns2:externalId xsi:nil="true"/&gt;
+        &lt;ns2:externalProperties/&gt;
+        &lt;ns2:featureActivations xsi:nil="true"/&gt;
+        &lt;ns2:flags/&gt;
+        &lt;ns2:groupId xsi:nil="true"/&gt;
+        &lt;ns2:groupMembershipFee xsi:nil="true"/&gt;
+        &lt;ns2:id&gt;5595&lt;/ns2:id&gt;
+        &lt;ns2:imei xsi:nil="true"/&gt;
+        &lt;ns2:imsi&gt;730570808000004&lt;/ns2:imsi&gt;
+        &lt;ns2:installationDate&gt;2012-08-28T12:55:34.880Z&lt;/ns2:installationDate&gt;
+        &lt;ns2:language&gt;ENG&lt;/ns2:language&gt;
+        &lt;ns2:languageId&gt;1&lt;/ns2:languageId&gt;
+        &lt;ns2:msisdn&gt;579510888804&lt;/ns2:msisdn&gt;
+        &lt;ns2:nextGroupId xsi:nil="true"/&gt;
+        &lt;ns2:nextTariffId xsi:nil="true"/&gt;
+        &lt;ns2:nextTariffName xsi:nil="true"/&gt;
+        &lt;ns2:prepaidMinimumRevenue xsi:nil="true"/&gt;
+        &lt;ns2:previousGroupId xsi:nil="true"/&gt;
+        &lt;ns2:previousType xsi:nil="true"/&gt;
+        &lt;ns2:providerId&gt;1&lt;/ns2:providerId&gt;
+        &lt;ns2:simType&gt;STANDARD&lt;/ns2:simType&gt;
+        &lt;ns2:state&gt;ACTIVE&lt;/ns2:state&gt;
+        &lt;ns2:tariffId&gt;101019&lt;/ns2:tariffId&gt;
+        &lt;ns2:tariffName&gt;Antiplan $15000&lt;/ns2:tariffName&gt;
+        &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+      &lt;/ns1:return&gt;
+    &lt;/ns1:getSubscriberProfileResponse&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</msg>
+<msg timestamp="20130606 11:49:03.224" level="INFO">${RESP} = &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&lt;soap:Body&gt;&lt;ns1:getSubscriberProfileResponse xmlns:ns1="http://services.profiler.negret.tryge.com/"&gt;&lt;ns1:return xmlns:ns2="http://...</msg>
+<status status="PASS" endtime="20130606 11:49:03.224" starttime="20130606 11:49:03.082"></status>
+</kw>
+<kw type="kw" name="${RESPID} = XML.Get Element Text" timeout="">
+<doc>Returns all text of the element, possibly whitespace normalized.</doc>
+<arguments>
+<arg>${RESP}</arg>
+<arg>.//getSubscriberProfileResponse/return/id</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.227" level="INFO">${RESPID} = 5595</msg>
+<status status="PASS" endtime="20130606 11:49:03.226" starttime="20130606 11:49:03.225"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Switch Soap Client" timeout="">
+<doc>Switches between clients using index or alias.</doc>
+<arguments>
+<arg>Accounting</arg>
+</arguments>
+<status status="PASS" endtime="20130606 11:49:03.228" starttime="20130606 11:49:03.227"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Return Xml" timeout="">
+<doc>Sets whether to return XML in future requests.</doc>
+<arguments>
+<arg>true</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.229" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20130606 11:49:03.229" starttime="20130606 11:49:03.228"></status>
+</kw>
+<kw type="kw" name="${ACCRESP} = SudsLibrary.Call Soap Method" timeout="">
+<doc>Calls the SOAP method with the given `name` and `args`.</doc>
+<arguments>
+<arg>getAccounts</arg>
+<arg>${RESPID}</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.233" level="INFO">Sending:
+&lt;?xml version="1.0" ?&gt;
+&lt;SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://provisioning.published.accounting.negret.tryge.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;SOAP-ENV:Header/&gt;
+  &lt;ns0:Body&gt;
+    &lt;ns1:getAccounts&gt;
+      &lt;ns1:arg0&gt;5595&lt;/ns1:arg0&gt;
+    &lt;/ns1:getAccounts&gt;
+  &lt;/ns0:Body&gt;
+&lt;/SOAP-ENV:Envelope&gt;
+</msg>
+<msg timestamp="20130606 11:49:03.420" level="INFO">Received:
+&lt;?xml version="1.0" ?&gt;
+&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;
+  &lt;soap:Body&gt;
+    &lt;ns1:getAccountsResponse xmlns:ns1="http://provisioning.published.accounting.negret.tryge.com/"&gt;
+      &lt;ns1:return xmlns:ns2="http://provisioning.published.accounting.negret.tryge.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:AccountDetailsType"&gt;
+        &lt;ns2:accounts&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19544&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19545&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19546&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19499&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19500&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19501&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19023&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19024&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19025&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19385&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19386&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19387&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19908&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19909&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19910&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20340&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;262144000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;262144000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20341&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;75&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;75&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20342&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;50&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;50&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20343&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20344&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20345&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;7200&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;7200&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20346&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;50&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;50&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20347&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;262144000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;262144000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20348&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;75&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;75&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20350&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;7200&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;7200&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20351&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20352&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20301&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20302&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;20303&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19810&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;524288000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;524288000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;MB&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;4&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;5&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Byte&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1048576&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;5&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19811&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;100&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;100&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;SMS todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;3&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;4&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;SMS&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;1&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;4&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19812&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;120&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;TARIFF_PLAN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.783Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;120&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Minutos todo destino&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;2&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;10&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;Second&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;60&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;10&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;19944&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;105070000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;BONUS&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;5&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:42.181Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;105070000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Pesos Promocionales&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;5&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;11&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;centavos promocionales&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;100&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;11&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;15730641&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;11500000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;MAIN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;1&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-11-24T11:59:40.753Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;11500000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Pesos&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;1&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;1&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;centavos&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;100&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;1&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+          &lt;ns2:AccountType xsi:type="ns2:AccountType"&gt;
+            &lt;ns2:accountId&gt;5606&lt;/ns2:accountId&gt;
+            &lt;ns2:balance&gt;8056000&lt;/ns2:balance&gt;
+            &lt;ns2:category&gt;MAIN&lt;/ns2:category&gt;
+            &lt;ns2:currencyId&gt;1&lt;/ns2:currencyId&gt;
+            &lt;ns2:expiryDate&gt;2013-06-19T05:41:29.990Z&lt;/ns2:expiryDate&gt;
+            &lt;ns2:initialBalance&gt;8056000&lt;/ns2:initialBalance&gt;
+            &lt;ns2:name&gt;Pesos&lt;/ns2:name&gt;
+            &lt;ns2:reservedBalance&gt;0&lt;/ns2:reservedBalance&gt;
+            &lt;ns2:type&gt;PREPAID&lt;/ns2:type&gt;
+            &lt;ns2:unit xsi:type="ns2:CurrencyUnitType"&gt;
+              &lt;ns2:currencyId&gt;1&lt;/ns2:currencyId&gt;
+              &lt;ns2:id&gt;1&lt;/ns2:id&gt;
+              &lt;ns2:mantissa&gt;0&lt;/ns2:mantissa&gt;
+              &lt;ns2:name&gt;centavos&lt;/ns2:name&gt;
+              &lt;ns2:relation&gt;100&lt;/ns2:relation&gt;
+            &lt;/ns2:unit&gt;
+            &lt;ns2:unitId&gt;1&lt;/ns2:unitId&gt;
+          &lt;/ns2:AccountType&gt;
+        &lt;/ns2:accounts&gt;
+        &lt;ns2:code&gt;OK&lt;/ns2:code&gt;
+      &lt;/ns1:return&gt;
+    &lt;/ns1:getAccountsResponse&gt;
+  &lt;/soap:Body&gt;
+&lt;/soap:Envelope&gt;
+</msg>
+<msg timestamp="20130606 11:49:03.790" level="INFO">${ACCRESP} = &lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;&lt;soap:Body&gt;&lt;ns1:getAccountsResponse xmlns:ns1="http://provisioning.published.accounting.negret.tryge.com/"&gt;&lt;ns1:return xmlns:ns2="...</msg>
+<status status="PASS" endtime="20130606 11:49:03.788" starttime="20130606 11:49:03.229"></status>
+</kw>
+<kw type="kw" name="${BALANCE1} = XML.Get Elements Texts" timeout="">
+<doc>Returns text of all elements matching `xpath` as a list.</doc>
+<arguments>
+<arg>${ACCRESP}</arg>
+<arg>.//getAccountsResponse/return/accounts/AccountType/balance</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.802" level="INFO">${BALANCE1} = ['100', '524288000', '120', '120', '524288000', '100', '524288000', '120', '100', '100', '120', '524288000', '524288000', '120', '100', '262144000', '75', '50', '524288000', '100', '7200', '50', '2621...</msg>
+<status status="PASS" endtime="20130606 11:49:03.802" starttime="20130606 11:49:03.790"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Set Suite Variable" timeout="">
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<arguments>
+<arg>${RESPID}</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.804" level="INFO">${RESPID} = 5595</msg>
+<status status="PASS" endtime="20130606 11:49:03.804" starttime="20130606 11:49:03.803"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Set Suite Variable" timeout="">
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<arguments>
+<arg>${BALANCE1}</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.805" level="INFO">${BALANCE1} = ['100', '524288000', '120', '120', '524288000', '100', '524288000', '120', '100', '100', '120', '524288000', '524288000', '120', '100', '262144000', '75', '50', '524288000', '100', '7200', '50', '2621...</msg>
+<status status="PASS" endtime="20130606 11:49:03.805" starttime="20130606 11:49:03.804"></status>
+</kw>
+<status status="PASS" endtime="20130606 11:49:03.805" starttime="20130606 11:49:02.731"></status>
+</kw>
+<kw type="kw" name="resource.Run Call" timeout="">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${rc} = OperatingSystem.Run And Return Rc" timeout="">
+<doc>Runs the given command in the system and returns the return code.</doc>
+<arguments>
+<arg>java -jar /opt/callsGenerator/callsgen-3.0.0.b1.jar /opt/callsGenerator/workspaces/TB_VirginChile/testsessions/moccall.cgs /opt/callsGenerator/workspaces/TB_VirginChile</arg>
+</arguments>
+<msg timestamp="20130606 11:49:03.811" level="INFO">Running command 'java -jar /opt/callsGenerator/callsgen-3.0.0.b1.jar /opt/callsGenerator/workspaces/TB_VirginChile/testsessions/moccall.cgs /opt/callsGenerator/workspaces/TB_VirginChile 2&gt;&amp;1'</msg>
+<msg timestamp="20130606 11:49:06.617" level="INFO">${rc} = 1</msg>
+<status status="PASS" endtime="20130606 11:49:06.616" starttime="20130606 11:49:03.808"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Be Equal As Integers" timeout="">
+<doc>Fails if objects are unequal after converting them to integers.</doc>
+<arguments>
+<arg>${rc}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20130606 11:49:06.619" level="INFO">Argument types are:
+&lt;type 'int'&gt;
+&lt;type 'unicode'&gt;</msg>
+<msg timestamp="20130606 11:49:06.622" level="FAIL">1 != 0</msg>
+<status status="FAIL" endtime="20130606 11:49:06.622" starttime="20130606 11:49:06.618"></status>
+</kw>
+<status status="FAIL" endtime="20130606 11:49:06.623" starttime="20130606 11:49:03.806"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20130606 11:49:06.623" critical="yes" starttime="20130606 11:49:02.730">1 != 0</status>
+</test>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20130606 11:49:06.624" starttime="20130606 11:49:02.346"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="0">Critical Tests</stat>
+<stat fail="1" pass="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="1" pass="0" id="s1" name="Soaptest">Soaptest</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

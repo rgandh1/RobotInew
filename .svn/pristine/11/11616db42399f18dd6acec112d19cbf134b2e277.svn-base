@@ -1,0 +1,64 @@
+*** Settings ***
+Documentation     Testing the prepaid MOC call, duration is 30s - shorter than one slice (less than 60s)
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite
+Force Tags        TNZ_supported  MOC_involved  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../../calls-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+${IN_LOG_FILE_NAME}			${EMPTY}
+${TAILED_XDR_LOG_FILE}    	ssh_tail_log-xdr.log
+${TAILED_IN_LOG_FILE}    	ssh_tail_log-in.log
+${TAILED_CRCE_LOG_FILE}    	ssh_tail_log-crce.log
+${EXPECTED_BALANCE_1S_MOC}	9980000
+
+*** Keywords ***
+Setup Suite
+	${date}=				Run		date
+	Log 				   	Date and time: ${date}		console=yes
+	Log						Target IN machine: ${IN-APP HOST}		console=yes
+	${in_version}=			Check IN Version
+	${xdr_version}=			Check XDR Version
+	${crce_version}=		Check CRCE Version	
+	${INITIAL_BALANCE}=    	Set Variable    10000000    #10 million should be enough for some calls even if it's in millicent units
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+	
+Teardown Suite
+	Log  				   	Cleaning up    console=yes
+	Run					   	mv *ssh_tail*.log log/
+	Close All Connections
+	
+*** Test Cases ***
+
+Run MOC Call
+    [Documentation]    	Test will make a MOC call, duration 1s. 
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails:
+	...	
+    ...         =================================================================================
+    Comment                ******* Run MOC 1s *******
+    Log					   Running the MOC call...  console=yes
+    ${rc}=                 CG Run MOC 1s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Sleep				   5s
+	Log					   ...do the checks...   console=yes
+	Comment				   ******* Checking Subscriber's Account Balance *******
+    Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_1S_MOC}
+	Close All Connections

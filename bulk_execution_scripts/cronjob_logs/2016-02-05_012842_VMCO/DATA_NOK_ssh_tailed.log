@@ -1,0 +1,48 @@
+[2016-02-05 00:34:51,126][INFO ][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 194] ------ start consuming from queue://inew-cs.crce.cdr -------
+[2016-02-05 00:34:51,126][INFO ][ActiveMQ Session Task-166][HealthMonitor                                     ][ 115] it is time for next active db check.
+[2016-02-05 00:34:51,126][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 167] performing db health check . . .
+[2016-02-05 00:34:51,127][INFO ][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 308] --------- start processing record ---------
+[2016-02-05 00:34:51,127][INFO ][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 309] 55555555|101|ssssss|1||CDR|crce01.tb13|2015-02-23T09:37:42.312+0000|2015-02-23T09:37:06.000+0000|DATA_NOK771376826XdrComponentTest|1|1|74456|573190001000|PREPAID|ACTIVE||0|NONE|OK||1.0|FinalCommit|BasicSession|1|732123710001000|573190001000|false||||Data|XdrComponentTest.cl|1||GPRS|false|||2015-02-23T09:37:06.000+0000|0|35509|10240|20481|20481|815390348|false||15734488|101026|25600|25600|MB NZ Data|74754400|PREPAID|OK||
+[2016-02-05 00:34:51,127][ERROR][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 353] [ERROR] on parsing XDR. 
+com.inewcs.mvno.xdr.api.XDRException: [Error] XDR is not valid! xdrType=crce_cdr. current size=58
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.doProcess(XDRConsumerImpl.java:348)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.process(XDRConsumerImpl.java:311)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:208)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:30)
+	at com.inewcs.mvno.protocol.AbstractIProtConnectorConsumerJMS.onMessage(AbstractIProtConnectorConsumerJMS.java:174)
+	at org.apache.activemq.ActiveMQMessageConsumer.dispatch(ActiveMQMessageConsumer.java:1321)
+	at org.apache.activemq.ActiveMQSessionExecutor.dispatch(ActiveMQSessionExecutor.java:131)
+	at org.apache.activemq.ActiveMQSessionExecutor.iterate(ActiveMQSessionExecutor.java:202)
+	at org.apache.activemq.thread.PooledTaskRunner.runTask(PooledTaskRunner.java:129)
+	at org.apache.activemq.thread.PooledTaskRunner$1.run(PooledTaskRunner.java:47)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+[2016-02-05 00:34:51,128][INFO ][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 313] -------- xdr processed successfully --------
+[2016-02-05 00:34:51,128][INFO ][ActiveMQ Session Task-166][XDRConsumerImpl                                   ][ 211] ------ finished consuming from queue://inew-cs.crce.cdr -------
+[2016-02-05 00:34:51,127][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 175] connection is valid.
+[2016-02-05 00:34:51,590][WARN ][Timer-81       ][AbstractXDRFileHandler                            ][ 165] FILE CLOSED::PROV_SDR_20160205003251.csv.tmp
+[2016-02-05 00:34:51,591][INFO ][Timer-81       ][AbstractXDRFileHandler                            ][ 210] deleted zero size file: PROV_SDR_20160205003251.csv.tmp
+[2016-02-05 00:34:51,591][WARN ][Timer-81       ][AbstractXDRFileHandler                            ][ 178] File Writer closed!
+[2016-02-05 00:34:51,591][WARN ][Timer-81       ][AbstractXDRFileHandler                            ][  98] CREATING NEW FILE ...
+[2016-02-05 00:34:51,591][INFO ][Timer-81       ][AbstractXDRFileHandler                            ][ 110] creationTime: 2016-02-05 00:34:51
+[2016-02-05 00:34:51,592][WARN ][Timer-81       ][AbstractXDRFileHandler                            ][ 118] NEW FILE CREATED::/var/opt/inew/xdr/common/etl_export/prov_sdr/PROV_SDR_20160205003451.csv.tmp
+[2016-02-05 00:34:51,592][INFO ][Timer-81       ][AbstractXDRFileHandler                            ][ 126] expirationTime: 2016-02-05 00:35:51
+[2016-02-05 00:34:51,592][INFO ][Timer-81       ][AbstractXDRFileHandler                            ][  78] --- started file handler ---
+[2016-02-05 00:34:51,602][WARN ][Timer-71       ][AbstractXDRFileHandler                            ][ 165] FILE CLOSED::IN_MOC_20160205002851.csv.tmp
+[2016-02-05 00:34:51,603][INFO ][Timer-71       ][AbstractXDRFileHandler                            ][ 210] deleted zero size file: IN_MOC_20160205002851.csv.tmp
+[2016-02-05 00:34:51,603][WARN ][Timer-71       ][AbstractXDRFileHandler                            ][ 178] File Writer closed!
+[2016-02-05 00:34:51,603][WARN ][Timer-71       ][AbstractXDRFileHandler                            ][  98] CREATING NEW FILE ...
+[2016-02-05 00:34:51,603][INFO ][Timer-71       ][AbstractXDRFileHandler                            ][ 110] creationTime: 2016-02-05 00:34:51
+[2016-02-05 00:34:51,603][WARN ][Timer-71       ][AbstractXDRFileHandler                            ][ 118] NEW FILE CREATED::/var/opt/inew/xdr/common/olc_export/in_sdr/IN_MOC_20160205003451.csv.tmp
+[2016-02-05 00:34:51,603][INFO ][Timer-71       ][AbstractXDRFileHandler                            ][ 126] expirationTime: 2016-02-05 00:39:51
+[2016-02-05 00:34:51,604][INFO ][Timer-71       ][AbstractXDRFileHandler                            ][  78] --- started file handler ---
+[2016-02-05 00:34:52,798][INFO ][Timer-51       ][XDRBackgroundFileWriter                           ][ 115] flushed 3 records to file ERROR_CRCE_CDR_20160204131252.csv.tmp
+[2016-02-05 00:34:59,350][WARN ][Timer-53       ][AbstractXDRFileHandler                            ][ 165] FILE CLOSED::CRCE_CONF_20160205003259.csv.tmp
+[2016-02-05 00:34:59,350][INFO ][Timer-53       ][AbstractXDRFileHandler                            ][ 199] file renamed from: CRCE_CONF_20160205003259.csv.tmp to: CRCE_CONF_20160205003259.csv
+[2016-02-05 00:34:59,350][WARN ][Timer-53       ][AbstractXDRFileHandler                            ][ 178] File Writer closed!
+[2016-02-05 00:34:59,350][WARN ][Timer-53       ][AbstractXDRFileHandler                            ][  98] CREATING NEW FILE ...
+[2016-02-05 00:34:59,350][INFO ][Timer-53       ][AbstractXDRFileHandler                            ][ 110] creationTime: 2016-02-05 00:34:59
+[2016-02-05 00:34:59,351][WARN ][Timer-53       ][AbstractXDRFileHandler                            ][ 118] NEW FILE CREATED::/var/opt/inew/xdr/common/etl_export/crce_conf/CRCE_CONF_20160205003459.csv.tmp
+[2016-02-05 00:34:59,351][INFO ][Timer-53       ][AbstractXDRFileHandler                            ][ 126] expirationTime: 2016-02-05 00:35:59
+[2016-02-05 00:34:59,351][INFO ][Timer-53       ][AbstractXDRFileHandler                            ][  78] --- started file handler ---

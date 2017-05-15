@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     A test suite with a single test for valid login. This test has
+...               a workflow that is created using keywords from the resource file.
+Resource          resource.txt
+
+*** Test Cases ***
+CRM_Misc_001 - Create Ticket
+    Login To CRM
+    Open Subscriber Profile
+    Open Ticketing
+    Write Ticket
+    Close all browsers
+
+CRM_Misc_002 - Change Ticket Status
+    [Documentation]    To change the state, it is neccessary to use the command "Focus" to focus on the button.
+    ...    If we don't use that command, the Webdriver only scrolls down until half of the button is seen, because of the iframe. But then Selenium will not press the button and gives back an errormessage (Element cannot be scrolled into view).
+    Login To CRM
+    Open existing Ticket
+    Change State
+    Close all browsers
+
+Verify User status
+    Login To CRM
+    Open Subscriber Profile
+    Verify States
+    Close all browsers
+
+Filter Search with imsi
+    Login To CRM
+    Open Subscriber Profile with Imsi
+    Close all browsers

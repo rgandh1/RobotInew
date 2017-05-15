@@ -1,0 +1,706 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing functions to administrate test subscribers via CRCE's webservices.
+...               It uses a special SoapUI project whose TCs act as bridge to CRCE's webservices.
+...               By using this keywords resource the bridge details are cleanly decoupled from tha using testsuite 
+...               whose scope is limited only to keyword specific arguments.
+...               ============================================================
+...                 CRCE Create Test Subscribers
+...                 ------------------------------------
+...                 CRCE Get Subscriber Profile 
+...                 CRCE Get Subscriber Profile By Imsi
+...                 CRCE Get Subscriber Profile By Id
+...
+...                 CRCE Create Subscriber 
+...                 CRCE Activate Subscriber 
+...                 CRCE Delete Subscriber 
+...
+...                 CRCE Get Accounts
+...                 CRCE Get Account
+...                 CRCE Get Main Account 
+...                 CRCE Set Balance 
+
+...                 CRCE Set Main Balance                
+...                 CRCE Set Main Balance By Imsi        
+...                 CRCE Clear All Balances              
+...                 CRCE Clear All Balances By Imsi      
+...
+...               ============================================================
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSoapUILibrary.py
+Library           OperatingSystem
+Library           String
+
+
+
+*** Variables ***
+${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}=  libs/global-keyword-resources/crce-subscriberadmin/robot_crce_bridge-soapui-project.xml
+${SOAPUI GROOVY LOG}=                        global-groovy.log
+${SOAPUI LOG}=                               soapui.log
+${SOAPUI ERROR LOG}=                         soapui-errors.log
+
+
+*** Keywords ***
+
+CRCE Create Test Subscribers   
+    [Documentation]  Provisions one or multiple test subscribers on CRCE only.
+    ...              If some of the subscribers already exist then they are first deleted before re-creation
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                amount                    Amount of subscribers to be created (first one uses imsiRangeStart and msisdnRangeStart - all further ones have the xxxStart incremented correspondingly)
+    ...                imsiRangeStart            IMSI of the first subscriber 
+    ...                msisdnRangeStart          MSISDN of the first subscriber  - all further ones have the imsiRangeStart incremented correspondingly
+    ...                type                      "POSTPAID" and "PREPAID" alowed - all further ones have the msisdnRangeStart incremented correspondingly
+    ...                languageid
+    ...                tariffId
+    ...                balance                   The inital balance to be set on all subscribers
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "HighLevelOps.createTestSubscribers.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         OK 
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         xxx                         any non-OK result <code> returned by CRCE
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${crce_host}  ${crce_port}  ${crce_webservicesBasePath}  ${amount}  ${imsiRangeStart}  ${msisdnRangeStart}  ${type}  ${languageid}  ${tariffId}  ${balance}
+    Log    msg=crce_host=${crce_host}
+    Log    msg=crce_port=${crce_port}
+    Log    msg=crce_webservicesBasePath=${crce_webservicesBasePath}
+    Log    msg=amount=${amount}
+    Log    msg=imsiRangeStart=${imsiRangeStart}
+    Log    msg=msisdnRangeStart=${msisdnRangeStart}
+    Log    msg=type=${type}
+    Log    msg=languageid=${languageid}
+    Log    msg=tariffId=${tariffId}
+    Log    msg=balance=${balance}
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         HighLevelOps
+                            SoapUI Case                          createTestSubscribers
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.amount=${amount} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.imsiRangeStart=${imsiRangeStart} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.msisdnRangeStart=${msisdnRangeStart} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.type=${type} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.languageid=${languageid} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.tariffId=${tariffId} 
+                            SoapUI Set Project Property          HighLevelOps.createTestSubscribers.input.balance=${balance} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                       SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  HighLevelOps.createTestSubscribers.output.resultCode               UNKNOWN_ERROR
+                            CRCE Cleanup SoapUI Logs             HighLevelOps-CreateTestSubscribers
+    [return]                ${resultCode}   
+                     
+
+
+
+
+
+
+CRCE Get Subscriber Profile  
+    [Documentation]  This is a delegator to the CRCE webservice operation getSubcriberProfile and returnes (not all but) the most interesting profile attributes  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                msisdn                    MSISDN of the subscriber whose profile is requested    
+    ...
+    ...              Returns:           
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getSubscriberProfile.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber    in case msisdn does not exist
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                providerId             In case of resultCode=OK this result value ("LowLevelOps.getSubscriberProfile.output.providerId=xxx") provides the profile's providerId
+    ...                imsi                   ...........................................................................................imsi............................. IMSI
+    ...                id                     ...........................................................................................id............................... id (subscriberId)
+    ...                state                  ...........................................................................................state............................ state (INSTALLED, ACTIVE, ...)
+    ...                tariffId               ...........................................................................................tariffId......................... tariffId
+    ...                type                   ...........................................................................................type............................. type (POSTPAID, PREPAID)
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${msisdn} 
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getSubscriberProfile
+                            SoapUI Set Project Property          LowLevelOps.getSubscriberProfile.input.msisdn=${msisdn} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                        SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.resultCode                  UNKNOWN_ERROR
+    ${providerId}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.providerId                  ${EMPTY}
+    ${imsi}=                CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.imsi                        ${EMPTY}
+    ${id}=                  CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.id                          ${EMPTY}
+    ${state}=               CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.state                       ${EMPTY}
+    ${tariffId}=            CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.tariffId                    ${EMPTY}
+    ${type}=                CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfile.output.type                        ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetSubscriberProfile
+    [return]    ${resultCode}    ${providerId}    ${imsi}    ${id}    ${state}    ${tariffId}    ${type}   
+
+
+
+CRCE Get Subscriber Profile By Imsi 
+    [Documentation]  This is a delegator to the CRCE webservice operation getSubcriberProfileByImsi and returnes (not all but) the most interesting profile attributes  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                imsi                      IMSI of the subscriber whose profile is requested    
+    ...
+    ...              Returns:           
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getSubscriberProfileByImsi.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber    in case msisdn does not exist
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                providerId             In case of resultCode=OK this result value ("LowLevelOps.getSubscriberProfileByImsi.output.providerId=xxx") provides the profile's providerId
+    ...                msisdn                 ...........................................................................................msisdn................................. MSISDN
+    ...                id                     ...........................................................................................id..................................... id (subscriberId)
+    ...                state                  ...........................................................................................state.................................. state (INSTALLED, ACTIVE, ...)
+    ...                tariffId               ...........................................................................................tariffId............................... tariffId
+    ...                type                   ...........................................................................................type................................... type (POSTPAID, PREPAID)
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi} 
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getSubscriberProfileByImsi
+                            SoapUI Set Project Property          LowLevelOps.getSubscriberProfileByImsi.input.imsi=${imsi} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                        SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.resultCode                  UNKNOWN_ERROR
+    ${providerId}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.providerId                  ${EMPTY}
+    ${msisdn}=              CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.msisdn                      ${EMPTY}
+    ${id}=                  CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.id                          ${EMPTY}
+    ${state}=               CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.state                       ${EMPTY}
+    ${tariffId}=            CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.tariffId                    ${EMPTY}
+    ${type}=                CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileByImsi.output.type                        ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetSubscriberProfileByImsi
+    [return]    ${resultCode}    ${providerId}    ${msisdn}    ${id}    ${state}    ${tariffId}    ${type}   
+
+
+CRCE Get Subscriber Profile By Id 
+    [Documentation]  This is a delegator to the CRCE webservice operation getSubcriberProfileById and returnes (not all but) the most interesting profile attributes  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                id                        susbscriberId of the subscriber whose profile is requested    
+    ...
+    ...              Returns:           
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getSubscriberProfileById.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber    in case msisdn does not exist
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                providerId             In case of resultCode=OK this result value ("LowLevelOps.getSubscriberProfileById.output.providerId=xxx") provides the profile's providerId
+    ...                imsi                   ...........................................................................................imsi................................. IMSI
+    ...                msisdn                 ...........................................................................................msisdn............................... MSISDN
+    ...                state                  ...........................................................................................state................................ state (INSTALLED, ACTIVE, ...)
+    ...                tariffId               ...........................................................................................tariffId............................. tariffId
+    ...                type                   ...........................................................................................type................................. type (POSTPAID, PREPAID)
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${id} 
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getSubscriberProfileById
+                            SoapUI Set Project Property          LowLevelOps.getSubscriberProfileById.input.id=${id} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                        SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.resultCode                  UNKNOWN_ERROR
+    ${providerId}=          CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.providerId                  ${EMPTY}
+    ${imsi}=                CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.imsi                        ${EMPTY}
+    ${msisdn}=              CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.msisdn                      ${EMPTY}
+    ${state}=               CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.state                       ${EMPTY}
+    ${tariffId}=            CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.tariffId                    ${EMPTY}
+    ${type}=                CRCE Get Groovy Log Return Property  LowLevelOps.getSubscriberProfileById.output.type                        ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetSubscriberProfileById
+    [return]    ${resultCode}    ${providerId}    ${imsi}    ${msisdn}    ${state}    ${tariffId}    ${type}   
+
+
+
+
+
+CRCE Create Subscriber 
+    [Documentation]  This is a delegator to the CRCE webservice operation createSubcriber
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                imsi                      IMSI of the new subscriber 
+    ...                msisdn                    MSISDN of the new subscriber 
+    ...                type                      PREPAID or POSTPAID
+    ...                languageId                      
+    ...                tariffId
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.createSubscriber.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           DbError   
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                id                     In case of resultCode=OK this result value ("LowLevelOps.createSubscriber.output.id=xxx") provides the new subscriber's id (subcriberId)
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi}    ${msisdn}    ${type}    ${languageId}    ${tariffId} 
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          createSubscriber
+                            SoapUI Set Project Property          LowLevelOps.createSubscriber.input.imsi=${imsi} 
+                            SoapUI Set Project Property          LowLevelOps.createSubscriber.input.msisdn=${msisdn} 
+                            SoapUI Set Project Property          LowLevelOps.createSubscriber.input.type=${type} 
+                            SoapUI Set Project Property          LowLevelOps.createSubscriber.input.languageId=${languageId} 
+                            SoapUI Set Project Property          LowLevelOps.createSubscriber.input.tariffId=${tariffId} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.createSubscriber.output.resultCode                  UNKNOWN_ERROR
+    ${id}=                  CRCE Get Groovy Log Return Property  LowLevelOps.createSubscriber.output.id                          ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-CreateSubscriber
+    [return]    ${resultCode}    ${id}       
+
+
+
+CRCE Activate Subscriber 
+    [Documentation]  This is a delegator to the CRCE webservice operation activateSubcriber
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                id                        the subscriberId to activate 
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.activateSubscriber.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           InvalidArguments
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${id}   
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          activateSubscriber
+                            SoapUI Set Project Property          LowLevelOps.activateSubscriber.input.id=${id} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.activateSubscriber.output.resultCode                UNKNOWN_ERROR
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-ActivateSubscriber
+    [return]    ${resultCode}       
+
+
+
+CRCE Delete Subscriber 
+    [Documentation]  This is a delegator to the CRCE webservice operation deleteSubcriber
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                id                        the subscriberId to delete 
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.deleteSubscriber.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${id}   
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          deleteSubscriber
+                            SoapUI Set Project Property          LowLevelOps.deleteSubscriber.input.id=${id} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.deleteSubscriber.output.resultCode                UNKNOWN_ERROR
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-DeleteSubscriber
+    [return]    ${resultCode}       
+
+
+
+CRCE Get Accounts
+    [Documentation]  This is a delegator to the CRCE webservice operation getAccounts and returnes the list of the subscriber's acountIds
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the id of the subscriber whose account balance shall be set
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getAccounts.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         TOO_MANY_ACCONTS_ERROR      in case that the maximum amount of accounts processable by the operation is exceeded 
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                accountIds             List of the subscriber's accoundIds    
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}    
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getAccounts
+                            SoapUI Set Project Property          LowLevelOps.getAccounts.input.subscriberId=${subscriberId} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getAccounts.output.resultCode                    UNKNOWN_ERROR
+    ${csvAccountIds}=       CRCE Get Groovy Log Return Property  LowLevelOps.getAccounts.output.accountIds                     ${EMPTY}
+    @{accountIds}=          Split String    ${csvAccountIds}   ; 
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetAccounts
+    [return]    ${resultCode}    @{accountIds}     
+
+CRCE Get Account
+    [Documentation]  This is a delegator to the CRCE webservice operation getAccount and returnes (not all but) the most interesting account attributes  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the id of the subscriber whose account shall be queried 
+    ...                accountId                 the account to query
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getAccount.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                balance
+    ...                category
+    ...                currencyId
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}   ${accountId} 
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getAccount
+                            SoapUI Set Project Property          LowLevelOps.getAccount.input.subscriberId=${subscriberId} 
+                            SoapUI Set Project Property          LowLevelOps.getAccount.input.accountId=${accountId} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getAccount.output.resultCode                    UNKNOWN_ERROR
+    ${balance}=             CRCE Get Groovy Log Return Property  LowLevelOps.getAccount.output.balance                       ${EMPTY}
+    ${category}=            CRCE Get Groovy Log Return Property  LowLevelOps.getAccount.output.category                      ${EMPTY}
+    ${currencyId}=          CRCE Get Groovy Log Return Property  LowLevelOps.getAccount.output.currencyId                    ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetAccount
+    [return]    ${resultCode}    ${balance}    ${category}    ${currencyId}      
+
+CRCE Get Main Account 
+    [Documentation]  This is a delegator to the CRCE webservice operation getMainAccount and returnes (not all but) the most interesting account attributes  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the id of the subscriber whose main account shall be queried 
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.getMainAccount.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...                accountId          
+    ...                balance
+    ...                category
+    ...                currencyId
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}   
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          getMainAccount
+                            SoapUI Set Project Property          LowLevelOps.getMainAccount.input.subscriberId=${subscriberId} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.getMainAccount.output.resultCode                    UNKNOWN_ERROR
+    ${accountId}=           CRCE Get Groovy Log Return Property  LowLevelOps.getMainAccount.output.accountId                     ${EMPTY}
+    ${balance}=             CRCE Get Groovy Log Return Property  LowLevelOps.getMainAccount.output.balance                       ${EMPTY}
+    ${category}=            CRCE Get Groovy Log Return Property  LowLevelOps.getMainAccount.output.category                      ${EMPTY}
+    ${currencyId}=          CRCE Get Groovy Log Return Property  LowLevelOps.getMainAccount.output.currencyId                    ${EMPTY}
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-GetMainAccount
+    [return]    ${resultCode}    ${accountId}    ${balance}    ${category}    ${currencyId}      
+
+
+CRCE Set Balance
+    [Documentation]  This is a delegator to the CRCE webservice operation setBalance  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the id of the subscriber whose account balance shall be set
+    ...                accountId                 the subscriber's account to be set 
+    ...                balance                   the new balance 
+    ...
+    ...              Returns:           
+    ...                resultCode             The xxx value of the SoapUI Groovy log's "LowLevelOps.setBalance.output.resultCode=xxx" entry written by the SoapUI TC: 
+    ...                                       Where xxx could be:
+    ...                                         SOAP_ERROR                  in case of general connection or SOAP specific error
+    ...                                         otherwise CRCE's <code> tag of the received response - i.e.
+    ...                                           OK                   in case of success 
+    ...                                           UnknownSubscriber
+    ...                                           ...
+    ...                                       When the resultCode can't be found in the Log then UNKNOWN_ERROR is returned
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}    ${accountId}    ${balance}   
+    Log   CRCE Set Balance( subscriberId=${subscriberId}, accountId=${accountId}, balance=${balance})  
+                            CRCE Setup SoapUI Logs
+                            SoapUI Project                       ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+                            SoapUI Set Project Property          crceHost=${crce_host}
+                            SoapUI Set Project Property          crcePort=${crce_port}
+                            SoapUI Set Project Property          crceWebservicesBasePath=${crce_webservicesBasePath}
+                            SoapUI Suite                         LowLevelOps
+                            SoapUI Case                          setBalance
+                            SoapUI Set Project Property          LowLevelOps.setBalance.input.subscriberId=${subscriberId} 
+                            SoapUI Set Project Property          LowLevelOps.setBalance.input.accountId=${accountId} 
+                            SoapUI Set Project Property          LowLevelOps.setBalance.input.amount=${balance} 
+    ${execution_status}     ${return_value_dummy}                Run Keyword And Ignore Error                                    SoapUI Run  
+    ${resultCode}=          CRCE Get Groovy Log Return Property  LowLevelOps.setBalance.output.resultCode                    UNKNOWN_ERROR
+                            CRCE Cleanup SoapUI Logs             LowLevelOps-SetBalance
+    [return]    ${resultCode}       
+
+    
+    
+    
+
+CRCE Set Main Balance
+    [Documentation]  Sets the passed subscriber's main account balance  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the subscriber whose main balance shall be set
+    ...                balance                   the new balance 
+    ...
+    ...              Returns:         Nothing - the function failes if one of the subsequent keyword executions returned a resultCode!=OK      
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}    ${balance}   
+    Comment          ***** Retrieve accountId of main account ***
+    ${resultCode}    ${accountId}    ${balanceDummy}    ${categoryDummy}    ${currencyIdDummy}=    CRCE Get Main Account    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId} 
+                     Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Querying main account of subscriberId=${subscriberId} failed with resultCode= ${resultCode} 
+    Comment          ***** Set new balance ***
+    ${resultCode}=   CRCE Set Balance    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}    ${accountId}    ${balance} 
+                     Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Setting balance of main accountId=${accountId} of subscriberId=${subscriberId} failed with resultCode= ${resultCode} 
+                     
+    
+CRCE Set Main Balance By Imsi
+    [Documentation]  Same as "CRCE Set Main Balance" except that the subscriber is referenced by IMSI  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                imsi                      IMSI of the subscriber whose main balance shall be set
+    ...                balance                   the new balance 
+    ...
+    ...              Returns:         Nothing - the function failes if one of the subsequent keyword executions returned a resultCode!=OK      
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi}    ${balance}   
+    Comment          ***** Retrieve subscriberId for the passed imsi ***
+    ${resultCode}    ${providerIdDummy}    ${msisdnDummy}    ${subscriberId}    ${stateDummy}    ${tariffIdDummy}    ${typeDummy}    CRCE Get Subscriber Profile By Imsi    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi} 
+                     Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Querying subscriberId for imsi=${imsi} failed with resultCode= ${resultCode} 
+    Comment          ***** Delegate to  "CRCE Set Main Balance" ***   
+                     CRCE Set Main Balance    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}     ${balance} 
+                     
+
+CRCE Clear All Balances
+    [Documentation]  Sets passed subscribers balance of all accounts to zero
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                subscriberId              the subscriber whose balance shall be cleared
+    ...
+    ...              Returns:         Nothing - the function failes if one of the subsequent keyword executions returned a resultCode!=OK      
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}      
+    Comment          ***** Retrieve all accountIds ***
+    ${resultCode}    @{accountIds}=    CRCE Get Accounts    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId} 
+                     Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Querying accounts of subscriberId=${subscriberId} failed with resultCode= ${resultCode} 
+    Comment          ***** Clear each account balance ***
+                     :FOR    ${accountId}    IN    @{accountIds}     
+                     \    ${resultCode}=     CRCE Set Balance    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId}    ${accountId}    0
+                     \                       Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Clearing balance of accountId=${accountId} of subscriberId=${subscriberId} failed with resultCode=${resultCode} 
+
+CRCE Clear All Balances By Imsi
+    [Documentation]  Same as "CRCE Clear All Balances" except that the subscriber is referenced by IMSI  
+    ...
+    ...              Arguments:
+    ...                crce_host                 IP adress of the CRCE instance whose webservices shall be used 
+    ...                crce_port                 Port where crce_host exposes its services
+    ...                crce_webservicesBasePath  Base path of all the webservice's endpoints (before summer 2013 this was always "/" then the unified "/inew-mvno-webservices/" was introduced in many projects)
+    ...                imsi                      the subscriber whose balance shall be cleared
+    ...
+    ...              Returns:         Nothing - the function failes if one of the subsequent keyword executions returned a resultCode!=OK      
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi}    
+    Comment          ***** Retrieve subscriberId *****
+    ${resultCode}    ${providerIdDummy}    ${msisdnDummy}    ${subscriberId}    ${stateDummy}    ${tariffIdDummy}    ${typeDummy}    CRCE Get Subscriber Profile By Imsi    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${imsi} 
+                     Run Keyword If   '${resultCode}'!='OK'     Fail    msg=Querying subscriberId for imsi=${imsi} failed with resultCode= ${resultCode} 
+    Comment          ***** Delegate to  "CRCE Clear All Balances" *****
+                     CRCE Clear All Balances   ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}    ${subscriberId} 
+                     
+
+                     
+                     
+################################################## PRIVATE kewords ############################################
+
+
+
+CRCE Get Groovy Log Return Property
+    [Documentation]  This is a PRIVATE helper function to retrieve return values placed into the Groovy log by the SoaupUI TCs .
+    ...
+    ...              Arguments:
+    ...                property_name    Property name to be searched in the Groovy log 
+    ...                default_value    Default value to be returned in case that the property or the log file at all could NOT be found
+    ...           
+    ...              Returns:           
+    ...                resultCode       The xxx value of the Groovy log's property_name'=xxx' entry or
+    ...                                 default_value in case the property or even the log file was not found
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]             ${property_name}   ${default_value}      
+    ${return_marker}=       Set Variable               ${property_name}=    #ATTENTION: This trailing equation sign is INTENTIONAL otherwise ther resultCode will include the equation sign
+    ${resultCode}=          Set Variable               ${EMPTY}               
+    ${return_log_entry}=    Set Variable               ${EMPTY}
+    ${execution_status}     ${return_log_entry}        Run Keyword And Ignore Error          Grep File           ${SOAPUI GROOVY LOG}   ${return_marker} 
+    ${return_log_entry}=    Run Keyword If             '${execution_status}'=='FAIL'         Set Variable        ${EMPTY}   
+                            ...                        ELSE                                  Set Variable        ${return_log_entry}    #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${return_log_entry}=    Run Keyword If             '${return_log_entry}'=='${NONE}'      Set Variable        ${EMPTY}   
+                            ...                        ELSE                                  Set Variable        ${return_log_entry}    #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${resultCode}=          Run Keyword If             '${return_log_entry}'!='${EMPTY}'     Fetch From Right    ${return_log_entry}    ${return_marker}
+                            ...                        ELSE                                  Set Variable        ${resultCode}          #auto-assignement necessary otherwise ${NONE} would be assigned
+    ${resultCode}=          Run Keyword If             '${resultCode}'=='${NONE}'            Set Variable        ${default_value}   
+                            ...    ELSE IF             '${resultCode}'=='${EMPTY}'           Set Variable        ${default_value}  
+                            ...                        ELSE                                  Set Variable        ${resultCode}         #auto-assignement necessary otherwise ${NONE} would be assigned
+    [return]                ${resultCode}   
+   
+
+CRCE Setup SoapUI Logs
+    [Documentation]  This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them 
+    ...              when multiple SoapUI TCs are executed within one Robot testsuite and each deletes the produced log files (with CRCE Cleanup SoapUI Logs)
+    ...              Addintional background infos:
+    ...                The ${SOAPUI GROOVY LOG} is used for retrieving the resultCode and other optional return values.
+    ...                Therefore the setup of a SoapUI TC must ensure that contents of a previous run is removed since otherwise the TC could accidentally retrieve return values of the previous run.
+    ...                An alternative approach of deleting the file in "ARS Cleanup SoapUI Logs" at the end of the TC had strange side effects when 2 runs of a SoaupUI TCs occure within one robot testsuite:
+    ...                In this case SoapUI SOMETIMES did NOT write into the newly created file on the 2nd run.
+    ...                Therefore we relinguish a DELETION of reused log files and simply clear them here (with "Create File" keyword) at the beginning of a new run.
+    ...
+    ...              Arguments:   None
+    ...              Returns:     Nothing
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+                     Run Keyword And Ignore Error          Create File      ${SOAPUI GROOVY LOG}   
+                     Run Keyword And Ignore Error          Create File      ${SOAPUI LOG}   
+                     Run Keyword And Ignore Error          Create File      ${SOAPUI ERROR LOG}   
+
+
+CRCE Cleanup SoapUI Logs
+    [Documentation]  This is a PRIVATE helper function to cleanup the testsuite directory from logs created by a SoapUI testcase.
+    ...
+    ...              Arguments:
+    ...                tc_specific_files_prefix    OPTIONAL - Prefix of all TC specific log files 
+   ...           
+    ...              Returns:                      Nothing
+    ...                                 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]      ${tc_specific_files_prefix}=${EMPTY}
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${SOAPUI GROOVY LOG}  
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${SOAPUI LOG} 
+    Comment                   Run Keyword And Ignore Error          Remove File                                   ${SOAPUI ERROR LOG}  
+                     Run Keyword If                        '${tc_specific_files_prefix}'!='${EMPTY}'     Run Keyword And Ignore Error          Remove File    ${tc_specific_files_prefix}*.*  
+

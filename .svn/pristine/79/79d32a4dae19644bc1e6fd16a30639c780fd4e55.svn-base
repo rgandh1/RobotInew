@@ -1,0 +1,93 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           DatabaseLibrary
+Library           SSHLibrary
+
+*** Variables ***
+${MSGIP1}         10.107.80.224:13013
+${MSGIP2}         10.107.80.225:13013
+${BROWSER}        firefox
+${DELAY}          0.1
+${HOMEURL}        http://www.google.at
+${MESSAGEURL11}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${SHORTTEXT1}
+${MESSAGEURL12}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${LONGTEXT1}
+${MESSAGEURL13}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${SHORTTEXT1}&coding=1
+${MESSAGEURL14}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${LONGTEXT1}&coding=1
+${MESSAGEURL15}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${SHORTTEXT1}&coding=2&charset=utf8
+${MESSAGEURL16}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${LONGTEXT1}&coding=2&charset=utf8
+${MESSAGEURL17}    http://${MSGIP1}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${SHORTTEXT1}&coding=1&dlr-mask=19&alt-dcs=1
+${MESSAGEURL21}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${SHORTTEXT2}
+${MESSAGEURL22}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${LONGTEXT2}
+${MESSAGEURL23}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${SHORTTEXT2}&coding=1
+${MESSAGEURL24}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${LONGTEXT2}&coding=1
+${MESSAGEURL25}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN2}&text=${SHORTTEXT2}&coding=2&charset=utf8
+${MESSAGEURL26}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${LONGTEXT2}&coding=2&charset=utf8
+${MESSAGEURL27}    http://${MSGIP2}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN1}&text=${SHORTTEXT2}&coding=1&dlr-mask=19&alt-dcs=1
+${MSISDN1}        569190003050
+${MSISDN2}        569190003055
+${SHORTTEXT1}     This+is+a+simple+test+message+from+first+connection
+${LONGTEXT1}      This+is+a+concatenated+message+from+first+connection+used+for+SMPPGW+tests+with+more+than+one+segment+and+more+than+180+(one+hundred+eighty)+characters.+We+really+need+more+and+more+words.
+${SHORTTEXT2}     This+is+a+simple+test+message+from+second+connection
+${LONGTEXT2}      This+is+a+concatenated+message+from+second+connection+used+for+SMPPGW+tests+with+more+than+one+segment+and+more+than+180+(one+hundred+eighty)+characters.+We+really+need+more+and+more+words.
+${SMPPGWSERVERIP}    10.107.80.214
+${SMPPUSER}       smppgw
+${SMPPPASSWORD}    smppgw
+${LOGPATH}        /var/log/smppgw
+${MSGLOGPATH}     /tmp
+${DOWNLOADTO}     /opt/robot/robotworkspace/robot_testsuites/experimental/mat/SMPP/Logs/
+
+*** Keywords ***
+Logs2File
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${LOGPATH}
+    Write    tail -f smppgw.log | tee /tmp/smppgw_stresstest.log
+    Close Connection
+
+Messages
+    Open Browser    ${HOMEURL}    ${BROWSER}
+    Go To    ${MESSAGEURL11}
+    #Go To    ${MESSAGEURL12}
+    #Go To    ${MESSAGEURL13}
+    #Go To    ${MESSAGEURL14}
+    #Go To    ${MESSAGEURL15}
+    #    Go To    ${MESSAGEURL16}
+    #    Go To    ${MESSAGEURL21}
+    #    Go To    ${MESSAGEURL22}
+    #    Go To    ${MESSAGEURL23}
+    #    Go To    ${MESSAGEURL24}
+    #    Go To    ${MESSAGEURL25}
+    #    Go To    ${MESSAGEURL26}
+    #    Go To    ${MESSAGEURL15}
+    #    Go To    ${MESSAGEURL16}
+    #    Go To    ${MESSAGEURL21}
+    # Go To    ${MESSAGEURL22}
+    # Go To    ${MESSAGEURL23}
+    # Go To    ${MESSAGEURL26}
+    # Go To    ${MESSAGEURL15}
+    # Go To    ${MESSAGEURL16}
+    # Go To    ${MESSAGEURL11}
+    # Go To    ${MESSAGEURL21}
+    # Go To    ${MESSAGEURL22}
+    # Go To    ${MESSAGEURL23}
+    Close Browser
+
+CloseLog
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    sleep 10
+    Write    kill -9 `ps -ef | grep "tail -f smppgw.log | tee" | grep -v grep | awk {'print $2'}`
+    Close Connection
+
+Download log
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Get File    ${MSGLOGPATH}/smppgw_stresstest.log    ${DOWNLOADTO}
+    Close Connection

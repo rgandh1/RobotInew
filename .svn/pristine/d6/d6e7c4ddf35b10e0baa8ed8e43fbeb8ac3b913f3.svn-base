@@ -1,0 +1,89 @@
+*** Settings ***
+Resource          resource.txt
+
+*** Test Cases ***
+MOC Home Calls
+    Set Home VLR
+    Set to On-Net
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log Onnet
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log Onnet
+    Set to Off-Net
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log Offnet
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log Offnet
+    Set to International
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log International
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log International
+
+MOC Roaming Calls
+    Set International VLR
+    Set to On-Net
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log Onnet
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log Onnet
+    Set to Off-Net
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log Offnet
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log Offnet
+    Set to International
+    Get IN Log
+    Get CRCE Log
+    MOC 1seg Call
+    Verify IN Log
+    Verify CRCE Log International
+    Get IN Log
+    Get CRCE Log
+    MOC 3seg Call
+    Verify IN Log
+    Verify CRCE Log International
+
+MTC Calls
+    Set MTC Party to Home
+    Get IN Log
+    Get CRCE Log
+    MTC Call
+    Verify IN Log
+    Verify CRCE Log Onnet
+    Set MTC Party to International
+    Get IN Log
+    Get CRCE Log
+    MTC Call
+    Verify IN Log
+    Verify CRCE Log International

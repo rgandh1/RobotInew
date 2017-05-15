@@ -1,0 +1,40 @@
+*** Settings ***
+Documentation     A test suite with a single test for valid login. This test has
+...               a workflow that is created using keywords from the resource file.
+Resource          SMPPGW_MSG_TESTS_[resource].txt
+
+*** Test Cases ***
+Send simple Message_(7bit)
+    Comment    Collect logs to file
+    Send simple Message(7bit)
+    Comment    Download log(1)
+
+Send concatenated Message_(7bit)
+    Collect logs to file
+    Send concatenated Message(7bit)
+    Download log(2)
+
+Send simple Message_(8bit)
+    Collect logs to file
+    Send simple Message(8bit)
+    Download log(3)
+
+Send concatenated Message_(8bit)
+    Collect logs to file
+    Send concatenated Message(8bit)
+    Download log(4)
+
+Send simple Message_(UCS2)
+    Collect logs to file
+    Send simple Message(UCS2)
+    Download log(5)
+
+Send concatenated Message_(UCS2)
+    Collect logs to file
+    Send concatenated Message(UCS2)
+    Download log(6)
+
+Send concatenated Message_(BinarySMS)
+    Collect logs to file
+    Send simple Message(Binary SMS)
+    Download log(7)

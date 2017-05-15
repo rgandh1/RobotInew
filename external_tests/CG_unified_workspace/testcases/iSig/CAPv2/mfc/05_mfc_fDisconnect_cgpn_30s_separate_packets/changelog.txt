@@ -1,0 +1,51 @@
+Short Description:
+===================
+This iSig TC simulates an MFC (triggered due to unreachability of 
+the callSubscriber() as  B-Party) of 30s duration released 
+by the A-Party.
+
+
+Flow detailes:
+===============
+- After session initiation and call establishment (answer of C-Party) the 
+  TC waits 30s to simulate the ongoing chat. 
+- Then the TC reports to IN that the A-Party released the call 
+- This is (or should be) responded by IN with a final release 
+  meaning that the MFC leg is finished. 
+
+
+CAP mapping
+============
+
+1. IDP
+------
+2.   ACH 60sec
+     RRB answer
+         noAnswer
+         disconnectCalling
+         disconnectCalled
+         routeSelectFailure
+         busy  
+         abandon 
+     CUE
+------
+3. ERB answer
+------
+4. ACR usedTime=30sec 
+   ERB disconnectCalled
+------
+5.   RC cause=32
+
+
+
+Parameters: 
+============
+  mscAddress         of the B-Party (callSubscriber()) 
+  gmscAddress        of the B-Party (callSubscriber()) 
+  mfcAPartyMsisdn
+  mfcCPartyMsisdn 
+  
+  Date      Author                   Comments
+==========  =======================  ==========================================
+2014/05/14  walter.heincz            Initial creation
+------------------------------------------------------------------------------

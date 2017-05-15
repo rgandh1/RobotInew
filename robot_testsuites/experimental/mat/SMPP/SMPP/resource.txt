@@ -1,0 +1,26 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           DatabaseLibrary
+
+*** Variables ***
+${MSGIP}          10.107.80.224:13013
+${BROWSER}        firefox
+${DELAY}          0.6
+${MESSAGEURL}     http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT}
+${MESSAGEURL2}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT2}
+${MSISDN}         573190003061
+${TEXT}           This+is+a+test+message
+${TEXT2}          This+is+a+concatenated+message+used+for+SMPPGW+tests+with+more+than+one+segment+and+exactly+with+180+(one+hundred+eighty)+characters+used.+For+this+limit+we+really+need+these+words
+
+*** Keywords ***
+Send simple Message
+    Open Browser    ${MESSAGEURL}    ${BROWSER}
+
+Send concatenated Message
+    Open Browser    ${MESSAGEURL2}    ${BROWSER}

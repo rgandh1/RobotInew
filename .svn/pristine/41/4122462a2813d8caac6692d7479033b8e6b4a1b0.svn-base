@@ -1,0 +1,126 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_BST_006 - SMS-MO to Forbidden Number TC
+...               ---------------------------------------------------------------
+...               Run SMS Forbidden Number Format1
+...               Run SMS Forbidden Number Format2
+...               Run SMS Forbidden Number Format3
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+Send SMS from Phone 1 To Forbidden Number 
+    [Documentation]  Sends an SMS from the Phone 1 to a forbidden SMS destination msisdn 
+    ...
+    ...              Arguments:
+    ...                dial_msisdn            Forbidden SMS destination MSISDN to be used 
+    ...
+    ...              Returns:                 Nothing - the function fails if the call did not succeed (success means that submission fails as expected)
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${dial_msisdn}  
+    ${send_message}=               Set Variable    Hi!<br>This is a sample sms body
+    ${ensure_delivery}=            Set Variable    true  
+    ${send_timeout_seconds}=       Set Variable    20  
+    ${receive_timeout_seconds}=    Set Variable    10  
+  
+    ${resultCode}   ARS Sms To Unattached Phone           ${ANDROID REMOTING HOST}       ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${dial_msisdn}    ${send_message}    ${ensure_delivery}    ${send_timeout_seconds}       
+                     Should Be Equal As Strings            ${resultCode}                 SMS_SUBMISSION_ERROR
+    Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Forbidden Number SMS Impact On Testbed
+
+
+Send Forbidden Number SMS And Check Phone 1 Ticket
+    [Documentation]  Sends an SMS from the Phone 1 to the passed forbidden number and verifies that a CRM "SMS forbidden" ticket was written
+    ...
+    ...              Arguments:               
+    ...                dial_msisdn       
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'      Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+                     ...             ELSE                         Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}       ${type_dummy}=               CRM Get Latest Ticket    ${phone1_imsi}
+                     Send SMS from Phone 1 To Forbidden Number    ${dial_msisdn}
+                     CRM New Ticket Should Not Exist              ${phone1_imsi}           ${marker_ticket_timestamp}   
+
+
+
+Fake Forbidden Number SMS Impact On Testbed
+    [Documentation]  Runs a CG SMS ForbiddenNumber session for the faked phone 1 to the faked forbidden number
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android SMS' impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${workspace_ini_abs_path}=     Normalize Path   ${CURDIR}/../../cg-workspace-4fake.ini
+    ${rc}=           CG Send SMS Forbidden Number   ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_SMS_FORBIDDEN_NUMBER}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG SMS REQ QUEUE}    ${AMQ-SIG SMS RES QUEUE}                                      
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+
+
+Run SMS Forbidden Number Format1
+    [Documentation]  Sends an SMS from phone 1 to the forbidden number format 1
+    ...              Plus verification that "SMS forbidden" ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send Forbidden Number SMS And Check Phone 1 Ticket    ${SMS_FORBIDDEN_NUMBER_FORMAT1}
+    [Teardown]       Close Browser    
+
+Run SMS Forbidden Number Format2
+    [Documentation]  Sends an SMS from phone 1 to the forbidden number format 2
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send Forbidden Number SMS And Check Phone 1 Ticket    ${SMS_FORBIDDEN_NUMBER_FORMAT2}
+    [Teardown]       Close Browser    
+
+Run SMS Forbidden Number Format3
+    [Documentation]  Sends an SMS from phone 1 to the forbidden number format 3
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send Forbidden Number SMS And Check Phone 1 Ticket    ${SMS_FORBIDDEN_NUMBER_FORMAT3}
+    [Teardown]       Close Browser    
+
+

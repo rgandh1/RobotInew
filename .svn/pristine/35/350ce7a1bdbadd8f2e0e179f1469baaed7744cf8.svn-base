@@ -1,0 +1,109 @@
+*** Settings ***
+Documentation     Demonstrates end to end testing via the Robot/AndroidRemoting Bridge SoapUI project
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported walter.heincz experimental End2EndTest, inactive
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Library           OperatingSystem
+
+
+*** Variables ***
+${ATTACHED_PHONE_1_IMSI}=    232033013972240    
+${ATTACHED_PHONE_2_IMSI}=    232033013972239    
+${ATTACHED_PHONE_2_MSISDN}=  +43676844901416
+${CALL_DURATION_MILLIS}=     5000  #5 seconds
+
+${USSD_CODE_DISABLE_FORWARDING}=                 \#\#21\#
+${USSD_EXPECTED_RESPONSE_DISABLE_FORWARDING}=    Call forwarding<br>Erasure was successful.
+${USSD_TIMEOUT_SECONDS}=                         10  
+
+${SMS_MESSAGE}=                    Hi!<br>This is a sample sms body
+${SMS_ENSURE_DELIVERY}=            true  
+${SMS_SEND_TIMEOUT_SECONDS}=       20  
+${SMS_RECEIVE_TIMEOUT_SECONDS}=    10  
+
+
+
+*** Test Cases ***
+
+Run Voice Call
+    [Documentation]  Runs a voice call between 2 Android phones attached to the Android Remoting server
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${return_code}=  ARS Voice Call                        ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}    ${ATTACHED_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN}    ${CALL_DURATION_MILLIS}    released_by_cg=true
+                     Should Be Equal As Strings            ${return_code}              OK
+
+Run Voice Call To An Unattached Phone
+    [Documentation]  Runs a voice call from an Android phone attached to the Android Remoting server and another phone that needs not necessarily be attached to the Android Remoting server
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${return_code}=  ARS Voice Call To Unattached Phone    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}                                 ${ATTACHED_PHONE_2_MSISDN}    ${CALL_DURATION_MILLIS}   
+                     Should Be Equal As Strings            ${return_code}              OK
+
+Run Ussd Request
+    [Documentation]  Runs a simple (non-dialog based) Ussd request on an Android phones attached to the Android Remoting server
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${return_code}   ${response_text}                      ARS Ussd Request            ${ANDROID REMOTING HOST}                      ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}    ${USSD_CODE_DISABLE_FORWARDING}   ${USSD_TIMEOUT_SECONDS}
+                     Should Be Equal As Strings            ${return_code}              OK
+                     Should Be Equal As Strings            ${response_text}            ${USSD_EXPECTED_RESPONSE_DISABLE_FORWARDING}
+
+
+Run Sms
+    [Documentation]  Sends an SMS between 2 Android phones attached to the Android Remoting server
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${return_code}   ${received_message}                   ARS Sms                     ${ANDROID REMOTING HOST}                      ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}     ${ATTACHED_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN}    ${SMS_MESSAGE}    ${SMS_ENSURE_DELIVERY}    ${SMS_SEND_TIMEOUT_SECONDS}    ${SMS_RECEIVE_TIMEOUT_SECONDS}    
+                     Should Be Equal As Strings            ${return_code}              OK
+                     Should Be Equal As Strings            ${received_message}         ${SMS_MESSAGE}
+
+Run Sms To An Unattached Phone
+    [Documentation]  Sends an SMS from an Android phone attached to the Android Remoting server to another phone that needs not necessarily be attached to the Android Remoting server
+    ...              =========================================================
+    ${return_code}   ARS Sms To Unattached Phone           ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}     ${ATTACHED_PHONE_2_MSISDN}    ${SMS_MESSAGE}    ${SMS_ENSURE_DELIVERY}    ${SMS_SEND_TIMEOUT_SECONDS}     
+                     Should Be Equal As Strings            ${return_code}              OK
+
+
+
+
+
+Run Low Level Call Flow
+    [Documentation]  Demonstrates a low level voice call control between 2 Android phones attached to the Android Remoting server
+    ...              Author: walter.heincz 
+    ...              =========================================================
+
+    Comment  ****** Dial on Phone 1 ******
+    ${return_code}   ARS Dial                              ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}     ${ATTACHED_PHONE_2_MSISDN}       
+                     Should Be Equal As Strings            ${return_code}              OK
+
+    Comment  ****** Wait (for max 20s) until Phone 2 is RINGING  ----
+    ${phone2_state}  Set Variable    unknown
+                     : FOR    ${second}    IN RANGE    1    20
+                     \    Sleep                        1s
+                     \    ${return_code}               ${phone2_state}                   ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_2_IMSI}    
+                     \    Should Be Equal As Strings   ${return_code}                    OK
+                     \    Run Keyword If               '${phone2_state}' == 'RINGING'    Exit For Loop
+                     Should Be Equal As Strings    ${phone2_state}        RINGING
+
+    Comment  ****** Answer on Phone 2 ****** 
+    ${return_code}   ARS Answer                        ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_2_IMSI}    
+                     Should Be Equal As Strings        ${return_code}              OK
+
+    Comment  ****** "Chat" for CALL_DURATION_MILLIS milliseconds ****** 
+                     Sleep                             ${CALL_DURATION_MILLIS}ms
+
+    Comment  ****** Release on Phone 1 ****** 
+    ${return_code}   ARS Release                       ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PHONE_1_IMSI}    
+                     Should Be Equal As Strings        ${return_code}              OK
+
+                     
+                     
+
+
+
+

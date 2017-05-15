@@ -1,0 +1,25 @@
+[2016-01-23 00:32:36,805][INFO ][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 194] ------ start consuming from queue://inew-cs.crce.cdr -------
+[2016-01-23 00:32:36,806][INFO ][ActiveMQ Session Task-138][HealthMonitor                                     ][ 115] it is time for next active db check.
+[2016-01-23 00:32:36,806][INFO ][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 308] --------- start processing record ---------
+[2016-01-23 00:32:36,806][INFO ][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 309] ......|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|SMS_NOK123456XdrComponentTest|1|1|74456|573190001000|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|0|1|732123710001000|573190001000|false|573190001000|(network) XdrComponentTest|Local (on-net)||||SMS_SUBMIT||false|64270000000|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|101001|0|0|Pesos|10000000|PREPAID|xxxxxx|FeatureNotFound(0);|
+[2016-01-23 00:32:36,806][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 167] performing db health check . . .
+[2016-01-23 00:32:36,806][ERROR][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 353] [ERROR] on parsing XDR. 
+com.inewcs.mvno.xdr.api.XDRException: [Error] XDR is not valid! xdrType=crce_cdr. current size=58
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.doProcess(XDRConsumerImpl.java:348)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.process(XDRConsumerImpl.java:311)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:208)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:30)
+	at com.inewcs.mvno.protocol.AbstractIProtConnectorConsumerJMS.onMessage(AbstractIProtConnectorConsumerJMS.java:174)
+	at org.apache.activemq.ActiveMQMessageConsumer.dispatch(ActiveMQMessageConsumer.java:1321)
+	at org.apache.activemq.ActiveMQSessionExecutor.dispatch(ActiveMQSessionExecutor.java:131)
+	at org.apache.activemq.ActiveMQSessionExecutor.iterate(ActiveMQSessionExecutor.java:202)
+	at org.apache.activemq.thread.PooledTaskRunner.runTask(PooledTaskRunner.java:129)
+	at org.apache.activemq.thread.PooledTaskRunner$1.run(PooledTaskRunner.java:47)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+[2016-01-23 00:32:36,807][INFO ][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 313] -------- xdr processed successfully --------
+[2016-01-23 00:32:36,807][INFO ][ActiveMQ Session Task-138][XDRConsumerImpl                                   ][ 211] ------ finished consuming from queue://inew-cs.crce.cdr -------
+[2016-01-23 00:32:36,807][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 175] connection is valid.
+[2016-01-23 00:32:39,792][INFO ][Timer-78       ][XDRBackgroundFileWriter                           ][ 115] flushed 3 records to file XAPP_20160122131239.csv.tmp
+[2016-01-23 00:32:45,253][INFO ][Timer-49       ][XDRBackgroundFileWriter                           ][ 115] flushed 3 records to file CRCE_CDR_20160122131245.csv.tmp

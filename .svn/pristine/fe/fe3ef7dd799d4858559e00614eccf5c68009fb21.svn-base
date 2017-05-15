@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.7.6 (Jython 2.5.3 on java1.7.0_45)" generated="20150402 13:20:24.923">
+<suite source="/opt/robot/robotworkspace/libs/jar/dblibrary/dblibrary_demo/dblibrary_demo-robot-suite.txt" id="s1" name="Dblibrary Demo-Robot-Suite">
+<test id="s1-t1" timeout="" name="Select From PostgresDB">
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Connect To Database</arg>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}</arg>
+<arg>${XDR DB USER}</arg>
+<arg>${XDR DB PWD}</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.455" starttime="20150402 13:20:31.445"></status>
+</kw>
+<kw type="kw" timeout="" name="dblib_support-resource.DBLIB Connect to PostgresDB">
+<doc>this helper shields testsuite developers from the necessity to know driver and connection string details.</doc>
+<arguments>
+<arg>${XDR DB HOST}</arg>
+<arg>${XDR DB PORT}</arg>
+<arg>${XDR DB NAME}</arg>
+<arg>${XDR DB USER}</arg>
+<arg>${XDR DB PWD}</arg>
+</arguments>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${host}:${port}/${dbName}</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.734" starttime="20150402 13:20:31.574"></status>
+</kw>
+<status status="PASS" endtime="20150402 13:20:31.736" starttime="20150402 13:20:31.467"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Table Must Exist">
+<doc></doc>
+<arguments>
+<arg>crce_cdr</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.793" starttime="20150402 13:20:31.739"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** get latest ticket *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.800" starttime="20150402 13:20:31.796"></status>
+</kw>
+<kw type="kw" timeout="" name="@{queryRows} = dblib_support-resource.DBLIB Query">
+<doc>this helper executes the passed select statement and returns the result as a list.</doc>
+<arguments>
+<arg>select * from crce_cdr order by id desc LIMIT 1</arg>
+</arguments>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Execute Query *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.847" starttime="20150402 13:20:31.842"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Store Query Result To File">
+<doc></doc>
+<arguments>
+<arg>${selectStatement}</arg>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.891" starttime="20150402 13:20:31.852"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Load Result from file</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.899" starttime="20150402 13:20:31.894"></status>
+</kw>
+<kw type="kw" timeout="" name="${queryResultSetLines} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<msg timestamp="20150402 13:20:31.914" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/libs/jar/dblibrary/dblibrary_demo/tmp_query_result.txt"&gt;/opt/robot/robotworkspace/libs/jar/dblibrary/dblibrary_demo/tmp_query_result.txt&lt;/a&gt;'</msg>
+<msg timestamp="20150402 13:20:31.920" level="INFO">${queryResultSetLines} = 1002523|55555555|101|f|1|null|CDR|crce01.tb13|2015-02-23 09:37:42.312+00|2015-02-23 09:37:06+00|771376826XdrComponentTest|1|1|27800|642041999740|PREPAID|OK|null|ACTIVE|null|0|NONE|1.0|FinalCommit|Basi...</msg>
+<status status="PASS" endtime="20150402 13:20:31.918" starttime="20150402 13:20:31.905"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Transform single string result into list of lines *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.930" starttime="20150402 13:20:31.925"></status>
+</kw>
+<kw type="kw" timeout="" name="@{queryResultSet} = String.Split To Lines">
+<doc>Converts the `string` into a list of lines.</doc>
+<arguments>
+<arg>${queryResultSetLines}</arg>
+</arguments>
+<msg timestamp="20150402 13:20:31.943" level="INFO">1 lines returned</msg>
+<msg timestamp="20150402 13:20:31.947" level="INFO">@{queryResultSet} = [ 1002523|55555555|101|f|1|null|CDR|crce01.tb13|2015-02-23 09:37:42.312+00|2015-02-23 09:37:06+00|771376826XdrComponentTest|1|1|27800|642041999740|PREPAID|OK|null|ACTIVE|null|0|NONE|1.0|FinalCommit|Ba...</msg>
+<status status="PASS" endtime="20150402 13:20:31.945" starttime="20150402 13:20:31.935"></status>
+</kw>
+<msg timestamp="20150402 13:20:31.966" level="INFO">@{queryRows} = [ 1002523|55555555|101|f|1|null|CDR|crce01.tb13|2015-02-23 09:37:42.312+00|2015-02-23 09:37:06+00|771376826XdrComponentTest|1|1|27800|642041999740|PREPAID|OK|null|ACTIVE|null|0|NONE|1.0|FinalCommit|Ba...</msg>
+<status status="PASS" endtime="20150402 13:20:31.964" starttime="20150402 13:20:31.806"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Length Should Be">
+<doc>Verifies that the length of the given item is correct.</doc>
+<arguments>
+<arg>${queryRows}</arg>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20150402 13:20:31.981" level="INFO">Length is 1</msg>
+<status status="PASS" endtime="20150402 13:20:31.982" starttime="20150402 13:20:31.972"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** log id column value (id is the 1st field of the pipe separated fields list) *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:31.991" starttime="20150402 13:20:31.987"></status>
+</kw>
+<kw type="kw" timeout="" name="@{cdrFields} = String.Split String">
+<doc>Splits the `string` using `separator` as a delimiter string.</doc>
+<arguments>
+<arg>@{queryRows}[0]</arg>
+<arg>|</arg>
+</arguments>
+<msg timestamp="20150402 13:20:32.013" level="INFO">@{cdrFields} = [ 1002523 | 55555555 | 101 | f | 1 | null | CDR | crce01.tb13 | 2015-02-23 09:37:42.312+00 | 2015-02-23 09:37:06+00 | 771376826XdrComponentTest | 1 | 1 | 27800 | 642041999740 | PREPAID | OK | null | A...</msg>
+<status status="PASS" endtime="20150402 13:20:32.004" starttime="20150402 13:20:31.996"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Latest Ticket id: @{cdrFields}[0]</arg>
+<arg>WARN</arg>
+</arguments>
+<msg timestamp="20150402 13:20:32.023" level="WARN">Latest Ticket id: 1002523</msg>
+<status status="PASS" endtime="20150402 13:20:32.025" starttime="20150402 13:20:32.018"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Disconnect From Database">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20150402 13:20:32.031" level="INFO">SQL Warnings on this connection: null</msg>
+<status status="PASS" endtime="20150402 13:20:32.032" starttime="20150402 13:20:32.028"></status>
+</kw>
+<doc>Demonstrates reading from database
+Author: walter.heincz
+=========================================================</doc>
+<tags>
+<tag>experimental</tag>
+<tag>inactive</tag>
+<tag>TNZ_supported</tag>
+<tag>walter.heincz</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20150402 13:20:32.034" starttime="20150402 13:20:31.398"></status>
+</test>
+<test id="s1-t2" timeout="" name="Select From MongoDB">
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Connect To Database</arg>
+<arg>mongodb.jdbc.MongoDriver</arg>
+<arg>jdbc:mongo://${CUSTOMERSERVICE MONGODB HOST}:${CUSTOMERSERVICE MONGODB PORT}/${CUSTOMERSERVICE MONGODB DB NAME}</arg>
+<arg>userdummy</arg>
+<arg>pswddummy</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:32.088" starttime="20150402 13:20:32.080"></status>
+</kw>
+<kw type="kw" timeout="" name="dblib_support-resource.DBLIB Connect to MongoDB">
+<doc>this helper shields testsuite developers from the necessity to know driver and connection string details.</doc>
+<arguments>
+<arg>${CUSTOMERSERVICE MONGODB HOST}</arg>
+<arg>${CUSTOMERSERVICE MONGODB PORT}</arg>
+<arg>${CUSTOMERSERVICE MONGODB DB NAME}</arg>
+</arguments>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>mongodb.jdbc.MongoDriver</arg>
+<arg>jdbc:mongo://${host}:${port}/${dbName}</arg>
+<arg>userdummy</arg>
+<arg>pswddummy</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:34.914" starttime="20150402 13:20:32.134"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>JDBC Driver for MongoDB is a trial version that limits the returned resultsets' volume to max 100 rows</arg>
+<arg>WARN</arg>
+</arguments>
+<msg timestamp="20150402 13:20:34.921" level="WARN">JDBC Driver for MongoDB is a trial version that limits the returned resultsets' volume to max 100 rows</msg>
+<status status="PASS" endtime="20150402 13:20:34.924" starttime="20150402 13:20:34.918"></status>
+</kw>
+<status status="PASS" endtime="20150402 13:20:34.925" starttime="20150402 13:20:32.094"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Table Must Exist">
+<doc></doc>
+<arguments>
+<arg>customer</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.068" starttime="20150402 13:20:34.929"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** get latest ticket *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.079" starttime="20150402 13:20:35.074"></status>
+</kw>
+<kw type="kw" timeout="" name="@{queryRows} = dblib_support-resource.DBLIB Query">
+<doc>this helper executes the passed select statement and returns the result as a list.</doc>
+<arguments>
+<arg>SELECT _id, providerId, languageId, state, details.type, registrationInfo.channel FROM customer WHERE registrationInfo.channel='CRM' LIMIT 1</arg>
+</arguments>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Execute Query *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.124" starttime="20150402 13:20:35.119"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Store Query Result To File">
+<doc></doc>
+<arguments>
+<arg>${selectStatement}</arg>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.397" starttime="20150402 13:20:35.128"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Load Result from file</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.403" starttime="20150402 13:20:35.400"></status>
+</kw>
+<kw type="kw" timeout="" name="${queryResultSetLines} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<msg timestamp="20150402 13:20:35.410" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/libs/jar/dblibrary/dblibrary_demo/tmp_query_result.txt"&gt;/opt/robot/robotworkspace/libs/jar/dblibrary/dblibrary_demo/tmp_query_result.txt&lt;/a&gt;'</msg>
+<msg timestamp="20150402 13:20:35.413" level="INFO">${queryResultSetLines} = 1|1|1|ACTIVE|RESIDENTIAL|CRM|
+</msg>
+<status status="PASS" endtime="20150402 13:20:35.412" starttime="20150402 13:20:35.405"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Transform single string result into list of lines *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.418" starttime="20150402 13:20:35.415"></status>
+</kw>
+<kw type="kw" timeout="" name="@{queryResultSet} = String.Split To Lines">
+<doc>Converts the `string` into a list of lines.</doc>
+<arguments>
+<arg>${queryResultSetLines}</arg>
+</arguments>
+<msg timestamp="20150402 13:20:35.424" level="INFO">1 lines returned</msg>
+<msg timestamp="20150402 13:20:35.426" level="INFO">@{queryResultSet} = [ 1|1|1|ACTIVE|RESIDENTIAL|CRM| ]</msg>
+<status status="PASS" endtime="20150402 13:20:35.425" starttime="20150402 13:20:35.420"></status>
+</kw>
+<msg timestamp="20150402 13:20:35.431" level="INFO">@{queryRows} = [ 1|1|1|ACTIVE|RESIDENTIAL|CRM| ]</msg>
+<status status="PASS" endtime="20150402 13:20:35.430" starttime="20150402 13:20:35.086"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Length Should Be">
+<doc>Verifies that the length of the given item is correct.</doc>
+<arguments>
+<arg>${queryRows}</arg>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20150402 13:20:35.439" level="INFO">Length is 1</msg>
+<status status="PASS" endtime="20150402 13:20:35.440" starttime="20150402 13:20:35.434"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** log _id column value (_id is the 1st field of the pipe separated fields list) *****</arg>
+</arguments>
+<status status="PASS" endtime="20150402 13:20:35.445" starttime="20150402 13:20:35.442"></status>
+</kw>
+<kw type="kw" timeout="" name="@{rowFields} = String.Split String">
+<doc>Splits the `string` using `separator` as a delimiter string.</doc>
+<arguments>
+<arg>@{queryRows}[0]</arg>
+<arg>|</arg>
+</arguments>
+<msg timestamp="20150402 13:20:35.457" level="INFO">@{rowFields} = [ 1 | 1 | 1 | ACTIVE | RESIDENTIAL | CRM |  ]</msg>
+<status status="PASS" endtime="20150402 13:20:35.456" starttime="20150402 13:20:35.449"></status>
+</kw>
+<kw type="kw" timeout="" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Latest customer _id: @{rowFields}[0]</arg>
+<arg>WARN</arg>
+</arguments>
+<msg timestamp="20150402 13:20:35.465" level="WARN">Latest customer _id: 1</msg>
+<status status="PASS" endtime="20150402 13:20:35.468" starttime="20150402 13:20:35.460"></status>
+</kw>
+<kw type="kw" timeout="" name="org.robot.database.keywords.DatabaseLibrary.Disconnect From Database">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20150402 13:20:35.482" level="INFO">SQL Warnings on this connection: null</msg>
+<status status="PASS" endtime="20150402 13:20:35.483" starttime="20150402 13:20:35.472"></status>
+</kw>
+<doc>Demonstrates reading from database
+Author: walter.heincz
+=========================================================</doc>
+<tags>
+<tag>experimental</tag>
+<tag>inactive</tag>
+<tag>TNZ_supported</tag>
+<tag>walter.heincz</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20150402 13:20:35.485" starttime="20150402 13:20:32.042"></status>
+</test>
+<doc>Demonstrates database access via dbLibrary (and convenince dblib_support-resource.txt)
+For dbLibrary documentation see ../docs folder
+===============================================================================
+Run with arguments:
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+============================================================</doc>
+<metadata>
+</metadata>
+<status status="PASS" endtime="20150402 13:20:35.490" starttime="20150402 13:20:24.936"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="2" fail="0">Critical Tests</stat>
+<stat pass="2" fail="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="2" info="" doc="" combined="" fail="0" links="">experimental</stat>
+<stat pass="2" info="" doc="" combined="" fail="0" links="">inactive</stat>
+<stat pass="2" info="" doc="" combined="" fail="0" links="">TNZ_supported</stat>
+<stat pass="2" info="" doc="" combined="" fail="0" links="">walter.heincz</stat>
+</tag>
+<suite>
+<stat pass="2" id="s1" fail="0" name="Dblibrary Demo-Robot-Suite">Dblibrary Demo-Robot-Suite</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20150402 13:20:32.023" level="WARN">Latest Ticket id: 1002523</msg>
+<msg timestamp="20150402 13:20:34.921" level="WARN">JDBC Driver for MongoDB is a trial version that limits the returned resultsets' volume to max 100 rows</msg>
+<msg timestamp="20150402 13:20:35.465" level="WARN">Latest customer _id: 1</msg>
+</errors>
+</robot>

@@ -1,0 +1,327 @@
+*** Settings ***
+Documentation     Main goal of the test suite is to check behaviour of XDR in several basic positive cases and a few negative (NOK) cases.
+...               It uses Robot Framework's JMSLibrary to send tickets of different types (MOC, SMS, DATA,...) to AMQ where XDR consumers should process them.
+...               After that XDR's log will be analysed and finally DB should be checked if ticket has landed also there.
+...               Negative tests (NOK) test different (but not all) mandatory fields (empty field, different values than predefined) according to 
+...               XDR Specification v5.3.2. Each NOK test has modified different fields - which exactly is specified in test description of the test itself
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        matko.sanseovic   ComponentTest  XDR_only   TNZ_supported   #in general, suite is able to work on any test bed that has XDR, DB and AMQ
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+##### Tickets list ##############
+@{MOC}				5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|Charge|BasicSession|1|530992041999740|642041999740|true|642041999415|(network) XdrComponentTest|Local (on-net)|Originating||||Voice|false||(network) XdrComponentTest|2015-02-22T09:15:45.930+0000|0|120000|120000|0|0|1|false|101026|15734486|101026|2|2|Minutes|15|PREPAID|OK||
+@{SMS}				5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|0|1|530992041999740|642041999740|false|642041999740|(network) XdrComponentTest|Local (on-net)|ShortMessage|||SMS_SUBMIT||false|64270000000|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|101001|0|0|NZD|10000000|PREPAID|OK|FeatureNotFound(0);|
+@{DATA}				5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:37:42.312+0000|2015-02-23T09:37:06.000+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|FinalCommit|BasicSession|1|530992041999740|642041999740|false||||Data|web.vmc.net.cl|1||GPRS|false|||2015-02-23T09:37:06.000+0000|0|35509|10284|20481|20481|815390348|false|101026|15734488|101026|25600|25600|MB NZ Data|74754400|PREPAID|OK||
+@{MOC_NOK}			xxxxxxxx|101|xxx||CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|934858345XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|Charge|ThisSholudNotBeHere|1|530992041999740|642041999740|true|642041999415|(network) XdrComponentTest|Local (on-net)|||||Voice|false||(network) XdrComponentTest|2015-02-22T09:15:45.930+0000|0|120000|120000|0|0|1|false|101026|15734486|101026|2|2|Minutes|15|PREPAID|OK||
+@{SMS_NOK}			......|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|0|1|530992041999740|642041999740|false|642041999740|(network) XdrComponentTest|Local (on-net)||||SMS_SUBMIT||false|64270000000|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|101001|0|0|NZD|10000000|PREPAID|xxxxxx|FeatureNotFound(0);|
+@{DATA_NOK}			55555555|101|ssssss|1||CDR|crce01.tb13|2015-02-23T09:37:42.312+0000|2015-02-23T09:37:06.000+0000|771376826XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.0|FinalCommit|BasicSession|1|530992041999740|642041999740|false||||Data|XdrComponentTest.cl|1||GPRS|false|||2015-02-23T09:37:06.000+0000|0|35509|10240|20481|20481|815390348|false||15734488|101026|25600|25600|MB NZ Data|74754400|PREPAID|OK||
+@{MOC_NOK_ASCII}	5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||fdgdfgdüu|Y&quot;Y&apos;&apos;&apos;{}fdfdfd@|#kk,,1111111111111111111122222222222222       |       khjflkd8|9^^6fdgkj||||fklgjlkhjlkhlklhasdk;|klf;ldskf;sdl
+@{PROV_SDR}			5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+@{MoneyTX}			5.3|120|true|1|CRCE|MONEYTX|crce13|2015-02-23T09:45:57.996+0000|2015-02-23T09:45:57.996+0000|moneytx@crce01696123XdrComponentTest|1|1|149|38974400006|PREPAID|ACTIVE||0|NONE|OK||1.1|moneyTransfer|MoneyTransfer|1|CRM|1|1/1|149|38974400006|138|38974400003|15730641|101001|2010|2000|10|NZD|4610|PREPAID|14652|2016-10-08T13:41:30.641+0000|OK|
+@{CRCE_Rec}			5.3|110|true|1|CRCE|RECHARGE|crce01.tb13|2015-02-23T09:18:39.002+0000|2015-02-23T09:18:38.996+0000|tariffChange@123456XdrComponentTest|1|1|27641|642041999581|PREPAID|ACTIVE||0|NONE|OK||1.3|tariffPlanTopup|TopupBonus|||SET|AUTOMATIC|||||||MAIN_BALANCE|101002|15734486|101002|60|60|Minutes|60|2015-05-23T03:29:34.404+0000|2015-05-23T03:29:34.404+0000|OK|
+@{IVR_SDR}			1.0|601|2015-02-23T11:43:07.287+0000|ivr-app01|1|2015-02-23T11:43:07.237+0000|856C793B481C63428.ivr-app01XdrComponentTest|123456789||573192010000|573192010001||2013-03-05T11:43:07.237+0000|0|CallStart||AdvancedRequestController|OK|true|
+@{CRCE_Conf}		5.3|130|true|1|CRCE|CONF|crce01.tb13|2015-02-23T09:18:38.969+0000|2015-02-23T09:18:38.619+0000|123456XdrComponentTest|1|1|27641|642041999581|PREPAID|ACTIVE||0|NONE|OK||1.3|activateTariff||1||IVR|IVR|Undefined|530992041999581|ACTIVE|101002|101002|400000|101001||NZD|||400000|15730641|101001|PREPAID||||||2014-02-23T03:29:34.404+0000|2015-02-23T03:29:34.404+0000|OK|
+@{CRCE_Acc}			5.3|140|true|1|CRCE|ACCOUNT_CHANGE|crce01.tb13|2015-02-23T08:37:21.661+0000|2015-02-23T08:37:21.659+0000|expireAccount@crce01.tb13123456XdrComponentTest|1|1|27358|64272000351|PREPAID|EXPIRED||0|NONE|OK||1.0|expireAccount|101001|15730641||28754|PREPAID|2097152||0|2015-02-23T08:37:21.659+0000|0|NZD|OK|
+@{SDR_IME}			5.3|701||1||SDR|ngw01|2015-02-23T23:29:53.590+0000|2015-02-23T23:29:53.561+0000|123XdrComponentTest|1434824|1||642042135084|||||SMS|||5.3||NEW|ime||2015-02-23T23:29:53.561+0000|42_642042135084_0_49|SMS Broadcasting Campaign ||true|||
+@{swapSIM}			5.3|160|true|16|CRCE|SIM_SWAP|crce013|2015-02-23T12:42:43.815+0000|2015-02-23T12:42:43.814+0000|changeMsisdn@crce01567123XdrComponentTest|1|1|155420|573190004020|PREPAID|INSTALLED||1|NONE|OK||1.0|changeMsisdn|CRM|1|732123710004017|732123710004017|573190004017||OK|
+@{Cust_EDR}			5.3|910|1|soa01|2403996848198679|2015-02-23T10:45:09.197+0000|123456XdrComponentTest|ANONYMOUS|INSTALLED|DELETE_CUSTOMER|CRM|166|||||Anony.
+#################################
+${TAILED_XDR_LOG_FILE}    ssh_tail_log-xdr.log
+${UNIQUE_SEARCH_STRING}		%XdrComponentTest
+${SEARCH_DATE_TAG}		2015-02-23
+# JMS variables
+${INITIAL_CONTEXT_FACTORY}  org.apache.activemq.jndi.ActiveMQInitialContextFactory
+${JNDI_PROVIDER_URL}        ${EMPTY}     # SUT variable not available here, value assigned in Suite Setup
+
+*** Keywords ***
+Send Ticket To Queue
+    [Documentation]    	Keyword using JMSLibrary to send text from ticket to JMS queue
+	...
+    ...    		Arguments:
+	...            ticket_type
+	...         Returns:
+    ...            nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]  ${ticket_type}
+	${tic_str}  Convert To String  ${${ticket_type}}
+	${tic_1}=	Fetch From Right  ${tic_str}  [u'
+	${tic_2}=	Fetch From Left   ${tic_1}	']
+    Create Text Message  ${tic_2}
+    Send To Queue  ${AMQ-XDR CRCE CDR QUEUE}
+
+Check log
+    [Documentation]    Checks the tailed log file created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...             test_type - OK or NOK test type
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...             in OK case when analysed log file contains string "Exception", then if ${SEARCH_DATE_TAG} is not found, and if XdrComponentTest is not found
+	...             in NOK case when "Exception" is not there
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}   ${test_type}
+	Run Keyword If		'${test_type}' == 'OK'  Should Not Contain    ${log_file}    Exception
+	Run Keyword If		'${test_type}' == 'OK'  Should Contain    ${log_file}    ${SEARCH_DATE_TAG}
+	Run Keyword If		'${test_type}' == 'OK'  Should Contain    ${log_file}    Ticket successfully routed
+	Run Keyword If		'${test_type}' == 'OK'  Should Contain    ${log_file}    XdrComponentTest
+	Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${log_file}    Exception
+
+AnalyseDBTable
+    [Documentation]    	Look into the ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             search key - column name where should be searched
+	...             test_type - OK or NOK test type
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+    [Arguments]    ${table}   ${search_key}   ${test_type}
+	@{queryRows}=      	DBLIB Query  select * from ${table} where ${search_key} like '%XdrComponentTest';
+	${length}=		   	Get Length  ${queryRows}
+	${length_s}=		Convert To String  ${length}
+	Run Keyword If		'${test_type}' == 'OK'  Should Be Equal		${length_s}  1
+	Run Keyword If		'${test_type}' == 'NOK'  Should Be Equal		${length_s}  0
+	
+CleanDBTable
+    [Documentation]    Runs the sql query  - deletes only selected rows of the ${table} 
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             search key - column name where should be searched
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             
+    ...    =========================================================
+    [Arguments]    ${table}  ${search_key}
+    ExecuteSQL  delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';
+
+Log The XDR Version
+    [Documentation]    Called at suite setup procedure to check if XDR is running and to see which version is there.
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             
+	...             
+    ...
+    ...    =========================================================
+    Open Connection    ${XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	Log  ${output_login}
+    ${output}=  Execute Command    sudo service inew-mvno-xdr status
+	Log    XDR Version and pid: ${output}    console=yes
+	Should Contain   ${output}   I-New UMS MVNO - XDR
+	SSHLibrary.Close Connection
+
+Check AMQ Availability
+    [Documentation]    Called at suite setup procedure to check if AMQ is UP
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             when AMQ listening port is not up, when number of listeners in crce_cdr queue is not bigger then 0
+	...             
+    ...
+    ...    =========================================================
+    Open Connection    ${AMQ-XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	${output}=   Execute Command   netstat -an | grep ${AMQ-SIG PORT}
+	Should Contain  ${output}  LISTEN	
+    ${output}=  Execute Command    sudo /etc/init.d/${AMQ-XDR SERVICE SCRIPT NAME} query -QQueue=${AMQ-XDR CRCE CDR QUEUE} | grep ConsumerCount
+	${count}=  Get Substring  ${output}  16
+	Evaluate	0 < ${count}
+	SSHLibrary.Close Connection
+	
+NTP Check on XDR	
+	[Documentation]    Called at suite setup to check if ntp is up and running
+    ...
+    ...    		Arguments:
+	...				nothing
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             when ntp is not up
+	...             
+    ...
+    ...    =========================================================
+    Open Connection    ${XDR HOST}
+    ${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	Log  ${output_login}
+    ${output}=  Execute Command    ntpstat
+	SSHLibrary.Close Connection
+	Should Contain   ${output}   synchronised to NTP server  msg=NTP sync problem!
+	Log    NTP is synced    console=yes
+
+	
+Setup Suite
+    ${time}=    Run    date
+    Log    	Date and time: ${time}    console=yes
+	NTP Check on XDR
+    Log The XDR Version
+	Log    	SUT:${SUT_RESOURCE}	console=yes
+	Log	   	XDR IP address:${XDR HOST}   console=yes
+	Check AMQ Availability
+	Log	   	AMQ and consumers are UP  console=yes
+    # connect to DB
+    Connect To Database    org.postgresql.Driver  jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}   ${XDR DB USER}  ${XDR DB PWD}
+    # cleaning DB table(s)
+    CleanDBTable    crce_cdr_2015w08  sessionid
+	CleanDBTable    crce_cdr  sessionid
+	# connect to AMQ
+	${JNDI_PROVIDER_URL}=  BuiltIn.Set Variable  tcp://${AMQ-XDR HOST}:${AMQ-SIG PORT}?jms.useAsyncSend=false
+	Init Provider  ${INITIAL_CONTEXT_FACTORY}  ${JNDI_PROVIDER_URL}  connect=true  start=true	
+
+Teardown Suite
+    Disconnect From Database
+	# move tailed log files to log dir
+	# Run		mv *_ssh_tailed.log ./log/
+	${ssh_connection}=    SSH Login    ${XDR USER}    ${XDR PWD}  ${EMPTY}
+	Execute Command  	sudo pkill tail
+	Close All Connections
+
+Send Ticket And Analyse
+    [Documentation]    General test case skeleton to be executed. Contains all steps for single test case
+    ...
+    ...    		Arguments:
+	...				ticketSignature - variable used for naming tickets and temp XDR log files
+	...             affectedDbTable - table used when XDR is processing ticket type sent by the test case
+	...             affectedDbTableKeyColumnName - column to be searched for
+	...             test_case_type - is it positive (OK) test or negative (NOK
+	...         Returns:
+    ...             nothing 
+	...         Fails:
+	...             described in all previously defined keywords that are used within this one
+    ...
+    ...    =========================================================
+    [Arguments]		${ticketSignature}  ${affectedDbTable}  ${affectedDbTableKeyColumnName}  ${test_case_type}
+	${ssh_connection}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+    CleanDBTable    ${affectedDbTable}   ${affectedDbTableKeyColumnName}
+    Send Ticket To Queue	${ticketSignature}
+	${tailed_text}=    SSH Close File Monitor and Logout    ${ssh_connection}	./log/${ticketSignature}_ssh_tailed.log
+	Check log    ${tailed_text}   ${test_case_type}
+    AnalyseDBTable    ${affectedDbTable}   ${affectedDbTableKeyColumnName}    ${test_case_type}
+	
+	
+*** Test Cases ***
+Test MOC ticket processing
+    [Documentation]    Send the MOC XDR ticket and analyse results. It is expected that ticket is processed without errors and database row is added in corresponding table. Test is PASSing when this conditions are fulfilled. \n
+    ...    TICKET: 5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|Charge|BasicSession|1|530992041999740|642041999740|true|642041999415|(network) XdrComponentTest|Local (on-net)|Originating||||Voice|false||(network) XdrComponentTest|2015-02-22T09:15:45.930+0000|0|120000|120000|0|0|1|false|101026|15734486|101026|2|2|Minutes|15|PREPAID|OK||
+    ...    =========================================================
+	Send Ticket And Analyse		MOC		crce_cdr_2015w08   	sessionid		OK
+
+
+Test SMS ticket processing
+    [Documentation]    Send the SMS XDR ticket and analyse results
+    ...    TICKET: 5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|0|1|530992041999740|642041999740|false|642041999740|(network) XdrComponentTest|Local (on-net)|ShortMessage|||SMS_SUBMIT||false|64270000000|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|101001|0|0|NZD|10000000|PREPAID|OK|FeatureNotFound(0);|
+    ...    =========================================================
+	Send Ticket And Analyse		SMS		crce_cdr_2015w08   	sessionid		OK		
+	
+Test DATA ticket processing
+    [Documentation]    Send the DATA XDR ticket and analyse results
+    ...    Ticket: 5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:37:42.312+0000|2015-02-23T09:37:06.000+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|FinalCommit|BasicSession|1|530992041999740|642041999740|false||||Data|web.vmc.net.cl|1||GPRS|false|||2015-02-23T09:37:06.000+0000|0|35509|10284|20481|20481|815390348|false|101026|15734488|101026|25600|25600|MB NZ Data|74754400|PREPAID|OK||
+    ...    =========================================================	
+	Send Ticket And Analyse		DATA		crce_cdr   	sessionid		OK	
+
+Test CRCE Recharge ticket processing
+    [Documentation]    Send the CRCE Recharge XDR ticket and analyse results
+    ...    TICKET: 5.3|110|true|1|CRCE|RECHARGE|crce01.tb13|2015-02-23T09:18:39.002+0000|2015-02-23T09:18:38.996+0000|tariffChange@123456XdrComponentTest|1|1|27641|642041999581|PREPAID|ACTIVE||0|NONE|OK||1.3|tariffPlanTopup|TopupBonus|||SET|AUTOMATIC|||||||MAIN_BALANCE|101002|15734486|101002|60|60|Minutes|60|2015-05-23T03:29:34.404+0000|2015-05-23T03:29:34.404+0000|OK|
+    ...    =========================================================
+	Send Ticket And Analyse		CRCE_Rec		crce_recharge   	sessionid		OK	
+	
+Test CRCE Confirmation ticket processing
+    [Documentation]    Send the CRCE Confirmation XDR ticket and analyse results
+    ...    TICKET: 5.3|130|true|1|CRCE|CONF|crce01.tb13|2015-02-23T09:18:38.969+0000|2015-02-23T09:18:38.619+0000|123456XdrComponentTest|1|1|27641|642041999581|PREPAID|ACTIVE||0|NONE|OK||1.3|activateTariff||1||IVR|IVR|Undefined|530992041999581|ACTIVE|101002|101002|400000|101001||NZD|||400000|15730641|101001|PREPAID||||||2014-02-23T03:29:34.404+0000|2015-02-23T03:29:34.404+0000|OK|
+    ...    =========================================================
+	Send Ticket And Analyse		CRCE_Conf	crce_conf	sessionid	OK	
+
+Test CRCE AccountChange ticket processing
+    [Documentation]    Send the CRCE AccountChange ticket and analyse results
+    ...    TICKET: 5.3|140|true|1|CRCE|ACCOUNT_CHANGE|crce01.tb13|2015-02-23T08:37:21.661+0000|2015-02-23T08:37:21.659+0000|expireAccount@crce01.tb13123456XdrComponentTest|1|1|27358|64272000351|PREPAID|EXPIRED||0|NONE|OK||1.0|expireAccount|101001|15730641||28754|PREPAID|2097152||0|2015-02-23T08:37:21.659+0000|0|NZD|OK|
+    ...    =========================================================	
+	Send Ticket And Analyse		CRCE_Acc	crce_accountchange	sessionid	OK	
+	
+Test Customer EDR ticket processing
+    [Documentation]    Send the CRM EDR ticket and analyse results
+    ...    TICKET: 5.3|910|1|soa01|2403996848198679|2015-03-04T10:45:09.197+0000|123456XdrComponentTest|ANONYMOUS|INSTALLED|DELETE_CUSTOMER|CRM|166|||||Anony.
+    ...    =========================================================	
+	Send Ticket And Analyse		Cust_EDR	customer_edr	customerid	OK
+	
+Test Customer SDR ticket processing
+    [Documentation]    Send the CRM SDR IME ticket and analyse results
+    ...    TICKET: 5.3|701||1||SDR|ngw01|2015-02-23T23:29:53.590+0000|2015-02-23T23:29:53.561+0000|123XdrComponentTest|1434824|1||642042135084|||||SMS|||5.3||NEW|ime||2015-02-23T23:29:53.561+0000|42_642042135084_0_49|SMS Broadcasting Campaign ||true|||
+    ...    =========================================================	
+	Send Ticket And Analyse		SDR_IME	  inotif_sdr	sessionid	OK
+	
+Test Customer IVR SDR ticket processing
+    [Documentation]    Send the IVR SDR ticket and analyse results
+    ...    TICKET: 1.0|601|2015-02-23T11:43:07.287+0000|ivr-app01|1|2015-02-23T11:43:07.237+0000|856C793B481C63428.ivr-app01XdrComponentTest|123456789||573192010000|573192010001||2013-03-05T11:43:07.237+0000|0|CallStart||AdvancedRequestController|OK|true|
+    ...    =========================================================	
+	Send Ticket And Analyse		IVR_SDR	  ivr_sdr	sessionid	OK	
+	
+Test Customer PROV SDR ticket processing
+    [Documentation]    Send the PROV SDR ticket and analyse results
+    ...    TICKET: 5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+    ...    =========================================================	
+	Send Ticket And Analyse		PROV_SDR	  prov_sdr	sessionid	OK		
+	
+Test MoneyTX ticket processing
+    [Documentation]    Send the MoneyTX CRCE ticket and analyse results
+    ...    TICKET: 5.3|120|true|1|CRCE|MONEYTX|crce03|2015-03-02T09:45:57.996+0000|2015-03-02T09:45:57.996+0000|moneytx@crce01696123XdrComponentTest|1|1|149|38974400006|PREPAID|ACTIVE||0|NONE|OK||1.1|moneyTransfer|MoneyTransfer|1|CRM|1|1/1|149|38974400006|138|38974400003|15730641|101001|2010|2000|10|NZD|4610|PREPAID|14652|2015-10-08T13:41:30.641+0000|OK|
+    ...    =========================================================	
+	Send Ticket And Analyse		MoneyTX	  crce_moneytx		sessionid	OK
+	
+Test SwapSIM ticket processing
+    [Documentation]    Send the swapSIM CRCE ticket and analyse results
+    ...    TICKET: 5.3|160|true|16|CRCE|SIM_SWAP|crce013|2015-03-02T12:42:43.815+0000|2015-03-02T12:42:43.814+0000|changeMsisdn@crce015675123XdrComponentTest|1|1|155420|573190004020|PREPAID|INSTALLED||1|NONE|OK||1.0|changeMsisdn|CRM|1|732123710004017|732123710004017|573190004017||OK|
+    ...    =========================================================
+	Send Ticket And Analyse		swapSIM	  crce_simswap		sessionid	OK
+
+Test MOC NOK ticket processing
+    [Documentation]    Send the invalid MOC XDR ticket with following changes: Version (Header, Mandatory, changed), Provider (H,M,empty), Success (H,M,changed), CRCE Operation (B,M, changed), TrafficType (B,M, empty). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================
+	Comment		Send Ticket And Analyse		MOC_NOK	  crce_cdr_2015w08		sessionid	NOK
+	Fail		SKIPPED until defect D-05171 is closed		noncritical
+
+Test SMS NOK ticket processing
+    [Documentation]    Send the invalid SMS XDR ticket with following changes: Version (Header, Mandatory, changed), TrafficType (B, M, mpty), CRCE Result Code (B, M, changed). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================	
+	Comment		Send Ticket And Analyse		SMS_NOK	  crce_cdr_2015w08		sessionid	NOK
+	Fail		SKIPPED until defect D-05171 is closed		noncritical
+	
+Test DATA NOK ticket processing
+    [Documentation]    Send the invalid DATA XDR ticket with following changes: Application (Header, Mandatory, empty), Tariff (B, M, empty). It is expected that ticket processing fails (and test should PASS in that case)
+    ...    =========================================================
+	Comment		Send Ticket And Analyse		DATA_NOK	  crce_cdr		sessionid	NOK	
+	Fail		SKIPPED until defect D-05171 is closed		noncritical
+	
+Test MOC NOK - Invalid ASCII ticket processing
+    [Documentation]    Send the MOC XDR ticket with invalid ASCII garbage in it:
+    ...    TICKET: 5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||fdgdfgdüu|Y"Y'''{}fdfdfd@|#kk,,1111111111111111111122222222222222 | khjflkd8|9^^6fdgkj||||fklgjlkhjlkhlklhasdk;|klf;ldskf;sdl
+    ...    =========================================================	
+	Send Ticket And Analyse		MOC_NOK_ASCII	  crce_cdr_2015w08		sessionid	NOK	

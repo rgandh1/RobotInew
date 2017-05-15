@@ -1,0 +1,351 @@
+[2016-02-05 01:12:58,865][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Single Call START:  I-New Calls Generator 6.1.0 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Application Host:   Name=testautomation IP=10.105.80.196 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Operating System:   Linux 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] JavaVM Infos:       CPUs=12 Memory(initHeap/maxHeap/allocatedMem(usedHeap/freeMem))=29.27/418/36.5(11.605/24.895) MB 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Application Mode:   Console 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] User:               root 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Session File:       /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/moc196s.cgs 
+[2016-02-05 01:12:58,867][INFO ][  27][CallsGeneratorThread     ][CgSessionLogger.callOpening()                     ] Testcase: /opt/robot/robotworkspace/external_tests/experimental/matko.sanseovic/reroute_changes/testcases/iSig/CAPv2/moc/10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets 
+[2016-02-05 01:12:58,871][INFO ][  27][CallsGeneratorThread     ][AbstractMessagesDispatcher.openSession()          ] New CALL#1 CAP2_MOC SID 5099700000 started 
+[2016-02-05 01:12:59,008][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 [37ms](gettingRidTime 33ms) - sent xml with msg(s) reportNotification,  
+[2016-02-05 01:12:59,011][TRACE][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>5099700000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<reportNotification>
+			<invokeId>0</invokeId>
+			<bearerType>Voice</bearerType>
+			<time>2016-02-05T00:12:58.97+00:00</time>
+			<imsi>232201667725500</imsi>
+			<serviceKey>50</serviceKey>
+			<referenceNumber>0001ABFF0E</referenceNumber>
+			<calledPartyAddress>
+				<address>43667725501</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</calledPartyAddress>
+			<callingPartyAddress>
+				<address>43667725500</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+				<suppressNumber>false</suppressNumber>
+			</callingPartyAddress>
+			<vlrAddress>
+				<address>43667725</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</vlrAddress>
+			<mscAddress>
+				<address>43667725</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</mscAddress>
+		</reportNotification>
+	</messages>
+</iSig>
+
+ 
+[2016-02-05 01:12:59,122][TRACE][  25][ActiveMQ Session Task    ][JmsMessagesDispatcher.dispatchInputMessage()      ] message received: jmsTimestamp=00:12:59.119 UTC, receivedTimestamp=00:12:59.119 UTC msg=<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>180000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <routeReq>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <destinationAddress>
+        <address>96${DESTINATION_MNP_INFO.routingCode}48667725501</address>
+        <natureOfAddress>National</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+    </routeReq>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:12:59,213][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 - got xml with responseLatency=111ms and transportOnlyLatency=0 (jmsTimestamp=00:12:59.119 UTC, receivedTimestamp=00:12:59.119 UTC) and Msg(s) reportNotificationAck, superviseReq, eventReportReq, routeReq 
+[2016-02-05 01:12:59,214][TRACE][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 [1ms] - Expectation of file /opt/robot/robotworkspace/external_tests/experimental/matko.sanseovic/reroute_changes/testcases/iSig/CAPv2/moc/10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets/02_scp_moc_hplmn_ac_rrbe_cue.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>[checked by CG]</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+	<routeReq>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <destinationAddress>
+        <address>[taken from the request]</address>
+        <natureOfAddress>National</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+    </routeReq>
+    <!--continueProcessing>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <interruptEventReceived>true</interruptEventReceived>
+    </continueProcessing-->
+  </messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>180000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <routeReq>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <destinationAddress>
+        <address>96${DESTINATION_MNP_INFO.routingCode}48667725501</address>
+        <natureOfAddress>National</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+    </routeReq>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:12:59,215][TRACE][   9][SessionCtxWorkerThread-0 ][JmsSendDelayingState.Constructor()                ] CALL#1 CAP2_MOC SID 5099700000 - sending xml in 1000 ms with msg(s) eventReportRes,  
+[2016-02-05 01:13:00,219][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 [2ms](gettingRidTime 0ms) - sent xml with msg(s) eventReportRes,  
+[2016-02-05 01:13:00,220][TRACE][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>5099700000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<eventReportRes>
+			<invokeId>1</invokeId>
+			<answer monitorMode="Notify"/>
+			<eventTimeStamp>2016-02-05T00:13:00.21+00:00</eventTimeStamp>
+		</eventReportRes>
+	</messages>
+</iSig>
+
+ 
+[2016-02-05 01:13:00,220][TRACE][   9][SessionCtxWorkerThread-0 ][JmsSendDelayingState.Constructor()                ] CALL#1 CAP2_MOC SID 5099700000 - sending xml in 180000 ms with msg(s) superviseRes,  
+[2016-02-05 01:16:00,276][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 [4ms](gettingRidTime 2ms) - sent xml with msg(s) superviseRes,  
+[2016-02-05 01:16:00,278][TRACE][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>5099700000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<superviseRes>
+		   <invokeId>2</invokeId>
+			<usedTime>180000</usedTime>
+			<callActive>true</callActive>
+		</superviseRes>
+	</messages>
+</iSig>
+
+ 
+[2016-02-05 01:16:00,418][TRACE][  37][ActiveMQ Session Task    ][JmsMessagesDispatcher.dispatchInputMessage()      ] message received: jmsTimestamp=00:16:00.416 UTC, receivedTimestamp=00:16:00.416 UTC msg=<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <superviseReq>
+      <requestSequenceNr>3</requestSequenceNr>
+      <time>180000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:16:00,479][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 - got xml with responseLatency=140ms and transportOnlyLatency=0 (jmsTimestamp=00:16:00.416 UTC, receivedTimestamp=00:16:00.416 UTC) and Msg(s) superviseReq 
+[2016-02-05 01:16:00,481][TRACE][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 [2ms] - Expectation of file /opt/robot/robotworkspace/external_tests/experimental/matko.sanseovic/reroute_changes/testcases/iSig/CAPv2/moc/10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets/05_scp_moc_hplmn_ac.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>[checked by CG]</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <superviseReq>
+      <requestSequenceNr>3</requestSequenceNr>
+      <time>1800</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+  </messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <superviseReq>
+      <requestSequenceNr>3</requestSequenceNr>
+      <time>180000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:16:00,482][TRACE][   9][SessionCtxWorkerThread-0 ][JmsSendDelayingState.Constructor()                ] CALL#1 CAP2_MOC SID 5099700000 - sending xml in 16000 ms with msg(s) superviseRes, eventReportRes,  
+[2016-02-05 01:16:16,525][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 [6ms](gettingRidTime 2ms) - sent xml with msg(s) superviseRes, eventReportRes,  
+[2016-02-05 01:16:16,527][TRACE][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 5099700000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>5099700000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<superviseRes>
+		   <invokeId>4</invokeId>
+			<usedTime>196000</usedTime>
+			<callActive>false</callActive>
+		</superviseRes>
+		
+		<eventReportRes>
+		  <invokeId>5</invokeId>
+			<disconnectCalling monitorMode="Interrupt"/>
+			<eventTimeStamp>2016-02-05T00:16:16.52+00:00</eventTimeStamp>
+		</eventReportRes>
+		
+	</messages>
+</iSig>
+
+ 
+[2016-02-05 01:16:16,542][TRACE][  38][ActiveMQ Session Task    ][JmsMessagesDispatcher.dispatchInputMessage()      ] message received: jmsTimestamp=00:16:16.541 UTC, receivedTimestamp=00:16:16.541 UTC msg=<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>4</requestSequenceNr>
+      <cause>16</cause>
+    </release>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:16:16,628][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 - got xml with responseLatency=16ms and transportOnlyLatency=0 (jmsTimestamp=00:16:16.541 UTC, receivedTimestamp=00:16:16.541 UTC) and Msg(s) release 
+[2016-02-05 01:16:16,630][TRACE][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 5099700000 [2ms] - Expectation of file /opt/robot/robotworkspace/external_tests/experimental/matko.sanseovic/reroute_changes/testcases/iSig/CAPv2/moc/10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets/07_scp_moc_hplmn_rel.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>[checked by CG]</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>4</requestSequenceNr>
+      <cause>32</cause>
+    </release>
+  </messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>5099700000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>4</requestSequenceNr>
+      <cause>16</cause>
+    </release>
+  </messages>
+</iSig>
+ 
+[2016-02-05 01:16:16,635][INFO ][   9][SessionCtxWorkerThread-0 ][AbstractMessagesDispatcher.sessionTerminated()    ] CALL#1 CAP2_MOC SID 5099700000 closed 
+[2016-02-05 01:16:16,636][INFO ][   9][SessionCtxWorkerThread-0 ][CgSessionLogger.callClosed()                      ] Single Call Session END 
+[2016-02-05 01:16:16,938][DEBUG][  27][CallsGeneratorThread     ][AbstractMessagesDispatcher.dispose()              ] Thread 'CallsGeneratorThread' entered HardCleanUp block 
+[2016-02-05 01:16:16,939][TRACE][  27][CallsGeneratorThread     ][AbstractMessagesDispatcher.dispose()              ] Thread 'CallsGeneratorThread' leaves HardCleanUp block 

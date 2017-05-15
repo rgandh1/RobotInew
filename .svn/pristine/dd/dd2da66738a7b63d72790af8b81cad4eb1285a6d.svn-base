@@ -1,0 +1,428 @@
+*** Settings ***
+Documentation     This is a calls regression keyword resource providing call check related functions
+...               ============================================================
+...                 Check XDR Version
+...                 Check IN Version
+...                 Check CRCE Version
+...                 
+...					Check MOC XDR log
+...					Check Long MOC XDR log
+...                 Check MTC XDR log
+...                 Check MFC XDR log
+...					
+...					Check MOC IN log
+...					Check Long MOC IN log
+...                 Check MTC IN log
+...					Check MFC IN log
+...
+...					Check MOC CRCE log
+...					Check MOC XDR log
+...                 Check MTC CRCE log
+...					Check MFC CRCE log
+...               ============================================================
+Library           SSHLibrary
+Library           String
+
+*** Keywords ***
+
+
+Check XDR Version
+    [Documentation]    Checks the version of the running service
+    ...    		Arguments:
+	...				service - service name to be checked
+	...         Returns:
+    ...             version    
+	...         Fails:
+	...            
+    ...    =========================================================
+	Open Connection    	${XDR HOST}
+	${output_login}=    Login    ${XDR USER}    ${XDR PWD}
+	Log  				${output_login}
+	${output}=  		Execute Command    sudo service inew-mvno-xdr status
+	${version_r}=  		Fetch From Right  ${output}  Server 
+	${version}=  		Fetch From Left  ${version_r}   is running
+	SSHLibrary.Close Connection
+	Log					XDR version: ${version}     console=yes
+	[Return]			${version}
+	
+Check IN Version
+    [Documentation]    Checks the version of the running service
+    ...    		Arguments:
+	...				service - service name to be checked
+	...         Returns:
+    ...             version    
+	...         Fails:
+	...            
+    ...    =========================================================
+	Open Connection    	${IN-APP HOST}
+	${output_login}=    Login    ${IN-APP USER}    ${IN-APP PWD}
+	Log  ${output_login}
+	${output}=  		Execute Command    sudo service inew-mvno-corein-services status
+	${version_r}=  		Fetch From Right  ${output}  Service 
+	${version}=  		Fetch From Left  ${version_r}   is running
+	SSHLibrary.Close Connection
+	Log					IN version: ${version}     console=yes
+	[Return]			${version} 
+	
+Check CRCE Version
+    [Documentation]    Checks the version of the running service
+    ...    		Arguments:
+	...				service - service name to be checked
+	...         Returns:
+    ...             version    
+	...         Fails:
+	...            
+    ...    =========================================================
+	Open Connection    	${CRCE HOST}
+	${output_login}=    Login    ${CRCE USER}    ${CRCE PWD}
+	Log  				${output_login}
+	${output}=  		Execute Command    sudo service inew-mvno-crce status
+	${version_r}=  		Fetch From Right  ${output}  Engine 
+	${version}=  		Fetch From Left  ${version_r}   is running
+	SSHLibrary.Close Connection
+	Log					CRCE version: ${version}     console=yes
+	[Return]			${version} 
+	
+	
+Check MOC XDR log
+    [Documentation]    Checks the tailed log file of MOC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    (on-net)|Originating|
+
+Check Long MOC XDR log
+    [Documentation]    Checks the tailed log file of MOC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    136000|180000
+	Should Contain    ${temp}    (on-net)|Originating
+	
+Check MTC XDR log
+    [Documentation]    Checks the tailed log file created on XDR during MTC call. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    (on-net)|Terminating	
+
+Check MFC XDR log
+    [Documentation]    Checks the tailed log file of MFC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written  
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	Should Contain    ${temp}    ${FINAL_DESTINATION_MFC}
+    Should Contain    ${temp}    CRCE|CDR
+    Should Contain    ${temp}    (on-net)|Forwarding 
+
+Check SMS XDR log
+    [Documentation]    Checks the tailed log file of SMS created on XDR during MTC. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	
+Check MOC IN log
+    [Documentation]    Checks the tailed log file of MOC call created on IN. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MOC IN log
+    Should Contain    	${temp}    TrafficType: Originating
+	Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 1000
+	Comment		Should Not Contain	${temp}    Exception
+	
+Check Long MOC IN log	
+    [Documentation]    Checks the tailed log file of multi-slice (long) MOC call created on IN. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MOC IN log
+    Should Contain    	${temp}    TrafficType: Originating
+	Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 136000
+	Should Not Contain	${temp}    Exception
+	
+Check MTC IN log
+    [Documentation]    Checks the tailed IN log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MTC IN log
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 36000
+	Should Contain    	${temp}    TrafficType: Terminating
+	Should Not Contain	${temp}    Exception	
+	
+Check MFC IN log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code	
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MFC IN log	
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 1000
+	Should Contain    	${temp}    TrafficType: Forwarding
+	Should Not Contain  ${temp}    Exception	
+	
+Check SMS IN log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code		
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}		${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check SMS IN log		
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    ErrorCode: OK
+	Should Contain    	${temp}    TrafficType: ShortMessage	
+	Should Not Contain  ${temp}    Exception
+	
+Check MOC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    finalCommit=true, usedTime=1000
+	Should Contain    ${temp}    Sending ticket to inew-cs.crce.cdr
+    Should Contain    ${temp}    |20000|20000|	
+	
+Check Long MOC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    finalCommit=true, usedTime=136000
+	Should Contain    ${temp}    Sending ticket to inew-cs.crce.cdr
+    Should Contain    ${temp}    136000|180000	
+
+Check MTC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+	Should Contain    ${temp}    (on-net)|Terminating
+    Should Contain    ${temp}    finalCommit=true, usedTime=36000
+	Should Contain    ${temp}    Sending ticket to inew-cs.crce.cdr
+    Should Contain    ${temp}    |36000|60000|	
+
+Check MFC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+	Should Contain    ${temp}    (on-net)|Forwarding|
+    Should Contain    ${temp}    finalCommit=true, usedTime=1000
+	Should Contain    ${temp}    Sending ticket to inew-cs.crce.cdr
+    Should Contain    ${temp}    1000|60000	
+
+Check SMS CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    Successfully charged
+    Should Contain    ${temp}    4000|4000	
+	
+AnalyseDBTable
+    [Documentation]    	Look into the ${db} ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				db - db selector
+	...				table - DB table to look for
+	...             called_party - B party in the call
+	...             call_length
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+    [Arguments]    ${db}    ${table}   ${called_party}   ${call_length}
+	Run Keyword If		'${db}' == 'xdr'  AnalyseXdrDB  ${table}   ${called_party}   ${call_length}
+
+AnalyseXdrDB
+    [Documentation]    	Look into the ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             called_party - B party in the call
+	...             call_length
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+	[Arguments]    ${table}   ${called_party}   ${call_length}
+	@{queryRows}=      	DBLIB Query  select calledmsisdn, callduration from ${table} where id in (select max(id) from ${table});
+	@{fields}=       	Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+    ${b_party}=			Set Variable	@{fields}[0]       #log 1st field
+	${duration}=		Set Variable	@{fields}[1]       #log 2nd field	
+	Should be Equal		${b_party}		${called_party}		msg=XDR DB ${table} values are wrong
+	Should be Equal 	${duration}		${call_length}		msg=XDR DB ${table} values are wrong
+
+Check Subscriber Balance
+    [Documentation]    	Check the CRCE DB entry for test subscriber's monetary account balance.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...				expected balance
+	...         Returns:
+	...         Fails:
+	...				if expected balance is different than the one found in DB
+    ...    =========================================================
+	[Arguments]    		${subscriber}  ${expected_bal}
+	DBLIB Connect to PostgresDB    ${CRCE DB HOST}   ${CRCE DB PORT}   ${CRCE DB NAME}    ${CRCE DB USER}   ${CRCE DB PWD}
+	@{queryRows}=      	DBLIB Query  select balance from acc_subscriber_accounts where category=1 and subscriber_id in (select id from profiler_subscriber_profiles where msisdn='${subscriber}');
+	@{fields}=       	Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+    ${balance}=			Set Variable	@{fields}[0]       #log 1st field
+	Disconnect From Database
+	Should Be Equal		${balance}   ${expected_bal}   msg=Balance ${balance} NOT OK!
+	Log					Balance= ${balance} OK!   console=yes
+	
+Reset Subscriber Balance
+    [Documentation]    	Reset the test subscriber's monetary account balance to initial value.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...				
+    ...    =========================================================
+	[Arguments]    		${subscriber}
+	DBLIB Connect to PostgresDB    ${CRCE DB HOST}   ${CRCE DB PORT}   ${CRCE DB NAME}    ${CRCE DB USER}   ${CRCE DB PWD}
+	Execute SQL  update acc_subscriber_accounts set balance=10000000 where category=1 and subscriber_id in (select id from profiler_subscriber_profiles where msisdn='${subscriber}');
+	Disconnect From Database

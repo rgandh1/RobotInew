@@ -1,0 +1,116 @@
+*** Settings ***
+Documentation     Testing the postpaid subscriber's simple data session cases with CG
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        DATA_only		MTEL_supported   matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../suite-global-keyword-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+${DIAM HPLMN UNKNOWN LOCATION}		1
+
+
+*** Keywords ***
+	
+*** Test Cases ***
+	
+Single Data Session 767b
+    [Documentation]    	Test will make a postpaid subscriber's short data session in total of 767 bytes
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    0
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    POSTPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS PP DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short 767b Data Session    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}
+	Comment				   	******* Checking Subscriber's Account Balance *******
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS PP MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	# calculating the target balance that should match the balance set after the 1 slice call
+	Log			Bill: ${bal} 	console=yes
+	Comment		Should Be Equal As Numbers  ${TESTSUBCRIBERS PP DEFAULT SLICE COSTS}  ${bal}  msg=Expected balance and actual balance mismatch!
+	Log			Account balance check OK!   console=yes	
+
+CG Short Multislice Data Session
+    [Documentation]    	Test creates the data session, sends two updates of the session and finally closes the session. Session consumes 9.77 MB
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    0
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    POSTPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS PP DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short Multislice Data Session    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}	
+	Comment				   	******* Checking Subscriber's Account Balance *******
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS PP MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	# calculating the target balance that should match the balance set after the 1 slice call
+	Log			Bill: ${bal} 	console=yes
+	Comment		Should Be Equal As Numbers  ${TESTSUBCRIBERS PP DEFAULT SLICE COSTS}  ${bal}  msg=Expected balance and actual balance mismatch!
+	Log			Account balance check OK!   console=yes		
+
+
+Single NOK UnknownLocation Data Session
+    [Documentation]    	Test will attempt to start a simple data session with unknown location. Test should fail
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    0
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    POSTPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS PP DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short 767b Data Session    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    ${DIAM HPLMN UNKNOWN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  1   msg=CG Session ended with rc=${rc} other than 1!
+	Comment				   	******* Checking Subscriber's Account Balance *******
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS PP MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	# calculating the target balance that should match the balance set after the 1 slice call
+	Log			Bill: ${bal} 	console=yes
+	Comment		Should Be Equal As Numbers  ${TESTSUBCRIBERS PP DEFAULT SLICE COSTS}  ${bal}  msg=Expected balance and actual balance mismatch!
+	Log			Account balance check OK!   console=yes		

@@ -1,0 +1,252 @@
+[2013-05-03 13:27:29,848][INFO ][SessionLogger.logSessionLogHeader()               ] Single Call START:  I-New Calls Generator 3.0.0 BETA 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] Application Host:   Name=test-dev01 IP=<unknown> 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] Operating System:   Linux 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] JavaVM Infos:       CPUs=4 Memory(initHeap/maxHeap/allocatedMem(usedHeap/freeMem))=122.971/1,749.375/142.938(61.815/81.123) MB 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] Application Mode:   GUI 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] User:               root 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.logSessionLogHeader()               ] Session File:       /opt/callsGenerator/workspaces/TB_COLUMBIA/sessions/balancetests.cgs 
+[2013-05-03 13:27:29,849][INFO ][SessionLogger.callOpening()                       ] Testcase: /opt/callsGenerator/workspaces/TB_VirginChile/testcases/900_moc_1s_rel_cdpn 
+[2013-05-03 13:27:29,849][INFO ][CallContextMessagesDispatcher.openCall()          ] New CALL#1 CAP2_MOC SID 14100800000 started 
+[2013-05-03 13:27:29,860][DEBUG][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - sent xml with msg(s) reportNotification,  
+[2013-05-03 13:27:29,861][TRACE][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>14100800000</sessionId>
+ 	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<reportNotification>
+			<invokeId>0</invokeId>
+			<bearerType>Voice</bearerType>
+			<time>2013-05-03T08:27:29.855+1200</time>
+			<imsi>730570808000004</imsi>
+			<serviceKey>50</serviceKey>
+			<referenceNumber>0001ABFF0E</referenceNumber>
+			<calledPartyAddress>
+				<address>37745700056</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</calledPartyAddress>
+			<callingPartyAddress>
+				<address>579510888804</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+				<suppressNumber>false</suppressNumber>
+			</callingPartyAddress>
+			<vlrAddress>
+				<address>3774410303</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</vlrAddress>
+			<mscAddress>
+				<address>3774410303</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</mscAddress>
+		</reportNotification>
+	</messages>
+</iSig>
+
+ 
+[2013-05-03 13:27:30,388][WARN ][CallContextMessagesDispatcher.dispatchInputMessage()] message received highly delayed from JMS broker: transportOnlyLatency=129963ms (jmsTimestamp=13:25:20.424 UTC, receivedTimestamp=13:27:30.387 UTC) msg=<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>14100800000</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt"/>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <continueProcessing>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <interruptEventReceived>true</interruptEventReceived>
+    </continueProcessing>
+  </messages>
+</iSig>
+ 
+[2013-05-03 13:27:30,410][DEBUG][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - got xml with responseLatency=548ms and transportOnlyLatency=129963 (jmsTimestamp=13:25:20.424 UTC, receivedTimestamp=13:27:30.387 UTC) and Msg(s) reportNotificationAck, superviseReq, eventReportReq, continueProcessing 
+[2013-05-03 13:27:30,411][WARN ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - transportOnlyLatency (129963ms) of received msg exceeded warning level (2000ms 
+[2013-05-03 13:27:30,414][TRACE][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - Expectation of file /opt/callsGenerator/workspaces/TB_VirginChile/testcases/900_moc_1s_rel_cdpn/2_scp_moc_hplmn_ac_rrbe_cue.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>1</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <continueProcessing>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <interruptEventReceived>true</interruptEventReceived>
+    </continueProcessing>
+  </messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>14100800000</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt"/>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <continueProcessing>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <interruptEventReceived>true</interruptEventReceived>
+    </continueProcessing>
+  </messages>
+</iSig>
+ 
+[2013-05-03 13:27:30,415][TRACE][SendDelayingState.Constructor()                   ] CALL#1 CAP2_MOC SID 14100800000 - sending xml in 1000 ms with msg(s) eventReportRes,  
+[2013-05-03 13:27:31,428][DEBUG][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - sent xml with msg(s) eventReportRes,  
+[2013-05-03 13:27:31,429][TRACE][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>14100800000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<eventReportRes>
+			<invokeId>1</invokeId>
+			<answer monitorMode="Notify"/>
+			<eventTimeStamp>2013-05-03T08:27:31.423+1200</eventTimeStamp>
+		</eventReportRes>
+	</messages>
+</iSig>
+
+ 
+[2013-05-03 13:27:31,429][TRACE][SendDelayingState.Constructor()                   ] CALL#1 CAP2_MOC SID 14100800000 - sending xml in 1000 ms with msg(s) superviseRes, eventReportRes, eventReportRes,  
+[2013-05-03 13:27:32,442][DEBUG][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - sent xml with msg(s) superviseRes, eventReportRes, eventReportRes,  
+[2013-05-03 13:27:32,445][TRACE][IccaSendState.process()                           ] CALL#1 CAP2_MOC SID 14100800000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>14100800000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<superviseRes>
+		  <invokeId>2</invokeId>
+			<usedTime>1000</usedTime>
+			<callActive>false</callActive>
+		</superviseRes>
+		<eventReportRes>
+		  <invokeId>3</invokeId>
+			<disconnectCalled monitorMode="Interrupt"/>
+			<eventTimeStamp>2013-05-03T08:27:32.437+1200</eventTimeStamp>
+		</eventReportRes>
+		<eventReportRes>
+		  <invokeId>4</invokeId>
+			<disconnectCalling monitorMode="Interrupt"/>
+			<eventTimeStamp>2001-12-17T09:30:47.000Z</eventTimeStamp>
+		</eventReportRes>
+	</messages>
+</iSig>
+
+ 
+[2013-05-03 13:27:32,475][WARN ][CallContextMessagesDispatcher.dispatchInputMessage()] message received highly delayed from JMS broker: transportOnlyLatency=129964ms (jmsTimestamp=13:25:22.511 UTC, receivedTimestamp=13:27:32.475 UTC) msg=<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>14100800000</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>3</requestSequenceNr>
+      <cause>32</cause>
+    </release>
+  </messages>
+</iSig>
+ 
+[2013-05-03 13:27:32,489][DEBUG][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - got xml with responseLatency=45ms and transportOnlyLatency=129964 (jmsTimestamp=13:25:22.511 UTC, receivedTimestamp=13:27:32.475 UTC) and Msg(s) release 
+[2013-05-03 13:27:32,490][WARN ][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - transportOnlyLatency (129964ms) of received msg exceeded warning level (2000ms 
+[2013-05-03 13:27:32,493][TRACE][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 14100800000 - Expectation of file /opt/callsGenerator/workspaces/TB_VirginChile/testcases/900_moc_1s_rel_cdpn/5_scp_moc_hplmn_rel.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>1</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>3</requestSequenceNr>
+      <cause>32</cause>
+    </release>
+  </messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>14100800000</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <release>
+      <requestSequenceNr>3</requestSequenceNr>
+      <cause>32</cause>
+    </release>
+  </messages>
+</iSig>
+ 
+[2013-05-03 13:27:32,494][INFO ][CallContextMessagesDispatcher.callTerminated()    ] CALL#1 CAP2_MOC SID 14100800000 closed 
+[2013-05-03 13:27:32,494][INFO ][SessionLogger.callClosed()                        ] Single Call Session END 

@@ -1,0 +1,226 @@
+[2015-07-06 13:05:01,173][INFO ][..m.c.c.ContextComponentRAMLockfreeImpl           ][][][][][] Context count: [0]
+[2015-07-06 13:05:02,303][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075600000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Forwarding
+MessageType: ISIG_reportNotification
+InvokeId: 0
+BearerType: Voice
+Time: Mon Jul 06 13:05:02 UTC 2015
+CalledPartyState: null
+ForwardingPending: false
+IMSI: 530052041010000
+ServiceKey: 50
+ReferenceNumber: 0001ABFF0E
+CalledPartyAddress: 642041010200|International|E164
+CallingPartyAddress: 642041010000|International|E164
+SuppressNumber: false
+RedirectingPartyAddress: 642041010000|International|E164
+RedirectingInformation: 
+RedirectingIndicator: callDiversion
+OriginalRedirectionReasons: unknownOrNotAvailable
+RedirectingCounter: 1
+RedirectingReason: unconditional
+VLRAddress: null
+MSCAddress: 64278|International|E164
+GMSCAddress: 64278|International|E164
+SMSCAddress: null
+MessageTypeIndicator: null]]
+[2015-07-06 13:05:02,304][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:02,311][INFO ][..m.c.s.c.n.NumberNormalizationFeatureImpl        ][][-][-][CID:numberNormalizationCallingParty][ASID:5075600000:0:0] Address [642041010000|International|E164
+SuppressNumber: false] not normalized according to filter decision!
+[2015-07-06 13:05:02,312][INFO ][..m.c.s.c.n.NumberNormalizationFeatureImpl        ][][-][-][CID:numberNormalizationRedirectingParty][ASID:5075600000:0:0] Address [642041010000|International|E164] not normalized according to filter decision!
+[2015-07-06 13:05:02,361][ERROR][..m.c.s.SubscriberProfileStoreCRCEImpl            ][][][][][] An internal infrastructure error ocoured while fetching the profile for subscriber with IMSI [530052041010000]!
+org.jboss.remoting.CannotConnectException: Can not get connection to server. Problem establishing socket connection for InvokerLocator [socket://app-crce01:9060/?timeout=5000]
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.transport(MicroSocketClientInvoker.java:831)
+	at org.jboss.remoting.MicroRemoteClientInvoker.invoke(MicroRemoteClientInvoker.java:167)
+	at org.jboss.remoting.Client.invoke(Client.java:1917)
+	at org.jboss.remoting.Client.invoke(Client.java:768)
+	at org.jboss.remoting.Client.invoke(Client.java:756)
+	at com.inewcs.remoting.ClusteredTransporterClient.invoke(ClusteredTransporterClient.java:392)
+	at com.sun.proxy.$Proxy18.getSubscriberProfileByImsi(Unknown Source)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileStoreCRCEImpl.readSubscriberProfileByImsi(SubscriberProfileStoreCRCEImpl.java:212)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileComponentImpl.getSubscriberProfileByImsi(SubscriberProfileComponentImpl.java:137)
+	at com.inewcs.mvno.infrastructureproxy.profile.InfrastructureProxyProfileImpl$MnpRunnableGetProfileByImsi.run(InfrastructureProxyProfileImpl.java:367)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:724)
+Caused by: java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at org.jboss.remoting.transport.socket.SocketClientInvoker.connect(SocketClientInvoker.java:289)
+	at org.jboss.remoting.transport.socket.SocketClientInvoker.createSocket(SocketClientInvoker.java:206)
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.getConnection(MicroSocketClientInvoker.java:1165)
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.transport(MicroSocketClientInvoker.java:816)
+	... 15 more
+[2015-07-06 13:05:02,367][ERROR][..m.c.s.SubscriberProfileComponentImpl            ][][][][][] Error while fetching subscriber profile from store [CRCE]
+com.inewcs.mvno.components.subscriberprofile.SubscriberProfileInfrastructureException: An internal infrastructure error ocoured while fetching the profile for subscriber with IMSI [530052041010000]!
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileStoreCRCEImpl.readSubscriberProfileByImsi(SubscriberProfileStoreCRCEImpl.java:238)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileComponentImpl.getSubscriberProfileByImsi(SubscriberProfileComponentImpl.java:137)
+	at com.inewcs.mvno.infrastructureproxy.profile.InfrastructureProxyProfileImpl$MnpRunnableGetProfileByImsi.run(InfrastructureProxyProfileImpl.java:367)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:724)
+[2015-07-06 13:05:02,369][WARN ][..c.p.c.p.CurrentValuePerformanceObjectImpl       ][][][][][] PerformanceState was overridden to [CRITICAL]!
+[2015-07-06 13:05:02,373][INFO ][..m.c.s.SubscriberProfileStoreFileImpl            ][][][][][] Succesfully fetched subscriber profile for IMSI [530052041010000] from file system!
+[2015-07-06 13:05:02,374][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ProfileResponse]
+[2015-07-06 13:05:02,376][INFO ][..m.c.s.c.n.NumberNormalizationFeatureImpl        ][][-][-][CID:numberNormalizationCalledParty][ASID:5075600000:0:0] Address [642041010200|International|E164] not normalized according to filter decision!
+[2015-07-06 13:05:02,380][INFO ][..m.c.s.v.c.e.o.b.InitialCRCERequestExitFeatureImpl][][-][-][CID:initialCRCERequestExit][ASID:5075600000:0:0] Initial CRCE request exit!
+[2015-07-06 13:05:02,381][DEBUG][IPROT_TRACING                                     ][][-][-][][] [|->][CMD [ConnectorMetaData: CorrelationId: null], Delay [2ns], M [Version: 1.0
+SessionId: 5075600000
+Application: IN
+SessionBeginTimeStamp: Mon Jul 06 13:05:02 UTC 2015
+MessageType: ICCA_reservationReq
+MessageSequenceNr: 0
+TrafficType: Forwarding
+MessageTypeIndicator: null
+Imsi: 530052041010000
+SubscriberId: 45758235
+CallingParty: 642041010000|International|E164
+SuppressNumber: false
+CalledParty: 642041010200|International|E164
+BearerType: Voice
+StartTime: Mon Jul 06 13:05:02 UTC 2015
+MaxCallCost: 0
+AccumulatedDuration: 0
+AccumulatedData: 0
+LongSession: true
+SubscriberLocation: 64278
+SubscriberLocationNumber: null
+SubscriberLocationDetailedId: null
+ReferenceNumber: 0001ABFF0E
+Roaming: false
+Account: null
+APN: null
+NumberOfSegments: null
+ExpiryDate: null
+RatingGroup: null
+ApplSessionId: 5075600000:0:0
+NetworkProtocolId: null]]
+[2015-07-06 13:05:04,880][WARN ][..m.c.c.w.WatchdogServiceImpl$WatchdogWorker      ][][][][][] Watchdog fired! Identifier [5075600000:0:0:CRCE;5075600000:0:0;CRCE;443017524093531;CAPv2], Delay of [0.258716ms]
+[2015-07-06 13:05:05,219][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:05,355][INFO ][..m.c.s.v.c.e.o.b.InitialGrantedTimeoutResponseExitFeatureImpl][][-][-][CID:initialGrantedTimeoutResponseExit][ASID:5075600000:0:0] RequestParameters: ConnectorMetaData: CN [iSigFan], SID [null], AdditionalInfo [];CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560
+[2015-07-06 13:05:05,380][INFO ][..m.c.s.v.c.e.o.b.InitialGrantedTimeoutResponseExitFeatureImpl][][-][-][CID:initialGrantedTimeoutResponseExit][ASID:5075600000:0:0] Initial granted timeout response exit!
+[2015-07-06 13:05:05,382][DEBUG][IPROT_TRACING                                     ][][][][][] [<-|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560], Delay [25ns], M [Version: 1ProviderId: 1
+SessionId: 5075600000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Forwarding
+MessageType: ISIG_reportNotificationAck
+MessageType: ISIG_superviseReq
+iSigRequestSequenceNr: 0
+Time: 180000
+ReleaseAfterTimeExpires: true
+PlayWarningTone: false
+MessageType: ISIG_eventReportReq
+RequestSequenceNr: 1
+Event: 
+EventType: ISIG_eventReportRes_routeSelectFailure
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.RouteSelectFailure
+Event: 
+EventType: ISIG_eventReportRes_busy
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Busy
+Event: 
+EventType: ISIG_eventReportRes_noAnswer
+MonitorType: [Interrupt]
+NoAnswerTimer: [180000]
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.NoAnswer
+Event: 
+EventType: ISIG_eventReportRes_answer
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Answer
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalling
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalling
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalled
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalled
+Event: 
+EventType: ISIG_eventReportRes_abandon
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Abandon
+MessageType: ISIG_continueProcessing
+RequestSequenceNr: 2
+MoreEventsExpected: true
+InterruptEventReceived: true]]
+[2015-07-06 13:05:06,501][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075600000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Forwarding
+MessageType: ISIG_eventReportRes
+Event: 
+EventType: ISIG_eventReportRes_answer
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Answer
+EventTimeStamp: Mon Jul 06 13:05:06 UTC 2015
+InvokeId: 1]]
+[2015-07-06 13:05:06,502][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:06,526][INFO ][..m.c.s.v.c.e.o.f.AnswerExitFallbackFeatureImpl   ][][-][-][CID:answerExitFallback][ASID:5075600000:0:0] Answer fallback exit!
+[2015-07-06 13:05:07,527][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075600000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Forwarding
+MessageType: ISIG_superviseRes
+InvokeId: 2
+UsedTime: 1000
+CallActive: false
+MessageType: ISIG_eventReportRes
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalled
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalled
+EventTimeStamp: Mon Jul 06 13:05:07 UTC 2015
+InvokeId: 3
+MessageType: ISIG_eventReportRes
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalling
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalling
+EventTimeStamp: Mon Jul 06 13:05:07 UTC 2015
+InvokeId: 4]]
+[2015-07-06 13:05:07,528][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:07,539][INFO ][..m.c.s.v.c.e.o.f.FinishedExitFallbackFeatureImpl ][][-][-][CID:finishedAfterAnswerExitFallback][ASID:5075600000:0:0] Finished fallback exit!
+[2015-07-06 13:05:07,540][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:07,545][INFO ][..m.c.s.v.c.e.o.a.EventReportResDisconnectExitFeatureImpl][][-][-][CID:eventReportResDisconnectExit][ASID:5075600000:0:0] Event report reponse disconnect exit!
+[2015-07-06 13:05:07,547][DEBUG][IPROT_TRACING                                     ][][][][][] [<-|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507560], Delay [1ns], M [Version: 1ProviderId: 1
+SessionId: 5075600000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Forwarding
+MessageType: ISIG_release
+RequestSequenceNr: 3
+Cause: 31]]
+[2015-07-06 13:05:07,551][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:05:07,552][ERROR][..m.c.s.c.c.ContextFeatureReadImpl                ][][-][-][CID:readContext][ASID:5075600000:0:0] Error while reading context with id [5075600000:0] for message type [ISIG_eventReportRes_disconnectCalling] -> no such context!

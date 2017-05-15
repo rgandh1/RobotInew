@@ -1,0 +1,66 @@
+[2016-01-27 00:36:05,639][  INFO][467][                     TraceInterceptorImpl.invoke()] reserve(DataReservationRequest [accumulatedData=0, accumulatedDuration=0, apn=inew.com, bearerType=GPRS, calledParty=null, callingParty=525516001000, header=[sessionId=5437878612467300809, sessionBeginTimeStamp=Wed Jan 27 00:36:05 UTC 2016, chargingType=REGULAR], imsi=334030880001000, location=null, referenceNumber=1687433233, roaming=true, startTime=Wed Jan 27 00:36:05 UTC 2016, subscriberId=null, ratingGroup=6])
+[2016-01-27 00:36:05,705][  INFO][467][PccNotificationSender.sendPolicyChangedNotification()] Policy for subscriber has changed, sending the notification: [subscriberId=35843, notification=PolicyActivatedNotification [pccRuleId=Rule_1, ratingGroup=6, remainingBytes=null, validTo=null]]
+[2016-01-27 00:36:05,705][WARNING][203][              InternalPolicyUpdateListener$1.run()] Failed to send a PCRF policy update notification: null
+[2016-01-27 00:36:05,724][  INFO][467][                     TraceInterceptorImpl.invoke()] reserve(...): DataReservationResponse [header=[sessionId=5437878612467300809, sessionBeginTimeStamp=Wed Jan 27 00:36:05 UTC 2016, chargingType=REGULAR], grantedTime=900000, grantedUnits=1014784, lastSegment=true, reservationId=R35843T1453855865657@656267601051254~-3488436198906867136, reservedAccounts=[Account: id=35844, amount=100000, unitId=161], responseCode=OK] [83ms]
+[2016-01-27 00:36:05,726][  INFO][145][NotificationProfileServiceImpl.getNotificationProfile()] Getting notification profile [SubscriberMatcher [msisdn=525516001000]]
+[2016-01-27 00:36:05,727][FINEST][145][   NotificationProfileServiceImpl.findSubscriber()] Searching subscriber by MSISDN [SubscriberMatcher [msisdn=525516001000]]
+[2016-01-27 00:36:05,736][  INFO][145][        NotificationProfileServiceImpl$1.execute()] Returning NotificationProfile [subscriberHeader=SubscriberHeader [providerId=1, subscriberId=35843, subscriberType='PREPAID', subscriberState='ACTIVE', simType='null', language=[Language id=3 code=SPA], msisdn='525516001000', imsi='334030880001000'], notificationPreferences={}]
+[2016-01-27 00:36:05,784][WARNING][875][                    NotificationSenderImpl$2.run()] Failed to send subscriber notification [subscriberId=35843, msisdn=525516001000]
+java.lang.reflect.UndeclaredThrowableException
+	at $Proxy84.send(Unknown Source)
+	at com.inewcs.crce.plugins.notifications.service.impl.NotificationSenderImpl$2.run(NotificationSenderImpl.java:184)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.GeneratedMethodAccessor617.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at com.inewcs.crce.integration.impl.IntegrationImpl$ClassLoaderSwitchingInvocationHandler.invoke(IntegrationImpl.java:62)
+	... 8 more
+Caused by: com.inewcs.mvno.subscribernotification.api.exceptions.NoSuchNotificationException: No such notification [providerId=1, notificationKey=crce.policy.activated.Rule_1]
+	at com.inewcs.mvno.subscribernotification.service.util.Defense.defendNullNotification(Defense.java:61)
+	at com.inewcs.mvno.subscribernotification.service.DefaultSubscriberNotificationService.send(DefaultSubscriberNotificationService.java:122)
+	at sun.reflect.GeneratedMethodAccessor100.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:317)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:157)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:85)
+	at com.inew.mvno.server.tracing.TracingInterceptor.trace(TracingInterceptor.java:88)
+	at sun.reflect.GeneratedMethodAccessor103.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:621)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:610)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:68)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:207)
+	at $Proxy56.send(Unknown Source)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.jboss.remoting.transporter.TransporterHandler.invoke(TransporterHandler.java:87)
+	at org.jboss.remoting.ServerInvoker.invoke(ServerInvoker.java:891)
+	at org.jboss.remoting.transport.socket.ServerThread.completeInvocation(ServerThread.java:744)
+	at org.jboss.remoting.transport.socket.ServerThread.processInvocation(ServerThread.java:697)
+	at org.jboss.remoting.transport.socket.ServerThread.dorun(ServerThread.java:551)
+	at org.jboss.remoting.transport.socket.ServerThread.run(ServerThread.java:232)
+	at org.jboss.remoting.MicroRemoteClientInvoker.invoke(MicroRemoteClientInvoker.java:213)
+	at org.jboss.remoting.Client.invoke(Client.java:1927)
+	at org.jboss.remoting.Client.invoke(Client.java:770)
+	at org.jboss.remoting.Client.invoke(Client.java:758)
+	at com.inewcs.remoting.ClusteredTransporterClient.invoke(Unknown Source)
+	at $Proxy84.send(Unknown Source)
+	... 12 more
+[2016-01-27 00:36:11,951][  INFO][468][                     TraceInterceptorImpl.invoke()] continueReservation(DataContinueRequest [header=[sessionId=5437878612467300809, sessionBeginTimeStamp=Wed Jan 27 00:36:05 UTC 2016, chargingType=REGULAR], reservationId=R35843T1453855865657@656267601051254~-3488436198906867136, accumulatedData=1024000, accumulatedDuration=6291, bearerType=GPRS, imsi=334030880001000, subscriberId=null, callingParty=525516001000, calledParty=null, suppressNumber=false, startTime=Wed Jan 27 00:36:05 UTC 2016, location=null, roaming=true, referenceNumber=1687433233, apn=inew.com, ratingGroup=6, strategy=PESSIMISTIC, usedUnits=1024000, usedTime=0, trafficType=data])
+[2016-01-27 00:36:11,972][  INFO][468][             DataCommitClosure.commitReservation()] Charges: sessionId=5437878612467300809, [ChargedInfo [account=35844, amount=100000, unit=161, descriptor=15831640]]
+[2016-01-27 00:36:11,987][  INFO][ 97][      AccountNotificationListener.accountChanged()] Not a main account or no expiry change happened [subscriber=35,843, account=com.inewcs.crce.accounting.services.impl.ReadOnlyAccountProxy@5f462cc2]
+[2016-01-27 00:36:11,997][  INFO][468][                     TraceInterceptorImpl.invoke()] continueReservation(...): DataContinueResponse [reservationResponse=DataReservationResponse [header=[sessionId=5437878612467300809, sessionBeginTimeStamp=Wed Jan 27 00:36:05 UTC 2016, chargingType=REGULAR], grantedTime=900000, grantedUnits=0, lastSegment=true, reservationId=R35843T1453855871975@656273918626984~-775540401047104396, reservedAccounts=[], responseCode=INSUFFICIENT_FUNDS], chargedAccounts=[Account: id=35844, amount=100000, unitId=161]] [44ms]

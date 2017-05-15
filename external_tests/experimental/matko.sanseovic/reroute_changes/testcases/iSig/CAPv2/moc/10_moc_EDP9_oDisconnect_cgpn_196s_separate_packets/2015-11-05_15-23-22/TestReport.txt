@@ -1,0 +1,202 @@
+Test Case: 
+
+  F:\workspace\calls_gen\workspaces\CG_TB25_MTEL_PPLIGHT\testcases\iSig\CAPv2\moc\10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets
+
+
+Call Flow:
+
+            SSP                                                 SCP
+     (SessionGenerator)                                            
+             |                                                   |
+  01)   0:00 |-------------------------------------------------->|
+             |reportNotification                                 |
+             |                                                   |
+  02)        |<--------------------------------------------------|
+             |                              reportNotificationAck|
+             |                                       superviseReq|
+             |                                     eventReportReq|
+             |                                 continueProcessing|
+             |                                                   |
+  03)   0:01 |-------------------------------------------------->|
+             |eventReportRes                                     |
+             |                                                   |
+  04)   3:01 |-------------------------------------------------->|
+             |superviseRes                                       |
+             |                                                   |
+  05)        |<--------------------------------------------------|
+             |                                       superviseReq|
+             |                                                   |
+  06)   3:17 |-------------------------------------------------->|
+             |superviseRes                                       |
+             |eventReportRes                                     |
+             |                                                   |
+  07)        |<--------------------------------------------------|
+             |                                            release|
+             |                                                   |
+
+
+Subscriber of IDP message:
+
+  IMSI:     @CG: callSubscriberImsi()
+  MSISDN: @CG: callSubscriberMsisdn()
+
+
+Charging Infos:
+
+  TimeStamp: @CG: currentTime(+00:00:00)
+  UsedTime:  196000 ms
+
+
+--------------------------------------------------
+
+Test Result: 
+
+  05.11.2015 15:23:22
+
+    Call Flow: 
+
+      MISMATCH on message   02)
+
+[05.11.15 15:23:22][DEBUG][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 151400000 [6ms](gettingRidTime 3ms) - sent xml with msg(s) reportNotification, 
+[05.11.15 15:23:22][TRACE][IsigSendState.process()                           ] CALL#1 CAP2_MOC SID 151400000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+	<version>1</version>
+	<sessionId>151400000</sessionId>
+	<networkProtocolId>CAPv2</networkProtocolId>
+	<trafficType>Originating</trafficType>
+	<messages>
+		<reportNotification>
+			<invokeId>0</invokeId>
+			<bearerType>Voice</bearerType>
+			<time>2015-11-05T14:23:22.32+00:00</time>
+			<imsi>232201000000021</imsi>
+			<serviceKey>50</serviceKey>
+			<referenceNumber>0001ABFF0E</referenceNumber>
+			<calledPartyAddress>
+				<address>436677701000</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</calledPartyAddress>
+			<callingPartyAddress>
+				<address>436677701011</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+				<suppressNumber>false</suppressNumber>
+			</callingPartyAddress>
+			<vlrAddress>
+				<address>43667770</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</vlrAddress>
+			<mscAddress>
+				<address>43667770</address>
+				<natureOfAddress>International</natureOfAddress>
+				<numberingPlan>E164</numberingPlan>
+			</mscAddress>
+		</reportNotification>
+	</messages>
+</iSig>
+
+
+[05.11.15 15:23:22][DEBUG][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 151400000 - got xml with responseLatency=179ms and transportOnlyLatency=2 (jmsTimestamp=14:23:22.504 UTC (compensated by 2266ms), receivedTimestamp=14:23:22.506 UTC) and Msg(s) reportNotificationAck, superviseReq, eventReportReq, routeReq
+[05.11.15 15:23:22][ERROR][IsigInputValidatingState.process()                ] CALL#1 CAP2_MOC SID 151400000 [0ms] - Expectation of file F:\workspace\calls_gen\workspaces\CG_TB25_MTEL_PPLIGHT\testcases\iSig\CAPv2\moc\10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets/02_scp_moc_hplmn_ac_rrbe_cue.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>[checked by CG]</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <continueProcessing>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <interruptEventReceived>true</interruptEventReceived>
+    </continueProcessing>
+  </messages>
+</iSig>
+
+is NOT satisfied by the received msg:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/isigMessages.xsd">
+  <version>1</version>
+  <providerId>1</providerId>
+  <sessionId>151400000</sessionId>
+  <applSessionId>moc:00:default:router</applSessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>180000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <routeReq>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <destinationAddress>
+        <address>9648486677701000</address>
+        <natureOfAddress>National</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+    </routeReq>
+  </messages>
+</iSig>
+
+due to TagsMissmatch
+Call Variables: 
+
+[05.11.15 15:23:22][DEBUG][IsigCancelingState.process()                      ] CALL#1 CAP2_MOC SID 151400000 - sent ABORT msg to neatly close session on IN with sid 151400000 with msg(s) callAborted
+[05.11.15 15:23:22][TRACE][IsigCancelingState.process()                      ] CALL#1 CAP2_MOC SID 151400000 - whole sent ABORT msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>151400000</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <callAborted>
+      <abortReason>noReasonGiven</abortReason>
+    </callAborted>
+  </messages>
+</iSig>
+
+[05.11.15 15:23:22][ERROR][TerminatedState.Constructor                       ] CALL#1 CAP2_MOC SID 151400000 - call canceled: F:\workspace\calls_gen\workspaces\CG_TB25_MTEL_PPLIGHT\testcases\iSig\CAPv2\moc\10_moc_EDP9_oDisconnect_cgpn_196s_separate_packets
+
+
+=== END OF REPORT ================================

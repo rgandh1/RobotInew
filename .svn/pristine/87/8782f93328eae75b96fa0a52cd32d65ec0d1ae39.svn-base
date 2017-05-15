@@ -1,0 +1,108 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           DatabaseLibrary
+Library           SSHLibrary
+
+*** Variables ***
+${MSGIP}          10.105.190.157:13013
+${BROWSER}        firefox
+${DELAY}          1.0
+${MESSAGEURL}     http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT}
+${MESSAGEURL2}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT2}
+${MESSAGEURL3}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT}&coding=1
+${MESSAGEURL4}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT2}&coding=1
+${MESSAGEURL5}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT}&coding=2&charset=utf8
+${MESSAGEURL6}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT2}&coding=2&charset=utf8
+${MESSAGEURL7}    http://${MSGIP}/cgi-bin/sendsms?user=foo&pass=bar&to=${MSISDN}&text=${TEXT}&coding=1&dlr-mask=19&alt-dcs=1
+${MSISDN}         525590000100
+${TEXT}           This+is+a+test+message
+${TEXT2}          This+is+a+concatenated+message+used+for+SMPPGW+tests+with+more+than+one+segment+and+exactly+with+180+(one+hundred+eighty)+characters+used.+For+this+limit+we+really+need+these+words
+${SMPPGWSERVERIP}    10.105.150.151
+${SMPPUSER}       ulticom
+${SMPPPASSWORD}    ulticom1
+${LOGPATH}        /var/log/smppgw
+${MSGLOGPATH}     /tmp
+${DOWNLOADTO}     /opt/robot/robotworkspace/robot_testsuites/experimental/mat/SMPP/Logs/
+
+*** Keywords ***
+Collect logs to file
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${LOGPATH}
+    Write    tail -f smppgw.log | tee /tmp/smppgw_test.log
+
+Download log(1)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_1.log
+    Get File    ${MSGLOGPATH}/smppgw_test_1.log    ${DOWNLOADTO}
+
+Send simple Message(7bit)
+    Open Browser    ${MESSAGEURL}    ${BROWSER}
+
+Download log(2)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_2.log
+    Get File    ${MSGLOGPATH}/smppgw_test_2.log    ${DOWNLOADTO}
+
+Send concatenated Message(7bit)
+    Open Browser    ${MESSAGEURL2}    ${BROWSER}
+
+Download log(3)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_3.log
+    Get File    ${MSGLOGPATH}/smppgw_test_3.log    ${DOWNLOADTO}
+
+Send simple Message(8bit)
+    Open Browser    ${MESSAGEURL3}    ${BROWSER}
+
+Download log(4)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_4.log
+    Get File    ${MSGLOGPATH}/smppgw_test_4.log    ${DOWNLOADTO}
+
+Send concatenated Message(8bit)
+    Open Browser    ${MESSAGEURL4}    ${BROWSER}
+
+Download log(5)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_5.log
+    Get File    ${MSGLOGPATH}/smppgw_test_5.log    ${DOWNLOADTO}
+
+Send simple Message(UCS2)
+    Open Browser    ${MESSAGEURL5}    ${BROWSER}
+
+Download log(6)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_6.log
+    Get File    ${MSGLOGPATH}/smppgw_test_6.log    ${DOWNLOADTO}
+
+Send concatenated Message(UCS2)
+    Open Browser    ${MESSAGEURL6}    ${BROWSER}
+
+Download log(7)
+    Open Connection    ${SMPPGWSERVERIP}    Port=22    prompt=$
+    login    ${SMPPUSER}    ${SMPPPASSWORD}
+    Write    cd ${MSGLOGPATH}
+    Write    mv smppgw_test.log smppgw_test_7.log
+    Get File    ${MSGLOGPATH}/smppgw_test_7.log    ${DOWNLOADTO}
+
+Send simple Message(Binary SMS)
+    Open Browser    ${MESSAGEURL7}    ${BROWSER}

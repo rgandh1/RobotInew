@@ -1,0 +1,1626 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20150508 12:45:23.725">
+<suite source="/opt/robot/robotworkspace/robot_testsuites" id="s1" name="Robot Testsuites">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic" id="s1-s1" name="Basic">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MFC_OffNet_30s" id="s1-s1-s1" name="MFC OffNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MFC_OffNet_30s/MFC_OffNet30s-robot-suite.txt" id="s1-s1-s1-s1" name="MFC OffNet30s-robot-suite">
+<test id="s1-s1-s1-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:26.096" starttime="20150508 12:45:25.492"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:26.118" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:26.885" level="INFO">Read output: Last login: Mon Mar 31 07:32:10 2014 from video.inew-cs.com
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:26.887" starttime="20150508 12:45:26.108"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:26.913" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:26.915" starttime="20150508 12:45:26.889"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:27.077" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:27.088" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:27.086" starttime="20150508 12:45:26.924"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:27.101" starttime="20150508 12:45:27.096"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:27.121" starttime="20150508 12:45:27.109"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:27.123" starttime="20150508 12:45:25.475"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:29.695" starttime="20150508 12:45:27.166"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:29.712" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:34.620" level="FAIL">No match found for '$' in 3 seconds
+Output:
+Last login: Tue Jun 17 08:17:17 2014 from 10.189.11.226
+id: cannot find name for group ID 20007
+.</msg>
+<status status="FAIL" endtime="20150508 12:45:34.623" starttime="20150508 12:45:29.704"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:34.628" starttime="20150508 12:45:27.133"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:34.632" starttime="20150508 12:45:25.456">No match found for '$' in 3 seconds
+Output:
+Last login: Tue Jun 17 08:17:17 2014 from 10.189.11.226
+id: cannot find name for group ID 20007
+.</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:34.645" starttime="20150508 12:45:24.652"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:34.668" starttime="20150508 12:45:24.568"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MFC_OnNet_30s" id="s1-s1-s2" name="MFC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MFC_OnNet_30s/MFC_OnNet30s-robot-suite.txt" id="s1-s1-s2-s1" name="MFC OnNet30s-robot-suite">
+<test id="s1-s1-s2-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:34.904" starttime="20150508 12:45:34.858"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:34.919" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:35.406" level="INFO">Read output: Last login: Fri May  8 10:45:26 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:35.409" starttime="20150508 12:45:34.906"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:35.427" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:35.430" starttime="20150508 12:45:35.415"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:35.581" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:35.588" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:35.586" starttime="20150508 12:45:35.433"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:35.602" starttime="20150508 12:45:35.594"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:35.614" starttime="20150508 12:45:35.605"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:35.617" starttime="20150508 12:45:34.845"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:36.106" starttime="20150508 12:45:35.639"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:36.119" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:36.762" level="INFO">Read output: Last login: Fri May  8 10:45:31 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:36.764" starttime="20150508 12:45:36.112"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:36.779" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:36.781" starttime="20150508 12:45:36.767"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:37.502" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:37.507" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:37.505" starttime="20150508 12:45:36.784"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:37.563" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:37.565" starttime="20150508 12:45:37.509"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:37.569" starttime="20150508 12:45:35.622"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:37.575" starttime="20150508 12:45:34.832">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:37.594" starttime="20150508 12:45:34.716"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:37.635" starttime="20150508 12:45:34.683"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_International_30s" id="s1-s1-s3" name="MOC International 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_International_30s/MOC_International30s-robot-suite.txt" id="s1-s1-s3-s1" name="MOC International30s-robot-suite">
+<test id="s1-s1-s3-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:37.995" starttime="20150508 12:45:37.948"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:38.008" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:38.420" level="INFO">Read output: Last login: Fri May  8 10:45:35 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:38.423" starttime="20150508 12:45:37.998"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:38.441" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:38.443" starttime="20150508 12:45:38.429"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:38.597" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:38.601" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:38.600" starttime="20150508 12:45:38.446"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:38.611" starttime="20150508 12:45:38.605"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:38.623" starttime="20150508 12:45:38.614"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:38.627" starttime="20150508 12:45:37.936"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:38.704" starttime="20150508 12:45:38.644"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:38.710" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:41.211" level="INFO">Read output: Last login: Fri May  8 10:45:36 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:41.213" starttime="20150508 12:45:38.706"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:41.229" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:41.230" starttime="20150508 12:45:41.216"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:41.300" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:41.302" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:41.301" starttime="20150508 12:45:41.232"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:41.309" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:41.310" starttime="20150508 12:45:41.303"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:41.312" starttime="20150508 12:45:38.632"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:41.315" starttime="20150508 12:45:37.923">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:41.324" starttime="20150508 12:45:37.731"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:41.342" starttime="20150508 12:45:37.667"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_OffNet_30s" id="s1-s1-s4" name="MOC OffNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_OffNet_30s/MOC_OffNet30s-robot-suite.txt" id="s1-s1-s4-s1" name="MOC OffNet30s-robot-suite">
+<test id="s1-s1-s4-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:41.581" starttime="20150508 12:45:41.528"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:41.591" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:42.064" level="INFO">Read output: Last login: Fri May  8 10:45:38 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:42.067" starttime="20150508 12:45:41.584"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:42.081" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:42.083" starttime="20150508 12:45:42.072"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:42.241" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:42.244" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:42.243" starttime="20150508 12:45:42.086"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:42.249" starttime="20150508 12:45:42.245"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:42.255" starttime="20150508 12:45:42.251"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:42.258" starttime="20150508 12:45:41.517"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:42.397" starttime="20150508 12:45:42.286"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:42.405" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:43.041" level="INFO">Read output: Last login: Fri May  8 10:45:40 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:43.042" starttime="20150508 12:45:42.399"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:43.052" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:43.053" starttime="20150508 12:45:43.045"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:43.142" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:43.145" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:43.143" starttime="20150508 12:45:43.054"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:43.152" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:43.153" starttime="20150508 12:45:43.146"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:43.155" starttime="20150508 12:45:42.263"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:43.158" starttime="20150508 12:45:41.505">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:43.167" starttime="20150508 12:45:41.390"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:43.185" starttime="20150508 12:45:41.356"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_OnNet_30s" id="s1-s1-s5" name="MOC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MOC_OnNet_30s/MOC_OnNet30s-robot-suite.txt" id="s1-s1-s5-s1" name="MOC OnNet30s-robot-suite">
+<test id="s1-s1-s5-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:43.414" starttime="20150508 12:45:43.357"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:43.419" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:43.841" level="INFO">Read output: Last login: Fri May  8 10:45:41 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:43.843" starttime="20150508 12:45:43.416"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:43.855" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:43.857" starttime="20150508 12:45:43.846"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:44.023" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:44.031" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:44.026" starttime="20150508 12:45:43.860"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:44.041" starttime="20150508 12:45:44.034"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:44.049" starttime="20150508 12:45:44.042"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:44.052" starttime="20150508 12:45:43.347"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:44.136" starttime="20150508 12:45:44.075"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:44.146" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:44.619" level="INFO">Read output: Last login: Fri May  8 10:45:42 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:44.621" starttime="20150508 12:45:44.139"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:44.635" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:44.637" starttime="20150508 12:45:44.624"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:44.687" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:44.691" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:44.690" starttime="20150508 12:45:44.639"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:44.705" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:44.707" starttime="20150508 12:45:44.694"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:44.711" starttime="20150508 12:45:44.057"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:44.714" starttime="20150508 12:45:43.336">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:44.732" starttime="20150508 12:45:43.227"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:44.766" starttime="20150508 12:45:43.197"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MTC_OnNet_30s" id="s1-s1-s6" name="MTC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/MTC_OnNet_30s/MTC_OnNet30s-robot-suite.txt" id="s1-s1-s6-s1" name="MTC OnNet30s-robot-suite">
+<test id="s1-s1-s6-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:45.056" starttime="20150508 12:45:44.995"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:45.065" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:45.511" level="INFO">Read output: Last login: Fri May  8 10:45:43 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:45.514" starttime="20150508 12:45:45.059"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:45.527" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:45.529" starttime="20150508 12:45:45.516"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:45.684" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:45.690" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:45.687" starttime="20150508 12:45:45.531"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:45.701" starttime="20150508 12:45:45.694"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:45.712" starttime="20150508 12:45:45.703"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:45.713" starttime="20150508 12:45:44.980"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:45.849" starttime="20150508 12:45:45.723"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:45.859" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:46.531" level="INFO">Read output: Last login: Fri May  8 10:45:44 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:46.533" starttime="20150508 12:45:45.852"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:46.542" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:46.543" starttime="20150508 12:45:46.535"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:46.640" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:46.643" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:46.641" starttime="20150508 12:45:46.544"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:46.650" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:46.651" starttime="20150508 12:45:46.644"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:46.653" starttime="20150508 12:45:45.716"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:46.655" starttime="20150508 12:45:44.970">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:46.664" starttime="20150508 12:45:44.846"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:46.680" starttime="20150508 12:45:44.789"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMFC_OnNet_30s" id="s1-s1-s7" name="rMFC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMFC_OnNet_30s/rMFC_OnNet30s-robot-suite.txt" id="s1-s1-s7-s1" name="rMFC OnNet30s-robot-suite">
+<test id="s1-s1-s7-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:46.912" starttime="20150508 12:45:46.830"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:46.921" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:47.386" level="INFO">Read output: Last login: Fri May  8 10:45:45 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:47.387" starttime="20150508 12:45:46.913"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:47.397" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:47.398" starttime="20150508 12:45:47.390"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:47.555" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:47.558" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:47.557" starttime="20150508 12:45:47.399"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:47.564" starttime="20150508 12:45:47.560"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:47.570" starttime="20150508 12:45:47.565"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:47.572" starttime="20150508 12:45:46.823"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:47.640" starttime="20150508 12:45:47.591"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:47.649" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:48.092" level="INFO">Read output: Last login: Fri May  8 10:45:46 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:48.094" starttime="20150508 12:45:47.643"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:48.110" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:48.112" starttime="20150508 12:45:48.099"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:48.167" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:48.169" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:48.168" starttime="20150508 12:45:48.114"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:48.175" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:48.176" starttime="20150508 12:45:48.170"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:48.178" starttime="20150508 12:45:47.575"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:48.180" starttime="20150508 12:45:46.815">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:48.189" starttime="20150508 12:45:46.718"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:48.205" starttime="20150508 12:45:46.691"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_International_30s" id="s1-s1-s8" name="rMOC International 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_International_30s/rMOC_International30s-robot-suite.txt" id="s1-s1-s8-s1" name="rMOC International30s-robot-suite">
+<test id="s1-s1-s8-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:48.412" starttime="20150508 12:45:48.351"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:48.416" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:48.863" level="INFO">Read output: Last login: Fri May  8 10:45:47 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:48.866" starttime="20150508 12:45:48.413"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:48.877" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:48.878" starttime="20150508 12:45:48.868"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:49.034" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:49.042" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:49.038" starttime="20150508 12:45:48.881"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:49.052" starttime="20150508 12:45:49.045"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:49.064" starttime="20150508 12:45:49.055"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:49.067" starttime="20150508 12:45:48.344"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:49.193" starttime="20150508 12:45:49.097"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:49.203" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:50.689" level="INFO">Read output: Last login: Fri May  8 10:45:47 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:50.690" starttime="20150508 12:45:49.196"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:50.700" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:50.701" starttime="20150508 12:45:50.693"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:50.812" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:50.814" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:50.813" starttime="20150508 12:45:50.702"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:50.820" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:50.821" starttime="20150508 12:45:50.815"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:50.823" starttime="20150508 12:45:49.072"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:50.826" starttime="20150508 12:45:48.336">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:50.834" starttime="20150508 12:45:48.246"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:50.849" starttime="20150508 12:45:48.220"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_OffNet_30s" id="s1-s1-s9" name="rMOC OffNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_OffNet_30s/rMOC_OffNet30s-robot-suite.txt" id="s1-s1-s9-s1" name="rMOC OffNet30s-robot-suite">
+<test id="s1-s1-s9-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:51.108" starttime="20150508 12:45:51.052"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:51.117" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:51.528" level="INFO">Read output: Last login: Fri May  8 10:45:48 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:51.530" starttime="20150508 12:45:51.111"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:51.543" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:51.545" starttime="20150508 12:45:51.533"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:51.701" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:51.705" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:51.703" starttime="20150508 12:45:51.548"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:51.714" starttime="20150508 12:45:51.708"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:51.726" starttime="20150508 12:45:51.716"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:51.728" starttime="20150508 12:45:51.039"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:51.794" starttime="20150508 12:45:51.743"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:51.804" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:52.214" level="INFO">Read output: Last login: Fri May  8 10:45:50 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:52.217" starttime="20150508 12:45:51.797"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:52.237" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:52.239" starttime="20150508 12:45:52.226"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:52.293" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:52.297" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:52.295" starttime="20150508 12:45:52.241"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:52.309" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:52.312" starttime="20150508 12:45:52.300"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:52.315" starttime="20150508 12:45:51.731"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:52.320" starttime="20150508 12:45:51.024">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:52.334" starttime="20150508 12:45:50.891"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:52.363" starttime="20150508 12:45:50.860"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_OnNet_30s" id="s1-s1-s10" name="rMOC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMOC_OnNet_30s/rMOC_OnNet30s-robot-suite.txt" id="s1-s1-s10-s1" name="rMOC OnNet30s-robot-suite">
+<test id="s1-s1-s10-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:52.602" starttime="20150508 12:45:52.518"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:52.615" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:53.031" level="INFO">Read output: Last login: Fri May  8 10:45:51 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:53.034" starttime="20150508 12:45:52.608"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:53.053" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:53.055" starttime="20150508 12:45:53.039"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:53.204" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:53.206" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:53.206" starttime="20150508 12:45:53.057"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:53.211" starttime="20150508 12:45:53.208"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:53.219" starttime="20150508 12:45:53.212"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:53.220" starttime="20150508 12:45:52.505"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:53.389" starttime="20150508 12:45:53.230"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:53.398" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:54.028" level="INFO">Read output: Last login: Fri May  8 10:45:52 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:54.032" starttime="20150508 12:45:53.392"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:54.047" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:54.049" starttime="20150508 12:45:54.037"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:54.160" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:54.164" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:54.162" starttime="20150508 12:45:54.052"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:54.179" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:54.181" starttime="20150508 12:45:54.169"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:54.184" starttime="20150508 12:45:53.223"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:54.189" starttime="20150508 12:45:52.498">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:54.203" starttime="20150508 12:45:52.409"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:54.232" starttime="20150508 12:45:52.383"></status>
+</suite>
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMTC_OnNet_30s" id="s1-s1-s11" name="rMTC OnNet 30s">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/basic/rMTC_OnNet_30s/rMTC_OnNet30s-robot-suite.txt" id="s1-s1-s11-s1" name="rMTC OnNet30s-robot-suite">
+<test id="s1-s1-s11-s1-t1" name="Run Call">
+<kw type="kw" name="component-verification-resource.Verify CRCE">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:54.488" starttime="20150508 12:45:54.443"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:54.496" level="INFO">Logging into '10.105.180.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:54.912" level="INFO">Read output: Last login: Fri May  8 10:45:52 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:54.915" starttime="20150508 12:45:54.490"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-crce status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:54.925" level="INFO">[m sudo su -c 'service inew-mvno-crce status'</msg>
+<status status="PASS" endtime="20150508 12:45:54.927" starttime="20150508 12:45:54.917"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:55.087" level="INFO">I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation@crce01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:55.092" level="INFO">${CRCESTATUS} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.2.13.23727
+Negret Rating &amp; Charging Engine 5.2.13.23727 is running (PID:14446, Wrapper:STARTED, Java:STARTED)
+CRCE is running.
+[1m[qa_automation...</msg>
+<status status="PASS" endtime="20150508 12:45:55.090" starttime="20150508 12:45:54.930"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>CRCE is running</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:55.101" starttime="20150508 12:45:55.095"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:55.112" starttime="20150508 12:45:55.103"></status>
+</kw>
+<status status="PASS" endtime="20150508 12:45:55.114" starttime="20150508 12:45:54.437"></status>
+</kw>
+<kw type="kw" name="component-verification-resource.Verify IN-MOC">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+<arg>Port=22</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150508 12:45:55.264" starttime="20150508 12:45:55.134"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150508 12:45:55.268" level="INFO">Logging into '10.105.180.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150508 12:45:56.663" level="INFO">Read output: Last login: Fri May  8 10:45:53 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:56.667" starttime="20150508 12:45:55.265"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'</arg>
+</arguments>
+<msg timestamp="20150508 12:45:56.683" level="INFO">[m sudo su -c 'service inew-mvno-corein-service-mo c-1.3.1 status'</msg>
+<status status="PASS" endtime="20150508 12:45:56.685" starttime="20150508 12:45:56.672"></status>
+</kw>
+<kw type="kw" name="${CRCESTATUS} = SSHLibrary.Read Until Prompt">
+<doc>Consumes and returns the server output until the prompt is found.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150508 12:45:56.944" level="INFO">inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<msg timestamp="20150508 12:45:56.945" level="INFO">${CRCESTATUS} = inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$</msg>
+<status status="PASS" endtime="20150508 12:45:56.945" starttime="20150508 12:45:56.687"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${CRCESTATUS}</arg>
+<arg>Service ${IN Vers} is running</arg>
+</arguments>
+<msg timestamp="20150508 12:45:56.951" level="FAIL">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</msg>
+<status status="FAIL" endtime="20150508 12:45:56.952" starttime="20150508 12:45:56.947"></status>
+</kw>
+<status status="FAIL" endtime="20150508 12:45:56.954" starttime="20150508 12:45:55.118"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>FALABELLA_supported</tag>
+<tag>IN_involved</tag>
+<tag>thomas.maikis</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150508 12:45:56.956" starttime="20150508 12:45:54.430">'inew-mvno-corein-service-moc-1.3.1: unrecognized service
+[1m[qa_automation@in-app01.tb08 ~]$' does not contain 'Service 1.3.1 is running'</status>
+</test>
+<doc>Executes a 1 segment MOC call
+Run with arguments:
+--pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:56.963" starttime="20150508 12:45:54.300"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:56.977" starttime="20150508 12:45:54.251"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:57.023" starttime="20150508 12:45:24.486"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150508 12:45:57.118" starttime="20150508 12:45:23.871"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="11">Critical Tests</stat>
+<stat pass="0" fail="11">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" info="" doc="" combined="" fail="11" links="">FALABELLA_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="11" links="">IN_involved</stat>
+<stat pass="0" info="" doc="" combined="" fail="11" links="">thomas.maikis</stat>
+</tag>
+<suite>
+<stat pass="0" id="s1" fail="11" name="Robot Testsuites">Robot Testsuites</stat>
+<stat pass="0" id="s1-s1" fail="11" name="Basic">Robot Testsuites.Basic</stat>
+<stat pass="0" id="s1-s1-s1" fail="1" name="MFC OffNet 30s">Robot Testsuites.Basic.MFC OffNet 30s</stat>
+<stat pass="0" id="s1-s1-s1-s1" fail="1" name="MFC OffNet30s-robot-suite">Robot Testsuites.Basic.MFC OffNet 30s.MFC OffNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s2" fail="1" name="MFC OnNet 30s">Robot Testsuites.Basic.MFC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s2-s1" fail="1" name="MFC OnNet30s-robot-suite">Robot Testsuites.Basic.MFC OnNet 30s.MFC OnNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s3" fail="1" name="MOC International 30s">Robot Testsuites.Basic.MOC International 30s</stat>
+<stat pass="0" id="s1-s1-s3-s1" fail="1" name="MOC International30s-robot-suite">Robot Testsuites.Basic.MOC International 30s.MOC International30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s4" fail="1" name="MOC OffNet 30s">Robot Testsuites.Basic.MOC OffNet 30s</stat>
+<stat pass="0" id="s1-s1-s4-s1" fail="1" name="MOC OffNet30s-robot-suite">Robot Testsuites.Basic.MOC OffNet 30s.MOC OffNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s5" fail="1" name="MOC OnNet 30s">Robot Testsuites.Basic.MOC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s5-s1" fail="1" name="MOC OnNet30s-robot-suite">Robot Testsuites.Basic.MOC OnNet 30s.MOC OnNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s6" fail="1" name="MTC OnNet 30s">Robot Testsuites.Basic.MTC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s6-s1" fail="1" name="MTC OnNet30s-robot-suite">Robot Testsuites.Basic.MTC OnNet 30s.MTC OnNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s7" fail="1" name="rMFC OnNet 30s">Robot Testsuites.Basic.rMFC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s7-s1" fail="1" name="rMFC OnNet30s-robot-suite">Robot Testsuites.Basic.rMFC OnNet 30s.rMFC OnNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s8" fail="1" name="rMOC International 30s">Robot Testsuites.Basic.rMOC International 30s</stat>
+<stat pass="0" id="s1-s1-s8-s1" fail="1" name="rMOC International30s-robot-suite">Robot Testsuites.Basic.rMOC International 30s.rMOC International30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s9" fail="1" name="rMOC OffNet 30s">Robot Testsuites.Basic.rMOC OffNet 30s</stat>
+<stat pass="0" id="s1-s1-s9-s1" fail="1" name="rMOC OffNet30s-robot-suite">Robot Testsuites.Basic.rMOC OffNet 30s.rMOC OffNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s10" fail="1" name="rMOC OnNet 30s">Robot Testsuites.Basic.rMOC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s10-s1" fail="1" name="rMOC OnNet30s-robot-suite">Robot Testsuites.Basic.rMOC OnNet 30s.rMOC OnNet30s-robot-suite</stat>
+<stat pass="0" id="s1-s1-s11" fail="1" name="rMTC OnNet 30s">Robot Testsuites.Basic.rMTC OnNet 30s</stat>
+<stat pass="0" id="s1-s1-s11-s1" fail="1" name="rMTC OnNet30s-robot-suite">Robot Testsuites.Basic.rMTC OnNet 30s.rMTC OnNet30s-robot-suite</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

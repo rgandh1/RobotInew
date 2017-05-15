@@ -1,0 +1,241 @@
+[2015-07-06 13:04:45,636][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507550], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075500000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Terminating
+MessageType: ISIG_reportNotification
+InvokeId: 0
+BearerType: Voice
+Time: Mon Jul 06 13:04:45 UTC 2015
+CalledPartyState: Idle
+ForwardingPending: false
+IMSI: 530052041010000
+ServiceKey: 1050
+ReferenceNumber: 0001ABFF0E
+CalledPartyAddress: 642041010000|International|E164
+CallingPartyAddress: 642041010000|International|E164
+SuppressNumber: false
+RedirectingPartyAddress: null
+RedirectingInformation: null
+VLRAddress: 64278|International|E164
+MSCAddress: 64278|International|E164
+GMSCAddress: null
+SMSCAddress: null
+MessageTypeIndicator: null]]
+[2015-07-06 13:04:45,640][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:04:45,643][INFO ][..m.c.s.c.n.NumberNormalizationFeatureImpl        ][][-][-][CID:numberNormalizationCalledParty][ASID:5075500000:0:0] Address [642041010000|International|E164] not normalized according to filter decision!
+[2015-07-06 13:04:45,688][ERROR][..m.c.s.SubscriberProfileStoreCRCEImpl            ][][][][][] An internal infrastructure error ocoured while fetching the profile for subscriber with IMSI [530052041010000]!
+org.jboss.remoting.CannotConnectException: Can not get connection to server. Problem establishing socket connection for InvokerLocator [socket://app-crce01:9060/?timeout=5000]
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.transport(MicroSocketClientInvoker.java:831)
+	at org.jboss.remoting.MicroRemoteClientInvoker.invoke(MicroRemoteClientInvoker.java:167)
+	at org.jboss.remoting.Client.invoke(Client.java:1917)
+	at org.jboss.remoting.Client.invoke(Client.java:768)
+	at org.jboss.remoting.Client.invoke(Client.java:756)
+	at com.inewcs.remoting.ClusteredTransporterClient.invoke(ClusteredTransporterClient.java:392)
+	at com.sun.proxy.$Proxy18.getSubscriberProfileByImsi(Unknown Source)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileStoreCRCEImpl.readSubscriberProfileByImsi(SubscriberProfileStoreCRCEImpl.java:212)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileComponentImpl.getSubscriberProfileByImsi(SubscriberProfileComponentImpl.java:137)
+	at com.inewcs.mvno.infrastructureproxy.profile.InfrastructureProxyProfileImpl$MnpRunnableGetProfileByImsi.run(InfrastructureProxyProfileImpl.java:367)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:724)
+Caused by: java.net.ConnectException: Connection refused
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:339)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:200)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:182)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:579)
+	at org.jboss.remoting.transport.socket.SocketClientInvoker.connect(SocketClientInvoker.java:289)
+	at org.jboss.remoting.transport.socket.SocketClientInvoker.createSocket(SocketClientInvoker.java:206)
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.getConnection(MicroSocketClientInvoker.java:1165)
+	at org.jboss.remoting.transport.socket.MicroSocketClientInvoker.transport(MicroSocketClientInvoker.java:816)
+	... 15 more
+[2015-07-06 13:04:45,693][ERROR][..m.c.s.SubscriberProfileComponentImpl            ][][][][][] Error while fetching subscriber profile from store [CRCE]
+com.inewcs.mvno.components.subscriberprofile.SubscriberProfileInfrastructureException: An internal infrastructure error ocoured while fetching the profile for subscriber with IMSI [530052041010000]!
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileStoreCRCEImpl.readSubscriberProfileByImsi(SubscriberProfileStoreCRCEImpl.java:238)
+	at com.inewcs.mvno.components.subscriberprofile.SubscriberProfileComponentImpl.getSubscriberProfileByImsi(SubscriberProfileComponentImpl.java:137)
+	at com.inewcs.mvno.infrastructureproxy.profile.InfrastructureProxyProfileImpl$MnpRunnableGetProfileByImsi.run(InfrastructureProxyProfileImpl.java:367)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:724)
+[2015-07-06 13:04:45,694][WARN ][..c.p.c.p.CurrentValuePerformanceObjectImpl       ][][][][][] PerformanceState was overridden to [CRITICAL]!
+[2015-07-06 13:04:45,701][INFO ][..m.c.s.SubscriberProfileStoreFileImpl            ][][][][][] Succesfully fetched subscriber profile for IMSI [530052041010000] from file system!
+[2015-07-06 13:04:45,703][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ProfileResponse]
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker1|'OK - Messages: 0.182|'Messages'=0.182;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker2|'OK - Messages: 0.200|'Messages'=0.200;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker3|'OK - Messages: 0.180|'Messages'=0.180;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker4|'OK - Messages: 0.200|'Messages'=0.200;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker5|'OK - Messages: 0.220|'Messages'=0.220;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker6|'OK - Messages: 0.220|'Messages'=0.220;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:queueSizeInvoker7|'OK - Messages: 0.182|'Messages'=0.182;-0.000;-0.000;50.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:openContexts|'OK - openContexts: 0.000|'openContexts'=0.000;-0.000;-0.000;1000.000;1500.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CONTEXT:create|'OK - ms: 0.035|'ms'=0.035;-0.000;-0.000;75.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CONTEXT:get|'OK - ms: 0.009|'ms'=0.009;-0.000;-0.000;75.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CONTEXT:put|'OK - ms: 0.011|'ms'=0.011;-0.000;-0.000;75.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CONTEXT:delete|'OK - ms: 0.022|'ms'=0.022;-0.000;-0.000;75.000;100.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:Incoming-Runtime|'OK - ms: 10.926|'ms'=10.926;-0.000;-0.000;100.000;150.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:iProfiler-RetrieveProfile-ResponseTime|'OK - ms: 351.208|'ms'=351.208;-0.000;-0.000;1000.000;1500.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CRCE-InitialRequest-Responsetime|'OK - ms: 604.042|'ms'=604.042;-0.000;-0.000;1000.000;1500.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:CRCE-SubsequentRequest-Responsetime|'UNKNOWN - ms: 0.000|'ms'=0.000;-0.000;-0.000;1000.000;1500.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:JMS-Incoming-Msg/s|'OK - Msg/s: 0.000|'Msg/s'=0.000;-0.000;-0.000;7500.000;9000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:JMS-Incoming-Msg/min|'OK - Msg/min: 0.000|'Msg/min'=0.000;-0.000;-0.000;450000.000;540000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:JMS-Incoming-Msg/h|'OK - Msg/h: 0.000|'Msg/h'=0.000;-0.000;-0.000;27000000.000;32400000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errorReleases/s|'OK - release/s: 0.000|'release/s'=0.000;-0.000;-0.000;750.000;900.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errorReleases/min|'OK - release/min: 0.000|'release/min'=0.000;-0.000;-0.000;45000.000;54000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errorReleases/h|'OK - release/h: 0.000|'release/h'=0.000;-0.000;-0.000;2700000.000;3240000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errors during monitoring/s|'OK - errors/s: 0.000|'errors/s'=0.000;-0.000;-0.000;750.000;900.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errors during monitoring/min|'OK - errors/min: 0.000|'errors/min'=0.000;-0.000;-0.000;45000.000;54000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:errors during monitoring/h|'OK - errors/h: 0.000|'errors/h'=0.000;-0.000;-0.000;2700000.000;3240000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:answers/s|'OK - answers/s: 0.000|'answers/s'=0.000;-0.000;-0.000;750.000;900.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:answers/min|'OK - answers/min: 0.000|'answers/min'=0.000;-0.000;-0.000;45000.000;54000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:answers/h|'OK - answers/h: 0.000|'answers/h'=0.000;-0.000;-0.000;2700000.000;3240000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:noAnswers/s|'OK - noAnswers/s: 0.000|'noAnswers/s'=0.000;-0.000;-0.000;750.000;900.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:noAnswers/min|'OK - noAnswers/min: 0.000|'noAnswers/min'=0.000;-0.000;-0.000;45000.000;54000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:noAnswers/h|'OK - noAnswers/h: 0.000|'noAnswers/h'=0.000;-0.000;-0.000;2700000.000;3240000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:callDuration|'OK - ms: 36000.000|'ms'=36000.000;-0.000;-0.000;3600000.000;7200000.000
+[2015-07-06 13:04:45,704][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:reportNotification/s|'OK - Msg/s: 0.000|'Msg/s'=0.000;-0.000;-0.000;750.000;900.000
+[2015-07-06 13:04:45,705][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:reportNotification/min|'OK - Msg/min: 0.000|'Msg/min'=0.000;-0.000;-0.000;45000.000;54000.000
+[2015-07-06 13:04:45,705][INFO ][PERFORMANCE                                       ][][][][][] TNZ-MTC-00:reportNotification/h|'OK - Msg/h: 0.000|'Msg/h'=0.000;-0.000;-0.000;2700000.000;3240000.000
+[2015-07-06 13:04:45,721][INFO ][..m.c.s.c.n.NumberNormalizationFeatureImpl        ][][-][-][CID:numberNormalizationCallingParty][ASID:5075500000:0:0] Address [642041010000|International|E164
+SuppressNumber: false] not normalized according to filter decision!
+[2015-07-06 13:04:45,725][INFO ][..m.c.s.v.c.e.o.b.InitialCRCERequestExitFeatureImpl][][-][-][CID:initialCRCERequestExit][ASID:5075500000:0:0] Initial CRCE request exit!
+[2015-07-06 13:04:45,727][DEBUG][IPROT_TRACING                                     ][][-][-][][] [|->][CMD [ConnectorMetaData: CorrelationId: null], Delay [2ns], M [Version: 1.0
+SessionId: 5075500000
+Application: IN
+SessionBeginTimeStamp: Mon Jul 06 13:04:45 UTC 2015
+MessageType: ICCA_reservationReq
+MessageSequenceNr: 0
+TrafficType: Terminating
+MessageTypeIndicator: null
+Imsi: 530052041010000
+SubscriberId: 45758235
+CallingParty: 642041010000|International|E164
+SuppressNumber: false
+CalledParty: 642041010000|International|E164
+BearerType: Voice
+StartTime: Mon Jul 06 13:04:45 UTC 2015
+MaxCallCost: 0
+AccumulatedDuration: 0
+AccumulatedData: 0
+LongSession: true
+SubscriberLocation: 64278
+SubscriberLocationNumber: null
+SubscriberLocationDetailedId: null
+ReferenceNumber: 0001ABFF0E
+Roaming: false
+Account: null
+APN: null
+NumberOfSegments: null
+ExpiryDate: null
+RatingGroup: null
+ApplSessionId: 5075500000:0:0
+NetworkProtocolId: null]]
+[2015-07-06 13:04:48,225][WARN ][..m.c.c.w.WatchdogServiceImpl$WatchdogWorker      ][][][][][] Watchdog fired! Identifier [5075500000:0:0:CRCE;5075500000:0:0;CRCE;443000869133325;CAPv2], Delay of [0.298256ms]
+[2015-07-06 13:04:48,330][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:04:48,566][INFO ][..m.c.s.v.c.e.o.b.InitialGrantedTimeoutResponseExitFeatureMTCImpl][][-][-][CID:initialGrantedTimeoutResponseExit][ASID:5075500000:0:0] Initial granted timeout response exit!
+[2015-07-06 13:04:48,568][DEBUG][IPROT_TRACING                                     ][][][][][] [<-|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507550], Delay [49ns], M [Version: 1ProviderId: 1
+SessionId: 5075500000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Terminating
+MessageType: ISIG_reportNotificationAck
+MessageType: ISIG_superviseReq
+iSigRequestSequenceNr: 0
+Time: 300000
+ReleaseAfterTimeExpires: true
+PlayWarningTone: true
+MessageType: ISIG_eventReportReq
+RequestSequenceNr: 1
+Event: 
+EventType: ISIG_eventReportRes_busy
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Busy
+Event: 
+EventType: ISIG_eventReportRes_noAnswer
+MonitorType: [Interrupt]
+NoAnswerTimer: [180000]
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.NoAnswer
+Event: 
+EventType: ISIG_eventReportRes_answer
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Answer
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalling
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalling
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalled
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalled
+Event: 
+EventType: ISIG_eventReportRes_abandon
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Abandon
+MessageType: ISIG_continueProcessing
+RequestSequenceNr: 2
+MoreEventsExpected: true
+InterruptEventReceived: true]]
+[2015-07-06 13:04:49,727][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507550], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075500000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Terminating
+MessageType: ISIG_eventReportRes
+Event: 
+EventType: ISIG_eventReportRes_answer
+MonitorType: Notify
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.Answer
+EventTimeStamp: Mon Jul 06 13:04:49 UTC 2015
+InvokeId: 1]]
+[2015-07-06 13:04:49,728][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:04:49,824][INFO ][..m.c.s.v.c.e.o.f.AnswerExitFallbackFeatureImpl   ][][-][-][CID:answerExitFallback][ASID:5075500000:0:0] Answer fallback exit!
+[2015-07-06 13:04:50,666][DEBUG][IPROT_TRACING                                     ][][][][][] [->|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507550], Delay [0ns], M [Version: 1ProviderId: null
+SessionId: 5075500000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Terminating
+MessageType: ISIG_superviseRes
+InvokeId: 2
+UsedTime: 36000
+CallActive: false
+MessageType: ISIG_eventReportRes
+Event: 
+EventType: ISIG_eventReportRes_disconnectCalling
+MonitorType: Interrupt
+EventType: class com.inewcs.mvno.protocol.isig.datatypes.DisconnectCalling
+EventTimeStamp: Mon Jul 06 13:04:50 UTC 2015
+InvokeId: 3]]
+[2015-07-06 13:04:50,667][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:04:50,677][INFO ][..m.c.s.v.c.e.o.f.FinishedExitFallbackFeatureImpl ][][-][-][CID:finishedAfterAnswerExitFallback][ASID:5075500000:0:0] Finished fallback exit!
+[2015-07-06 13:04:50,679][INFO ][..m.c.s.ServiceInvokerQueueImpl                   ][][-][-][][] Received request of type [ISigMessage]
+[2015-07-06 13:04:50,683][INFO ][..m.c.s.v.c.e.o.a.EventReportResDisconnectExitFeatureImpl][][-][-][CID:eventReportResDisconnectExit][ASID:5075500000:0:0] Event report reponse disconnect exit!
+[2015-07-06 13:04:50,684][DEBUG][IPROT_TRACING                                     ][][][][][] [<-|][CMD [ConnectorMetaData: CN [iSigInbound1], SID [20], AdditionalInfo [];CorrelationId: 507550], Delay [1ns], M [Version: 1ProviderId: 1
+SessionId: 5075500000
+GprsOriginatingReference: null
+GprsDestinationReference: null
+ApplSessionId: null
+GatewaySessionId: null
+NetworkProtocolId: CAPv2
+TrafficType: Terminating
+MessageType: ISIG_release
+RequestSequenceNr: 3
+Cause: 31]]

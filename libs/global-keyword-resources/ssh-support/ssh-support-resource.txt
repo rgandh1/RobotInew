@@ -1,0 +1,161 @@
+*** Settings ***
+Documentation     This is a global key words resource providing SSH related functions
+...               ============================================================
+...                 SSH Login
+...                 SSH Logout
+...                 SSH Start File Monitor
+...                 SSH Close File Monitor
+...
+...                 SSH Login And Start File Monitor
+...                 SSH Close File Monitor And Logout
+...
+...                 SSH Kill User Processes
+...               ============================================================
+Library           SSHLibrary
+Library           String
+
+*** Keywords ***
+
+SSH Login   
+    [Documentation]  Does a password or RSA key file based login at the passed SSH connection depending whether or not the passed password is ${EMPTY}.
+    ...              If the optional ssh_connection parameter is not passed then a new SSH session is created to the specified host before login 
+    ...              Arguments:
+    ...                user             Login user
+    ...                pswd             Login password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+    ...                ssh_connection   conditional OPTIONAL - id of an already opened SSH connection. If ${EMPTY} then the host argument is mandatory and a new SSH connection will be established before login
+    ...                host             conditional OPTIONAL - Host to connect to in case that ssh_connection was not passed. If ${EMPTY} the ssh_connection argument is mandatory and will be used for login
+    ...              Returns:           The (passed or newly created) ssh connection 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]          ${user}                     ${pswd}                           ${rsa_key_file}         ${ssh_connection}=${EMPTY}     ${host}=${EMPTY}                    
+                         Set Default Configuration   loglevel=INFO    
+    ${ssh_connection}=   Run Keyword If              '${ssh_connection}'=='${EMPTY}'   Open Connection         ${host}                        port=22            timeout=3    prompt=$   
+                         Run Keyword If              '${pswd}'=='${EMPTY}'             Login With Public Key   ${user}                        ${rsa_key_file} 
+                         ...                         ELSE                              Login                   ${user}                        ${pswd}
+    [Return]             ${ssh_connection}
+
+
+
+SSH Logout 
+    [Documentation]  Closes the passed SSH connection 
+    ...              Arguments:
+    ...                ssh_connection  The ssh connection to be clossed
+    ...              Returns:          Nothing 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ssh_connection}
+                  Switch Connection    ${ssh_connection}
+                  SSHLibrary.Close Connection                     # added explicit call from library by matko.sanseovic on 30.04.2015
+
+
+
+SSH Start File Monitor   
+    [Documentation]  Executes a 'tail -0f' for the passed file on the passed SSH connection 
+    ...              The grabbed text (of stdout) will be returned on 'Close File Monitor' execution
+    ...              ATTENTION: For unknown reasons SSHLibrary.ReadCommandOutput (in SSH Close File Monitor) 
+    ...                         doesn't capture stdout as documented (at least not for tail -f).
+    ...                         Thus this function redirect stdout to a tmp file to be lateron 
+    ...                         available for 'SSH Close File Monitor' instead of stdout 
+    ...              Arguments:
+    ...                ssh_connection  The ssh connection to be used for file monitoring
+    ...                monitored_file_path     The file to be monitored on the remote host
+    ...              Returns:                  Nothing 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]   ${ssh_connection}    ${monitored_file_path}
+                  Switch Connection    ${ssh_connection}
+                  Start Command        tail -0f ${monitored_file_path} > tmpfilemonitor${ssh_connection}.log
+
+
+
+SSH Close File Monitor   
+    [Documentation]  Closes a file monitor created via 'SSH Start File Monitor' and returns all grabbed text 
+    ...              Arguments:
+    ...                ssh_connection    The ssh connection where a "tail -0f" is currently running
+    ...              Returns:            The monitored text
+    ...              Author: walter.heincz  
+    ...              =========================================================
+    [Arguments]          ${ssh_connection}
+                         Switch Connection           ${ssh_connection} 
+    ${CTRL_C}=           Evaluate                    chr(int(3))  
+                         Write                       ${CTRL_C}                     #quit TAIL command - but for unknown reasons the bash SHELL process and its forked TAIL process stay in the process list
+                         SSH Kill User Processes     ${ssh_connection}    tail
+    ### Read Command Output doesn't work here as documented : ${stdout_string}    ${stderr_string}   ${rc_string}=          Read Command Output   return_stdout=True  return_stderr=True  return_rc=True  
+                         Start Command               cat tmpfilemonitor${ssh_connection}.log
+    ${stdout_string}=    Read Command Output    
+                         #Write Bare                 ${CTRL_C}                                #quit CAT command  if not yet finished                       
+                         Execute Command             rm tmpfilemonitor${ssh_connection}.log   #cleanup
+    [Return]             ${stdout_string}   
+
+
+
+SSH Login And Start File Monitor   
+    [Documentation]  Combines 'SSH Login' and 'SSH Start File Monitor' for compacter coding style
+    ...              Arguments:
+    ...                user                   Login user
+    ...                pswd                   Login password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file           In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+    ...                monitored_file_path    The file to be monitored on the remote host
+    ...                ssh_connection         conditional OPTIONAL - id of an already opened SSH connection. If ${EMPTY} then the host argument is mandatory and a new SSH connection will be established before login
+    ...                host                   conditional OPTIONAL - Host to connect to in case that ssh_connection was not passed. If ${EMPTY} the ssh_connection argument is mandatory and will be used for login
+    ...              Returns:                 The (passed or newly created) ssh connection needed for 'SSH Close File Monitor And Logout'
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]           ${user}                  ${pswd}             ${rsa_key_file}          ${monitored_file_path}    ${ssh_connection}=${EMPTY}        ${host}=${EMPTY}
+    ${ssh_connection}=    SSH Login                ${user}             ${pswd}                  ${rsa_key_file}           ssh_connection=${ssh_connection}  host=${host}             
+                          SSH Start File Monitor   ${ssh_connection}   ${monitored_file_path}
+    [Return]              ${ssh_connection}   
+
+
+
+SSH Close File Monitor And Logout  
+    [Documentation]  Combines 'SSH Close File Monitor' and 'SSH Logout' for compacter coding style
+    ...              Arguments:
+    ...                ssh_connection        The ssh connection where a "tail -f" is currently running
+    ...                store_to_file_path    OPTIONAL - Local file where to store the grabbed text or ${EMPTY} if storing is not required - Default is ${EMPTY}
+    ...              Returns:                The monitored text
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]         ${ssh_connection}         ${store_to_file_path}=${EMPTY}
+    ${tailed_text}=     SSH Close File Monitor    ${ssh_connection}
+                        Run Keyword Unless        '${store_to_file_path}'=='${EMPTY}'    Create File    ${store_to_file_path}   ${tailed_text}
+                        SSH Logout                ${ssh_connection}
+    [Return]            ${tailed_text}   
+
+
+
+SSH Kill User Processes                      
+    [Documentation]  This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'
+    ...              since otherwise they would survive the SSH connection and thus mess up the process list
+    ...              Arguments:
+    ...                ssh_connection    The ssh connection where zombies shall be removed 
+    ...                command_name      The commend name (e.g. tail) used for filtering the processes list
+    ...              Returns:            Nothing
+    ...              Author: walter.heincz  
+    ...              =========================================================
+    [Arguments]            ${ssh_connection}  ${command_name}
+                           Switch Connection           ${ssh_connection} 
+    ### Get UserId for filtering the pocess list ### 	
+    ${user}=               Execute Command             id -un      
+    ### Debug Code ### 	
+    Comment  ${processes_string}=   Execute Command             ps U ${user} --no-heading | grep ${command_name} | grep -v grep
+    Comment  Log    BEFORE SSH Kill User Processes:     console=yes
+    Comment  Log    ${processes_string}                 console=yes
+    ### Do Kill ### 	
+	${stderr}  ${rc}=  Execute Command    pkill -9 -u ${user} ${command_name}   return_stdout=False  return_stderr=True  return_rc=True 
+    Run Keyword If		'${rc}' != '0'  Log      ${stderr}   level=WARN  #console=yes
+	Comment  ***** Old approach with kill:  For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions
+    Comment  @{processes_list}=     Split String                ${processes_string}  ${\n}
+    Comment                         :FOR  ${process}            IN                @{processes_list}  
+	Comment  					   \     Log      SSH Kill User Processes is killing: ${process}    console=yes
+    Comment                         \     ${pid}=  Fetch From Left   ${process}        ${SPACE}
+    Comment                         \     ${stderr}  ${rc}=  Execute Command    sudo kill -9 ${pid}   return_stdout=False  return_stderr=True  return_rc=True 
+	Comment  					   \     Run Keyword If		'${rc}' != '0'  Log      ${stderr}   level=WARN  #console=yes
+    ### Debug Code ### 	
+    Comment  ${processes_string}=   Execute Command             ps U ${user} --no-heading | grep ${command_name} | grep -v grep
+    Comment  Log    AFTER SSH Kill User Processes:     console=yes
+    Comment  Log    ${processes_string}                console=yes
+
+
+               

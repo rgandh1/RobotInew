@@ -1,0 +1,77 @@
+<diameter>
+
+  <header> 
+    <!-- These lines have no effect since they will be created (or replaced) by JDiameter automatically
+    <version>1</version>                   The resulting request will again have the JDiameter generated version=1   
+    <applicationId>4</applicationId>       The resulting request will get the constant Credit Control Application Id=4  
+    <hopByHopId>0</hopByHopId>             The resulting request will have JDiameter generated hopByHopId that is unique within all rests of the session (can be used for correlation of incomming responses)      
+    <endToEndId>1682964480</endToEndId>    The resulting request will have JDiameter generated endToEndId that is (at least for 4min) unique within all requests of the connection  
+    -->  
+    <commandCode>272</commandCode>         <!-- 272 = CC = CreditControl-->
+    <flags>  
+      <isRequest>true</isRequest>          <!-- true = R = Request; false = A = Answer-->
+      <isProxiable>false</isProxiable>  
+      <isError>false</isError>  
+      <isReTransmitted>false</isReTransmitted>  
+    </flags>  
+  </header>  
+
+  <avps>  
+    <!-- These lines have no effect since they will be created (or replaced) by JDiameter automatically
+    <Session-Id>ocs01.inew.com;323;21885584</Session-Id>     The resulting request will have the Session-Id defined on session creation (this AVP must always be located BEFORE all other AVPs!!!) 
+    <Auth-Application-Id>5</Auth-Application-Id>             ... will get the constant Credit Control Application Id=4  
+    <Destination-Realm>testing.inew</Destination-Realm>      ... will get the Destination-Realm configured in WorkspaceOptions dialog
+    <Destination-Host>10.105.140.159</Destination-Host>      ... will get the Destination-Host configured in WorkspaceOptions dialog
+    <Origin-Host>ocs01.inew.com</Origin-Host>                ... will get the JDiameter generated Origin-Host configured in WorkspaceOptions dialog
+    <Origin-Realm>inew.com</Origin-Realm>                    ... will get the JDiameter generated Origin-Realm configured in WorkspaceOptions dialog
+    -->    
+    <User-Name>@CG: callSubscriberMsisdn()</User-Name>  
+    
+    <CC-Request-Type>3</CC-Request-Type>      <!-- 1=INITIAL_REQUEST 2=UPDATE_REQUEST 3=TERMINATION_REQUEST-->
+    <CC-Request-Number>4</CC-Request-Number>  <!-- request index 3 -->
+    <CC-Correlation-Id>1234567</CC-Correlation-Id> 
+    
+    <!-- Event-Timestamp>0xd3fac86a</Event-Timestamp --> <!-- D3FAC86A = 3556427882 = 2083/09/12 09:38:02 UTC -->
+	<Event-Timestamp>@CG: currentTime(+00:00:00)</Event-Timestamp>
+	
+    <Subscription-Id>
+      <Subscription-Id-Type>0</Subscription-Id-Type>  			<!-- 0 END_USER_E164 1=END_USER_IMSI 2=END_USER_SIP_URI 3=END_USER_NAI 4=END_USER_PRIVATE -->
+      <Subscription-Id-Data>@CG: callSubscriberMsisdn()</Subscription-Id-Data> 
+    </Subscription-Id> 
+    <Subscription-Id>
+      <Subscription-Id-Type>1</Subscription-Id-Type> 
+      <Subscription-Id-Data>@CG: callSubscriberImsi()</Subscription-Id-Data> 
+    </Subscription-Id> 
+    <Subscription-Id>
+      <Subscription-Id-Type>3</Subscription-Id-Type> 
+      <Subscription-Id-Data>@CG: callSubscriberMsisdn()</Subscription-Id-Data> 
+    </Subscription-Id> 
+    
+    <Multiple-Services-Indicator>1</Multiple-Services-Indicator> 
+    
+    <User-Equipment-Info>
+      <User-Equipment-Info-Type>0</User-Equipment-Info-Type> 
+      <User-Equipment-Info-Value>33353933383430343031333934343030</User-Equipment-Info-Value> 
+    </User-Equipment-Info> 
+
+    <Termination-Cause>1</Termination-Cause> <!-- 1= DIAMETER_LOGOUT / user initiated logout -->
+    
+    <Multiple-Services-Credit-Control>
+      <Requested-Service-Unit></Requested-Service-Unit>  <!-- AVP required but its (null-) value is ignored by OCS -->
+      <Used-Service-Unit>
+        <CC-Total-Octets>7168000</CC-Total-Octets> <!-- 3rd slice size -->
+      </Used-Service-Unit> 
+      <Rating-Group>6</Rating-Group> 
+      <Reporting-Reason vendorId="10415">2</Reporting-Reason> <!-- 2=FINAL - indicates that the reason for usage reporting is that a normal PDP context termination has happened. -->       
+    </Multiple-Services-Credit-Control> 
+    
+    <Service-Information vendorId="10415">
+      <PS-Information vendorId="10415">
+        <PDP-Address vendorId="10415">10.11.12.13</PDP-Address> 
+        <Called-Station-Id>inew.com</Called-Station-Id>
+        <!-- GGSN-Address vendorId="10415">ggsn01</GGSN-Address> necessary only in INITIAL_REQUEST -->
+      </PS-Information>     
+    </Service-Information> 
+  </avps> 
+
+</diameter> 

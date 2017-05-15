@@ -1,0 +1,80 @@
+
+*** Variables ***
+
+########################### DEVELOPMENT SETTINGS ############################
+
+${FAKE_CALLS}=                                     true    #For Robot testsuite development set this to true if the Android phones' mobile network is NOT connected to the testbed (SUT)  
+
+${FAKE_MOC_TOLL_FREE_NUMBER}=                 064123901    #see IN server: /var/opt/inew/core-in-service/2.1.1/moc/provisioning_backup/1/2.1.1/MOC_CHARGEFREENUMBERS.xml
+${FAKE_MOC_FORBIDDEN_NUMBER}=                    568000    #see IN server: /var/opt/inew/core-in-service/2.1.1/moc/provisioning_backup/1/2.1.1/MOC_FORBIDDENNUMBERS.xml
+${FAKE_SMS_FORBIDDEN_NUMBER}=                     86787    #see IN server: /var/opt/inew/core-in-service/2.1.1/mosmproxy/provisioning_backup/1/2.1.1/MOSM_FORBIDDENNUMBERS.xml
+${FAKE_MOC_NUMBER_TRANSLATION_VNUMBER}=             122    #virtual Number: see IN server: /var/opt/inew/core-in-service/2.1.1/moc/provisioning_backup/1/2.1.1/MOC_NUMBERTRANSLATION.xml
+${FAKE_MOC_NUMBER_TRANSLATION_TNUMBER}=     64204864236    #translated FAKE_MOC_NUMBER_TRANSLATION_VNUMBER
+
+${FAKE_IVR_REDIRECTION_NUMBER}=              0810001503    #for simulating IVR redirection in development mode - 0810001503 is Austrian time announcement 
+
+
+######################### ANDROID-PHONES SETTINGS ############################
+
+${ATTACHED_ONNET_PHONE_1_IMSI}=                              232033013972240    #In case ${FAKE_CALLS}=false the balances of this subscriber will be adapted by the TCs as necessary - In case ${FAKE_CALLS}=true the balance of this subscriber is expected to be pre-set manually (with sufficient funds) before testsuite execution and the testsuite additionally creates a corresponding FAKE subscriber (for testbed impact simulation) and maintains its balance
+${ATTACHED_ONNET_PHONE_2_IMSI}=                              232033013972239    #In case ${FAKE_CALLS}=false the balances of this subscriber will be adapted by the SuiteSetup as necessary - In case ${FAKE_CALLS}=true the balance of this subscriber is expected to be pre-set manually (with sufficient funds) before testsuite execution and the testsuite additionally creates a corresponding FAKE subscriber (for testbed impact simulation) and maintains its balance
+${ATTACHED_OFFNET_PHONE_12_IMSI}=                            232033013972241    #The balance of this subscriber is expected to be pre-set manually (with sufficient funds) before testsuite execution
+${ATTACHED_PSEUDO_FIXNET_PHONE_13_IMSI}=    ${ATTACHED_OFFNET_PHONE_12_IMSI}    
+
+${ATTACHED_PHONE_1_MSISDN_FORMAT1}=                            0676844901411
+${ATTACHED_PHONE_1_MSISDN_FORMAT2}=                         0043676844901411
+${ATTACHED_PHONE_1_MSISDN_FORMAT3}=                          +43676844901411
+
+${ATTACHED_PHONE_2_MSISDN_FORMAT1}=                            0676844901416
+${ATTACHED_PHONE_2_MSISDN_FORMAT2}=                         0043676844901416
+${ATTACHED_PHONE_2_MSISDN_FORMAT3}=                          +43676844901416
+
+${ATTACHED_PHONE_12_MSISDN_FORMAT1}=                           0676844901401
+${ATTACHED_PHONE_12_MSISDN_FORMAT2}=                        0043676844901401
+${ATTACHED_PHONE_12_MSISDN_FORMAT3}=                         +43676844901401
+
+${USSD_TIMEOUT_SECONDS}=                                                  30                       #set this Android Phones' Mobile Network specific maximum USSD response time according to your experiences
+${USSD_EXPECTED_ONNET_RESPONSE_ENABLE_FORWARDING}=             Call forwarding<br>Registration was successful.    #make a test dial on phone 1 or 2 with **21*nnn# (with nnn replaced by a valid MSISDN) and set the received message (with newLines replaced by <br>) here  
+${USSD_EXPECTED_ONNET_RESPONSE_DISABLE_FORWARDING}=            Call forwarding<br>Erasure was successful.         #make a test dial on phone 1 or 2 with ##21# and set the received message (with newLines replaced by <br>) here 
+${USSD_EXPECTED_OFFNET_RESPONSE_DISABLE_FORWARDING}=           Call forwarding<br>Erasure was successful.         #make a test dial on phone 12 with ##21# and set the received message (with newLines replaced by <br>) here 
+${USSD_EXPECTED_PSEUDO_FIXNET_RESPONSE_DISABLE_FORWARDING}=    ${USSD_EXPECTED_OFFNET_RESPONSE_DISABLE_FORWARDING}
+
+######################### MVNO-PLATFORM SETTINGS ############################
+
+#### Toll Free Number ####
+#### Ensure that you set a valid charge free number here that DOES establish a call connection - i.e. don't use IVR numbers here that simply play an announcement without sending an ISUP ANSwerMessage before
+#### E.g. use a toll free number that leads to an INTERACTIVE IVR service controlled via DTMF input
+${MOC_TOLL_FREE_NUMBER_FORMAT1}=                        0810001503   #0810001503 is Austrian time announcement (sending ISUP ANswerMessage) - as substitute for a valid charge free number during test development (FAKE_CALLS=true)
+${MOC_TOLL_FREE_NUMBER_FORMAT2}=                        0810001503
+${MOC_TOLL_FREE_NUMBER_FORMAT3}=                        0810001503
+
+#### Forbidden Number ####
+#### Configure a number that fits the MVNO's CC and NDC but is NOT assigned to any provisioned subscriber 
+${MOC_FORBIDDEN_NUMBER_FORMAT1}=                     0676123456789   #0676123456789 is an Unknown T-Mobile number leading to a charge free IVR announcement (i.e. no ISUP ANSwerMessage -> no connection) - as substitute for a valid IVR forbidden number announcement during test development (FAKE_CALLS=true)
+${MOC_FORBIDDEN_NUMBER_FORMAT2}=                     0676123456789
+${MOC_FORBIDDEN_NUMBER_FORMAT3}=                     0676123456789
+
+${SMS_FORBIDDEN_NUMBER_FORMAT1}=                        0810001503   #0810001503 is Austrian time announcement - as substitute for a valid forbidden SMS number - for unknown reasons an SMS to UnknownNumber 0676123456789 is successful
+${SMS_FORBIDDEN_NUMBER_FORMAT2}=                        0810001503 
+${SMS_FORBIDDEN_NUMBER_FORMAT3}=                        0810001503
+
+#### Max Call Duration ####
+#### Set this to the MVNO platform configuration  
+${MOC_MAX_CALL_DURATION_SECS}=                                  10  #reduced during test development (FAKE_CALLS=true) 
+${MFC_MAX_CALL_DURATION_SECS}=                                  10
+
+#### Number Translation ####
+${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT1}=           0676844901416   #set this to a virtual number configured on IN to be translated into ATTACHED_PHONE_2_MSISDN_...
+${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT2}=           0676844901416
+${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT3}=           0676844901416
+${MOC_NUMBER_TRANSLATION_TNUMBER}=                    676844901411   #the real number (ATTACHED_PHONE_2_MSISDN) that should result from translating the virtual number
+
+#### Low Credit ####
+#### Set these values according to the ATTACHED_ONNET_PHONE_1 subscriber's tariff
+${MOC_SLICE_SIZE_SECS}=                                         60
+${MOC_SLICE_COSTS}=                                          39000    #39,000 millicents = 39 cents = 0,39 NZD
+
+#### Others ####
+${UNKNOWN_ONNET_MSISDN}=                             0676123456789    #set any inexistent MSISDN that follows on-net numbering rules (i.e. valid CC and NDC)
+${BCSM_NOANSWER_EVENT_TIMER_SECS}=                               2    #set the timer duration in seconds configured on MSC side by IN for sending NoAnswer event - this is normally 180sec but should be reduced during development time (FAKE_CALLS=true)
+

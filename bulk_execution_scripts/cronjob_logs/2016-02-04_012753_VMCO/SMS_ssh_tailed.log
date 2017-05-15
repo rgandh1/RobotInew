@@ -1,0 +1,23 @@
+[2016-02-04 00:33:16,518][INFO ][ActiveMQ Session Task-163][XDRConsumerImpl                                   ][ 194] ------ start consuming from queue://inew-cs.crce.cdr -------
+[2016-02-04 00:33:16,518][INFO ][ActiveMQ Session Task-163][HealthMonitor                                     ][ 115] it is time for next active db check.
+[2016-02-04 00:33:16,519][INFO ][ActiveMQ Session Task-163][XDRConsumerImpl                                   ][ 308] --------- start processing record ---------
+[2016-02-04 00:33:16,519][INFO ][ActiveMQ Session Task-163][XDRConsumerImpl                                   ][ 309] 1.4|101|true|1|CRCE|CDR|crce01.xxxx|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|SMS123456XdrComponentTest|1|1|74456|573190001000|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|BasicEvent|732123710001000|573190001000|false|573190001001|(network) XdrComponentTest|Local (on-net)|ShortMessage|||||false|573190|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|0|0|Pesos|10000000|PREPAID|OK||
+[2016-02-04 00:33:16,519][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 167] performing db health check . . .
+[2016-02-04 00:33:16,520][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 175] connection is valid.
+[2016-02-04 00:33:16,524][INFO ][ActiveMQ Session Task-163][XDRInserterImpl                                   ][  65] jdbc returns successful with result 0. (could be triggered insert)
+[2016-02-04 00:33:16,524][INFO ][ActiveMQ Session Task-163][CrceCdrRVMNotificationXDRHandlerImpl              ][  72] ---> sent to revmon: [trafficType=SMSMO, category=null, currency=[currencyId=1, relation=100, currencyName=Pesos, unitName=centavos], revenue=0, RvmEvent=[sessionCreationTimestamp=1424617250025, sessionId=SMS123456XdrComponentTest]]
+[2016-02-04 00:33:16,524][INFO ][ActiveMQ Session Task-163][LcmVoiceTrafficNotificationXDRHandlerImpl         ][ 100] LCM Call Notification enabled but not applicable.
+[2016-02-04 00:33:16,525][INFO ][ActiveMQ Session Task-163][XDRConsumerImpl                                   ][ 313] -------- xdr processed successfully --------
+[2016-02-04 00:33:16,525][INFO ][ActiveMQ Session Task-163][XDRConsumerImpl                                   ][ 211] ------ finished consuming from queue://inew-cs.crce.cdr -------
+[2016-02-04 00:33:16,524][ERROR][pool-7-thread-1][RVMJBRPooledNotificationTransportHandlerImpl      ][  75] Error on JBR Transporter: 
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(ArrayList.java:635)
+	at java.util.ArrayList.get(ArrayList.java:411)
+	at com.inewcs.remoting.balancers.FairPlayBalancer.selectLocator(Unknown Source)
+	at com.inewcs.remoting.ClusteredTransporterClient.invoke(Unknown Source)
+	at com.sun.proxy.$Proxy10.send(Unknown Source)
+	at com.inewcs.mvno.xdr.handler.notification.rvm.RVMJBRPooledNotificationTransportHandlerImpl$RvmTask.run(RVMJBRPooledNotificationTransportHandlerImpl.java:65)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+[2016-02-04 00:33:25,804][INFO ][Timer-66       ][XDRBackgroundFileWriter                           ][ 115] flushed 5 records to file NGW_SDR_20160203131225.csv.tmp

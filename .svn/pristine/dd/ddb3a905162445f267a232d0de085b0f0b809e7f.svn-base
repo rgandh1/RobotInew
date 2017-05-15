@@ -1,0 +1,101 @@
+*** Settings ***
+
+Documentation  A resource file containing the application specific keywords
+...            that create our own domain specific language. This resource
+...            implements keywords for testing HTML version of the test
+...            application.
+Library        Selenium2Library
+
+
+*** Variables ***
+
+${SERVER}        10.107.82.220:81/
+${BROWSER}       firefox
+${DELAY}         0.4
+${VALID USER}    lcmadmin
+${VALID PASSWD}  lcmadmin
+${LOGIN URL}     http://${SERVER}257_EN-LCM.htm
+${WELCOME URL}   http://${SERVER}257_EN-LCM.htm
+${ERROR URL}     http://${SERVER}/html/error.html
+${STARTDATE}     2013-06-21 06:02
+${ENDDATE}       2013-06-23 06:02
+
+${REWARD}        MB#MB#1048576
+
+
+*** Keywords ***
+*** Keywords ***
+
+Open Browser To Login Page
+    Open Browser  ${LOGIN URL}  ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed  ${DELAY}
+
+Go To Login Page
+    Go To  ${LOGIN URL}
+
+Input Username  [Arguments]  ${username}
+    Input Text  id=username  ${username}
+
+Input Password  [Arguments]  ${password}
+    Input Text  id=password  ${password}
+
+Submit Credentials
+    Click Button  name=login_submit
+
+Logout
+    Click Button  id=logout
+
+Create Campaignheader
+
+
+Create Referraltrigger
+    Click Element  //div[@id='content']/fieldset/form/div/input[3]
+    Select from List  id=db_type  notification_based
+    Input Text  id=db_name  Robotframework Test Automation (Referral)
+    Input Text  id=db_start  ${STARTDATE}
+    Input Text  id=db_end  ${ENDDATE}
+    Input Text  id=db_description  This is a campaign to test the robot framework test automation
+    Click Element  id=savecampaign_1
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Trigger']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  Referral Usage Trigger
+    Input Text  id=db_min  1
+    Input Text  id=db_max  3
+    Click Element  id=submitform
+
+Open Rewardwindow
+    Select Window  title=Loyality Campaign Manager
+    Click Element  link=Rewards
+
+Create Reward
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Reward']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  Megabyte Reward
+    Select from List  db_currency  ${REWARD} 
+    Input Text  id=db_reward  100
+    Input Text  id=db_expiryperiod  1
+    Click Element  //form[@id='form_reward']/div/input[4]
+    Select Window  title=Loyality Campaign Manager
+    Click Element  id=savecampaign_2
+
+Create Subscriptiontrigger
+    Click Element  //div[@id='content']/fieldset/form/div/input[3]
+    Select from List  id=db_type  notification_based
+    Input Text  id=db_name  Robotframework Test Automation (Subscription)
+    Input Text  id=db_start  ${STARTDATE}
+    Input Text  id=db_end  ${ENDDATE}
+    Input Text  id=db_description  This is a campaign to test the robot framework test automation
+    Click Element  id=savecampaign_1
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Trigger']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  On Plan Subscription
+    Select from List  id=db_type  ON_PLAN_SUBSCRIPTION
+    Select from List  id=db_availabletariffs  101002
+    Click Element  id=submitform

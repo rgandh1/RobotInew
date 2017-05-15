@@ -1,0 +1,179 @@
+*** Settings ***
+Documentation     Testing the simple data session cases with CG
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        DATA_only		MTEL_supported   matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../suite-global-keyword-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+${DIAM HPLMN UNKNOWN LOCATION}		1
+
+
+*** Keywords ***
+	
+*** Test Cases ***
+	
+Single Data Session 767b
+    [Documentation]    	Test will make a short data session in total of 767 bytes
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only  MVNA_MEX_supported
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short 767b Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}  ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}
+
+CG Short Multislice Data Session
+    [Documentation]    	Test creates the data session, sends two updates of the session and finally closes the session. Session consumes 9.77 MB
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only  MVNA_MEX_supported
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short Multislice Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}   ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}	
+
+Single NOK BalanceExhausted Data Session
+    [Documentation]    	Test starts the data session, should send two updates of the session but in the mean time amount that was available on the balance is
+	...					exhausted. Session consumes 9.77 MB
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only   MVNA_MEX_supported
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}  	Set Variable If
+	...						'${SUT PROJECT TAG PREFIX}'=='MTEL'		100000
+	...						'${SUT PROJECT TAG PREFIX}'=='MVNA_MEX' 	100000	
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+	${ssh_connection}=  SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE LOG FILE PATH}    host=${CRCE HOST}	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=			    	CG Short Multislice Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}  ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Log						rc=${rc}    console=yes
+	Comment					${status}	Run Keyword If  '${SUT PROJECT TAG PREFIX}'=='MTEL'  Should Be Equal As Numbers 	${rc}  0
+	Comment					...		Else If   '${SUT PROJECT TAG PREFIX}'=='MVNA_MEX'   Should Be Equal As Numbers	${rc}  1
+	Sleep					5s
+	${tailed_text}=    		SSH Close File Monitor and Logout    ${ssh_connection}	./log/CRCE_ssh_tailed.log
+	Should Contain      	${tailed_text}   responseCode=INSUFFICIENT_FUNDS
+	
+Single NOK NoBalance Data Session
+    [Documentation]    	Test will attempt to make a data session for subscriber that has empty monetary account (and no other account to charge). It's expected that test shoud fail
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only   MVNA_MEX_supported
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    0
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short 767b Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}  ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  1   msg=CG Session ended with rc=${rc} other than 1!	
+	
+Single NOK UnknownLocation Data Session
+    [Documentation]    	Test will attempt to start a simple data session with unknown location. Test should fail
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails
+	...	
+    ...         =================================================================================
+	[Tags]					DATA_only  MVNA_MEX_supported
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    1000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run Data Session *******
+    Log					    Running the data session...  console=yes
+    ${rc}=                 	CG Short 767b Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN UNKNOWN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}  ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  1   msg=CG Session ended with rc=${rc} other than 1!
+	
+	
+CG Short TwoAccountsCharged Data Session
+    [Documentation]    		Here we will create subscriber that has very little data volume left on data account and enaugh money on monetary account. Test will start a data
+	...						session and first data account should be exhausted and then monetary account should be charged. Test verifies if data session is completed normally
+	...						and if account balance on data account is 0 after the session
+	...
+    ...         =================================================================================	
+	[Tags]					DATA_only  
+	Comment					******* Create test subscriber *******
+	${INITIAL_BALANCE}=    	Set Variable    1000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DATA TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS MSISDN RANGE START}	
+	# then we select the 'correct' accId by matching the currencyId of 'MB Data' currency (im mtel case 101006)
+	# connect to DB
+    Connect To Database 	org.postgresql.Driver  jdbc:postgresql://${CRCE DB HOST}:${CRCE DB PORT}/${CRCE DB NAME}   ${CRCE DB USER}  ${CRCE DB PWD}
+	# execute query
+	@{queryRows}=      		DBLIB Query  select id from acc_subscriber_accounts where currency_id='${DATA ACCOUNT CURRENCYID}' and subscriber_id=${id};
+	${accId_i}				Convert To String	@{queryRows}
+	${accId}				Fetch From Left		${accId_i}   |
+	Log						db_result=${accId}    console=yes
+	# then we set data account balance to low value - 1000 equals here to 1MB
+	ExecuteSQL  			update acc_subscriber_accounts set balance='1000000' where id='${accId}';
+	# start the data session that consumes 0.1 MB (so, more then data account has available on balance)
+	${rc}=                 	CG Short Multislice Data Session    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${DIAM HPLMN LOCATION}   ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${DIAM GW HOST}	${DIAM GW PORT}  ${DIAM GW REALM} 	${DIAM GGSN FQDN}	${DIAM GGSN REALM}	 ${DIAM GGSN VENDORID}  ${DATA TRAFFIC RATING GROUP}
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}
+	Disconnect From Database
+	# check if the data account is empty after the session
+	${rc}    ${bal}    ${cat}    ${curId}	CRCE Get Account   ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}   ${id}  ${accId}
+	# it must be less then 1000 Bytes to be considered empty
+	Evaluate 				${bal} < 1000

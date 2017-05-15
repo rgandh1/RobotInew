@@ -1,0 +1,24 @@
+Short Description:
+===================
+This iSig TC simulates a roaming MTC initiation (to the callSubscriber() 
+(=B-Party) being in a foreign location) that contains an invalid 
+numberingPlan information for the subscribers MSISDN.
+IN should reject such a request.
+
+Flow details:
+==============
+- The TC sends an MTC reportNotification for the callSubscriber() with
+  numberingPlan="unknown"
+- This is (or should be) responded by IN with a final release 
+  meaning that the MTC leg is denied. 
+
+Parameters: 
+============
+  mscAddress         of the B-Party (callSubscriber()) 
+  roamingVlrAddress  of the B-Party's current (foreign) location
+  mtcAPartyMsisdn
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/03/12  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

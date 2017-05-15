@@ -1,0 +1,24 @@
+Short Description:
+===================
+This iSig TC simulates an unsuccessful MOC establishment attempt
+due to B-Party being busy.
+
+Flow details:
+==============
+- After session initiation the TC waits 10s to simulate waiting for the 
+  B-Party to answer.
+- Then the TC reports "busy" to IN meaning that the B-Party is not reachable 
+- This is (or should be) responded by IN with a final continueProcessing 
+  meaning that the MOC leg is finished and HLR is responsible to decide 
+  how to resume (e.g. redirect to IVR or forward to probably configured 
+  C-Party(s)). 
+
+Parameters: 
+============
+  mscAddress         of the A-Party (callSubscriber()) 
+  mocBPartyMsisdn
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/03/12  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

@@ -1,0 +1,124 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+
+*** Variables ***
+${SERVER}         10.0.20.17:1084
+${BROWSER}        firefox
+${DELAY}          0.6
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${CC USERNAME}    Customer Care
+${CC PASSWD}      customercare
+${LOGIN URL}      http://${SERVER}/evoweb/web/crm/257_EN.htm
+${MSISDN}         579510888804
+${MSISDN_02}      56951125135
+
+*** Keywords ***
+Login To CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+
+Open Subscriber Profile
+    Input Text    filter_msisdn    ${MSISDN}
+    Click Button    Submit
+
+Add Balance below
+    Click Button    Add Balance
+    Select Frame    interaction
+    Input Text    db_amount    0
+    Input Text    db_reason    Test Automation
+    Click Button    Add Balance
+    Page Should Contain    "Amount" can only have a value between
+    Select Frame    interaction
+    Click Button    Cancel
+    Unselect Frame
+
+Verify Credit enquiry
+    Page should contain    Accounts
+    Page should contain    Credit
+    Page should contain    Amount/Accounts
+
+Transfer some credit
+    Click Button    Credit Transfer
+    Select Frame    interaction
+    Input Text    db_tomsisdn    ${MSISDN_02}
+    Input Text    db_amount    5000
+    Click Button    Transfer Credit
+    Page should contain    The requested amount was transferred successfully.
+    Select Frame    interaction
+    Click Button    OK
+    Unselect Frame
+
+Transfer to much credit
+    Click Button    Credit Transfer
+    Select Frame    interaction
+    Input Text    db_tomsisdn    ${MSISDN_02}
+    Input Text    db_amount    999999999999
+    Click Button    Transfer Credit
+    Page should contain    "Amount" can only have a value between
+    Select Frame    interaction
+    Click Button    Cancel
+    Unselect Frame
+
+Verify transfer
+    Click Link    History
+    Select Frame    contentiframe
+    Click Element    filter_show_topup
+    Click Button    Search
+    Table Should Contain    mytable    transferred to
+    Close All Browsers
+
+Login To CRM as a CC
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${CC USERNAME}
+    Input Text    id=password    ${CC PASSWD}
+    Click Element    name=login_submit
+
+Add Balance above
+    Click Button    Add Balance
+    Select Frame    interaction
+    Input Text    db_amount    99999999999999
+    Input Text    db_reason    Test Automation
+    Click Button    Add Balance
+    Page Should Contain    "Amount" can only have a value between
+    Select Frame    interaction
+    Click Button    Cancel
+    Unselect Frame
+
+Add Balance right
+    Click Button    Add Balance
+    Select Frame    interaction
+    Input Text    db_amount    15
+    Input Text    db_reason    Test Automation
+    Click Button    Add Balance
+    Page Should Contain    The requested amount was added to the account successfully.
+    Select Frame    interaction
+    Click Button    OK
+    Unselect Frame
+
+Direct Link
+    Go To    http://${SERVER}/evoweb/web/crm/394_EN.htm?filter_msisdn=${MSISDN}
+    Page Should Contain    ${MSISDN}
+
+Verify transferchannel
+    Click Link    History
+    Select Frame    contentiframe
+    Click Element    filter_show_topup
+    Click Button    Search
+    Table Should Contain    mytable    CRM, ${CC USERNAME}
+    Close All Browsers

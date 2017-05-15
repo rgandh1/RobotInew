@@ -1,0 +1,122 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_PP_MTC_004 - Prepaid MTC - Abandon TC
+...               This is nearly an exact copy of IN_PP_MOC_008-PrepaidMOC-Abandon-robot-suite.txt except that Phone 2 calls Phone 1 instead of the other way round
+...               and the faking part is an MTC call instead of a MOC
+...               ---------------------------------------------------------------
+...               Run Prepaid MTC Abandon
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+
+Run Voice Call Abandoned
+    [Documentation]  attempts a voice call between 2 Phones but abandons the call as soon as the called party phone is ringing.
+    ...              If the call is not released autonomously the function actively releases the call after the passed max_duration_millis elapsed.
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone 2 that shall act as the calling phone
+    ...                cd_device_imsi         IMSI of the phone 1 that should be called when dialMsisdn (see below) is dialed on the calling phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...
+    ...              Returns:                 Nothing - fails if the Abandon flow could not be executed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_imsi}  ${dial_msisdn}    
+    Comment         ********************* Dial ***********************************      
+    ${resultCode}=    ARS Dial                      ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   ${dial_msisdn}
+                      Should Be Equal As Strings    ${resultCode}              OK
+    Comment         ********************* Wait until RINGING ***********************************      
+    ${voice_state}=   Set Variable    unknown
+                      : FOR    ${second}    IN RANGE    1    20     #wait max 20s for cd_device switch to RINGING state
+                      \    Sleep                        1s
+                      \    ${resultCode}               ${voice_state}                   ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cd_device_imsi}   
+                      \    Should Be Equal As Strings   ${resultCode}                   OK     msg=Querying voice state of called device (IMSI=${cd_device_imsi}) failed
+                      \    Run Keyword If               '${voice_state}' == 'RINGING'    Exit For Loop
+                      Should Be Equal As Strings    ${voice_state}              RINGING     msg=Called device (IMSI=${cd_device_imsi}) did NOT RING
+    Comment         ********************* Abandon the ringing call ***********************************      
+    ${resultCode}=    ARS Release                   ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}
+                      Should Be Equal As Strings    ${resultCode}               OK        msg=Releasing the call on the calling device (IMSI=${cg_device_imsi}) failed
+                      Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Voice Call Impact On Testbed
+
+
+
+Run Voice Call Abandoned And Check Nonexistent Ticket
+    [Documentation]  Runs an abandoned call between the passed devices and
+    ...              verifies that NO CRM ticket was written for Phone 1
+    ...              Arguments:               
+    ...                cg_device_imsi    phone 2
+    ...                cd_device_imsi    phone 1
+    ...                dial_msisdn       
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${cd_device_imsi}  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${cg_device_imsi} with the faked call subscriber imsi
+                     ...             ELSE                      Set Variable             ${cd_device_imsi}
+    ${marker_ticket_timestamp}       ${type_dummy}=            CRM Get Latest Ticket    ${phone1_imsi}
+                     Run Voice Call Abandoned                  ${cg_device_imsi}        ${cd_device_imsi}                      ${dial_msisdn}
+                     CRM New Ticket Should Not Exist           ${phone1_imsi}           ${marker_ticket_timestamp}             ticket_type=Voice
+  
+
+Fake Voice Call Impact On Testbed
+    [Documentation]  Runs a CG MTC Abandon session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MTC Abandon    ${FAKE_ORIGINATION_MSISDN}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MTC REQ QUEUE}    ${AMQ-SIG MTC RES QUEUE} 
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+
+Run Prepaid MTC Abandon
+    [Documentation]  Runs an abandoned on-net Phone 2 Call to on-net Phone 1 by dialing Phone 1 MSISDN format 1
+    ...              Plus verification that NO ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Voice Call Abandoned And Check Nonexistent Ticket    ${ATTACHED_ONNET_PHONE_2_IMSI}             ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_PHONE_1_MSISDN_FORMAT1} 
+    [Teardown]       Close Browser    

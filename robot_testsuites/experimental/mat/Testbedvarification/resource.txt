@@ -1,0 +1,181 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+Library           SudsLibrary
+Library           XML
+Library           Collections
+Library           DatabaseLibrary
+
+*** Variables ***
+${USERNAME}       tmaikis
+${PASSWORD}       hvJ66mAm
+${AMQ1_IP}        10.105.110.123
+${AMQ2_IP}        10.105.110.124
+${CRCE_IP}        10.105.110.125
+${CRM_IP}         10.105.110.127
+${DB_IP}          10.105.110.129
+${DWH_IP}         10.105.110.133
+${INAPP_IP}       10.105.110.135
+${INCONF_IP}      10.105.110.137
+${INSIGGW_IP}     10.105.80.141
+${INF_IP}         10.105.80.139
+${IVR_IP}         10.105.110.143
+${LCM_IP}         10.105.110.149
+${NGW_IP}         10.105.110.157
+${OCS_IP}         10.105.110.159
+${PROV_IP}        10.105.110.161
+${SMSC_IP}        10.105.110.163
+${SOA_IP}         10.105.110.165
+${USSDAPP_IP}     10.105.110.167
+${XDR_IP}         10.105.110.171
+${CRCE_DB_USERNAME}    crce
+${CRCE_DB_PASSWORD}    crce
+${CRCE_DB_PORT}    5442
+${CRCE_DB_DBNAME}    crce
+${SUBSC_MSISDN_MIN}    56952999900
+${SUBSC_MSISDN_MAX}    56952999930
+
+*** Keywords ***
+Verify AMQ
+    Open Connection    ${AMQ1_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Open Connection    ${AMQ2_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify CRCE
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    read
+    write    cd /etc/init.d
+    write    pwd
+    read
+    Comment    write    sudo su
+    Comment    Set default Configuration    prompt=#
+    write    service inew-mvno-crce status
+    read
+    Close All Connections
+
+Verify CRM
+    Open Connection    ${CRM_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify DB
+    Open Connection    ${DB_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify DWH
+    Open Connection    ${DWH_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify IN-APP
+    Open Connection    ${INAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify IN-CONF
+    Open Connection    ${INCONF_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify IN-SIGGW
+    Open Connection    ${INSIGGW_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify INF
+    Open Connection    ${INF_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify IVR
+    Open Connection    ${IVR_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify LCM
+    Open Connection    ${LCM_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify NGW
+    Open Connection    ${NGW_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify OCS
+    Open Connection    ${OCS_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify PROV
+    Open Connection    ${PROV_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify SMSC
+    Open Connection    ${SMSC_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify SOA
+    Open Connection    ${SOA_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify USSD
+    Open Connection    ${USSDAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify XDR
+    Open Connection    ${XDR_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    pwd
+    read
+    Close All Connections
+
+Verify Subscribers
+    Connect to Database    psycopg2    ${CRCE_DB_DBNAME}    ${CRCE_DB_USERNAME}    ${CRCE_DB_PASSWORD}    ${DB_IP}    ${CRCE_DB_PORT}
+    Table must exist    profiler_subscriber_profiles
+    Check if Exists in Database    SELECT * FROM profiler_subscriber_profiles WHERE msisdn='${SUBSC_MSISDN_MIN}'
+    Check if Exists in Database    SELECT * FROM profiler_subscriber_profiles WHERE msisdn='${SUBSC_MSISDN_MAX}'

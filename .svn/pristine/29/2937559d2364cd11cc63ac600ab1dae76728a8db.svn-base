@@ -1,0 +1,53 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+Library           SudsLibrary
+Library           XML
+Library           Collections
+
+*** Variables ***
+${SERVER}         10.107.82.220/
+${SUBSCRIBERWSDL}    http://10.0.20.13:9090/profiler/subscriber?wsdl
+${MSISDN}         579510888804
+${ACCOUNTSWSDL}    http://10.0.20.13:9090/accounting/accounts?wsdl
+${TOPUPWSDL}      http://10.0.20.13:9090/icca/1.0/IccaPeer?wsdl
+
+*** Keywords ***
+Get Subscriber Information
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Create Soap Client    ${SUBSCRIBERWSDL}    Subscribers
+    Set Return Xml    true
+    ${RESP}    Call Soap Method    getSubscriberProfile    ${MSISDN}
+    ${SUBSCRIBERID}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/id
+    ${SUBSCRIBERIMSI}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/imsi
+    ${SUBSCRIBERTARIFF}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/tariffId
+    ${SUBSCRIBERSTATE}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/state
+    Switch Soap Client    Accounting
+    Set Return Xml    true
+    ${ACCRESP}    Call Soap Method    getAccounts    ${SUBSCRIBERID}
+    ${PREBALANCE}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/balance
+    ${ACCOUNTNAME}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/name
+    ${ACCOUNTCUR}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/unit/currencyId
+    ${ACCRESP2}    Call Soap Method    getSummaryByCurrency    ${SUBSCRIBERID}
+    ${BALANCESUM}    Get Elements Texts    ${ACCRESP2}    .//getSummaryByCurrencyResponse/return/summaryList/SummaryType/balance
+    ${CURRENCYSUM}    Get Elements Texts    ${ACCRESP2}    .//getSummaryByCurrencyResponse/return/summaryList/SummaryType/currencyName
+
+Get System Time
+    ${year}    ${month}    ${day}    ${hour}    ${min}    ${sec}    Get Time
+    ...    year month day hour min sec
+
+Create Topup
+    Create Soap Client    ${TOPUPWSDL}    Topup
+    Set Return Xml    true
+    ${TOPUPINFO}    Create Wsdl Object    arg0
+    Set Service    topup
+    Set WSDL object Attribute    ${TOPUPINFO}    amount    10500
+    Set WSDL object Attribute    ${TOPUPINFO}    crmUser    ?
+    Set WSDL object Attribute    ${TOPUPINFO}    serviceType    CRM
+    Set WSDL object Attribute    ${TOPUPINFO}    source    test
+    Set WSDL object Attribute    ${TOPUPINFO}    address    ${MSISDN}
+    Set WSDL object Attribute    ${TOPUPINFO}    amountUnitRelation    100
+    Set WSDL object Attribute    ${TOPUPINFO}    paymentMethod    NONE
+    Call Soap Method    topup    ${TOPUPINFO}

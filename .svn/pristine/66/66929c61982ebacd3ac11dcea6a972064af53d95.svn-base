@@ -1,0 +1,79 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+
+*** Variables ***
+${SERVER}         10.0.20.17:1084
+${BROWSER}        firefox
+${DELAY}          0.6
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${LOGIN URL}      http://${SERVER}/evoweb/web/crm/257_EN.htm
+${MSISDN}         56999000005
+${IMSI}           739990000000005
+
+*** Keywords ***
+Login To CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+
+Open Subscriber Profile
+    Input Text    filter_msisdn    ${MSISDN}
+    Click Button    Submit
+
+Open Ticketing
+    Click Link    Tickets
+    Click Button    New Ticket
+
+Write Ticket
+    Select Frame    frameModalWnd
+    Input Text    db_title    Test Title
+    Input Text    db_description    This is the Ticket description.
+    Input Text    db_keywords    Test Keywords
+    Click Button    New Assignment
+    Select Frame    assignif
+    Click Button    User
+    Click Link    CRM Manager
+    Unselect Frame
+    Select Frame    frameModalWnd
+    Select From List    db_difficulty_type    Hard
+    Select From List    db_priority_type    Medium
+    Click Button    Save
+    Unselect Frame
+    Click Link    Close
+    Page Should Contain    Test Title
+
+Open existing Ticket
+    Click Link    Ticketing
+    Input Text    filter_search    Test Title
+    Click Button    Search
+    Click Link    Test Title
+
+Change State
+    Select Frame    frameModalWnd
+    Select From List    db_status_type    Resolved - Closed
+    Focus    //input[@value='Save']
+    Click Element    //input[@value='Save']
+    Unselect Frame
+    Click Link    Close
+
+Verify States
+    Page should contain    Status
+    Page should contain    Passphrase
+    Page should contain    Tariff Plan
+
+Open Subscriber Profile with Imsi
+    Input Text    filter_imsi    ${IMSI}
+    Click Button    Submit
+    Page should Contain    ${MSISDN}

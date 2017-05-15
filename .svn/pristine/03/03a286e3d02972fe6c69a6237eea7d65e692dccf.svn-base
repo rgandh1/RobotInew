@@ -1,0 +1,87 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+
+*** Variables ***
+${SERVER}         10.105.110.127:1087
+${BROWSER}        firefox
+${DELAY}          0.6
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${LOGIN URL}      http://${SERVER}/evoweb/cms/crm/257_EN.htm
+${MSISDN}         56952960824
+
+*** Keywords ***
+Login To CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+
+Open Subscriber Profile
+    Input Text    filter_msisdn    ${MSISDN}
+    Click Button    Submit
+
+Add some Balance
+    Click Button    Add Balance
+    Select Frame    interaction
+    Input Text    db_amount    15
+    Input Text    db_reason    Test Automation
+    Click Button    Add Balance
+    Page Should Contain    The requested amount was added to the account successfully.
+    Select Frame    interaction
+    Click Button    OK
+    Unselect Frame
+
+Verify topup
+    Click Link    History
+    Select Frame    contentiframe
+    Click Element    filter_show_topup
+    Click Button    Search
+    Table Should Contain    mytable    add balance
+    Close All Browsers
+
+Change Language to Spanish
+    Select from List    db_language_type    Spanish
+    Click Button    Change Language
+    Select Frame    interaction
+    Click Button    Change Language
+    Page should contain    The language was changed successfully.
+    Select Frame    interaction
+    Click Button    OK
+    Unselect Frame
+
+Verify language Spanish
+    Click Link    History
+    Select Frame    contentiframe
+    Click Element    filter_show_admin
+    Click Button    Search
+    Table Should Contain    mytable    Spanish
+    Unselect Frame
+
+Change Language to English
+    Select from List    db_language_type    English
+    Click Button    Change Language
+    Select Frame    interaction
+    Click Button    Change Language
+    Page should contain    The language was changed successfully.
+    Select Frame    interaction
+    Click Button    OK
+    Unselect Frame
+
+Verify language English
+    Click Link    History
+    Select Frame    contentiframe
+    Click Element    filter_show_admin
+    Click Button    Search
+    Table Should Contain    mytable    English
+    Close All Browsers

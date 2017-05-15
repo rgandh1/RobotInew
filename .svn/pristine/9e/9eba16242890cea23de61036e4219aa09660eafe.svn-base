@@ -1,0 +1,2 @@
+This is the place where all scripts for the tagging based bulk execution of robots test suits are stored.
+Please don't change anything here unless you are deeply familar with all the concepts, folder structures and rules developed for our robot based test automation.

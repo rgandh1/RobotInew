@@ -1,0 +1,259 @@
+*** Settings ***
+Documentation     This suite uses USSDtest.py class to test the USSD interface. Various test cases (scenarios) will be checked. As USSD self care menus are different from customer to customer - so are these tests. The goal is to make a rough check of the main (and not all) functions - menu items.
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        USSD_only  MTEL_specific   matko.sanseovic  
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+${USSD_PY_TOOL}		${ROBOT WORKSPACE PATH}/robot_testsuites/ussd/tool/USSDtest.py
+${POSTPAID TARIFF PLAN ID}		101005  #check the description of Create postpaid Subscriber keyword
+
+*** Keywords ***
+Setup Suite
+    ${time}=    		Run    date
+    Log    				Date and time: ${time}    console=yes
+	Log					USSD test on mTel PP Light TB25	console=yes
+	# copy the tool class to the target test machine
+	${conn_id}			Open Connection    ${USSD HOST}
+	Set Suite Variable	${conn_id} 
+    ${output_login}=    Login    ${USSD USER}    ${USSD PWD}
+	Log  				${output_login}
+	Put File 			${USSD_PY_TOOL} 	${USSD HOME}/ussd/
+	SSHLibrary.File Should Exist	${USSD HOME}ussd/USSDtest.py	
+	Set Suite Variable	${ussd_tool}	${USSD HOME}/ussd/USSDtest.py
+	# we will create subscriber first, we need MSISDN to check over USSD
+	Create Prepaid Subscriber	
+	Create Postpaid Subscriber		
+
+Teardown Suite
+	Close All Connections
+
+Create Prepaid Subscriber
+    [Documentation]  Test will create two prepaid subscribers with some money on balance that will be used for testing
+    ...
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+	Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Prepaid (PrP) Subscribers Created!    console=yes
+
+Create Postpaid Subscriber			
+    [Documentation]  Test will create two postpaid subscribers that will be used in tests below. Subscriber will be created with postpaid tariff plan 
+	...					since without plan USSD will not work correctly (this "feature" was requested by PM) 
+	...					- postpaid tarriffplanid to be used for mtel is 101005 (Postpaid tarifni plan 1)
+    ...
+	${INITIAL_BALANCE}=    	Set Variable    0
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS PP IMSI RANGE START}    ${TESTSUBCRIBERS PP MSISDN RANGE START}    POSTPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${POSTPAID TARIFF PLAN ID}    ${INITIAL_BALANCE}
+	Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Postpaid (PoP) Subscribers Created!    console=yes
+	
+USSD Start
+    [Documentation]    Keyword for starting the USSD menu and getting to the initial point. Returns the complete menu for evaluation
+    ...
+    Write    		${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}
+    ${output}=  	Read Until    User input:	
+	Log    			USSD Start: ${output}
+	Sleep			2s
+	[Return]		${output}
+	
+USSD Postpaid Start
+    [Documentation]    Keyword for starting the postpaid subscriber's USSD menu and getting to the initial point. Returns the complete menu for evaluation
+    ...
+    Write    		${ussd_tool} ${TESTSUBCRIBERS PP MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}
+    ${output}=  	Read Until    User input:	
+	Log    			USSD Postpaid Start: ${output}
+	Sleep			2s
+	[Return]		${output}	
+	
+	
+*** Test Cases ***
+Test PrP USSD Start
+    [Documentation]    Simple test that checks if USSD menu can be started for prepaid subscriber
+    ...
+	${output}		USSD Start		
+	# Initial point of USSD menu
+	Should Contain	${output}	Waehlen Sie:
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+		
+Test PrP USSD Check Balance	
+    [Documentation]    Basic test for balance check. Expected value is set with the default test automation subscriber
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 2 for checking balance    console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Ihre Rechnung: 10,00 Euro
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test PoP USSD Check Balance	
+    [Documentation]    Basic test for postpaid consumption check. After creation subscriber's cumsumption is 0
+    ...
+	${output}		USSD Postpaid Start		
+	Log    			Pressing 1 for checking balance    console=yes
+	Write			1
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for checking monetary debt    console=yes
+	Write			1
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Es tut uns leid, Sie haben keine Euro uebrig
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+	
+Test PrP USSD Subscription Check
+    [Documentation]     Menu entry for checking the subscriptions, if any subscription is active for subscriber it will be listed here. By default subscribers
+    ...					have default (basic) tariff active
+	${output}		USSD Start		
+	Log    			Pressing 3 for subscription menu     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for subscription check     console=yes
+	Write			1
+    ${output}=    	Read Until    User input:
+	Should Contain	${output}	Sie sind im Grundtarif.
+	# You are on standard tarrif
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test PoP USSD Subscription Check
+    [Documentation]     Menu entry for checking the subscriptions (tariff, plan), subscriber's active subscription will be listed here
+	${output}		USSD Postpaid Start		
+	Log    			Pressing 2 for subscription menu     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for subscription check     console=yes
+	Write			1
+    ${output}=    	Read Until    User input:
+	Should Contain	${output}	Ihr Plan Postpaid tarifni plan 1 wird am
+	# You are on standard tarrif
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+
+
+Test PrP Buying	
+    [Documentation]    	Activating bundle from the USSD menu. Precondition is that there is enaugh balance in account. Subscriber will buy a bundle for 5 EUR and in
+    ...					balance there is 10 EUR. So activation should be OK
+	${output}		USSD Start		
+	Log    			Pressing 3 for subscription menu     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 2 for options management     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 2 for buying the option     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for one-off bundle     console=yes
+	Write			1
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 1 for available bundles list    console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log    			Pressing 1 for selecting the bundle    console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	Sie moechten Super Net fuer den Preis von 5,00 Euro
+	Log    			Pressing 1 to select     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	# Bundle was succesfully purchased and the cost was 5,00 EUR
+	Should Contain	${output}	Super Net wurde erfolgreich fuer den Preis von 5,00 Euro gekauft
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+
+Test PoP Buying	
+    [Documentation]    	Activating bundle from the USSD menu. 
+	${output}		USSD Postpaid Start		
+	Log    			Pressing 2 for subscription menu     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 3 for offers list     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 2 for buying the option     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for one-off bundle     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log    			Pressing 1 for selecting the bundle    console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log    			Pressing 1 for info    console=yes
+	Should Contain	${output}	Tarifni dodatak 1 ist gueltig bis 30 Tage und kostet 4,17 Euro	
+	Write			1
+	${output}=    	Read Until    User input:
+	Log    			Pressing 1 to select     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	# Bundle was succesfully purchased and the cost was 4,17 EUR
+	Should Contain	${output}	Tarifni dodatak 1 wurde erfolgreich fuer den Preis von 4,17 Euro gekauft.
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+	
+Test PrP What Is My Number	
+    [Documentation]    	Default service offered in USSD menu under "other services". Menu returns subscriber's MSISDN
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 4 for other services     console=yes
+	Write			4
+	${output}=    	Read Until    User input:	
+	Log				Pressing 2 for what is my number service	console=yes
+	Write			2
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	${TESTSUBCRIBERS MSISDN RANGE START}
+	## Exit#
+	SSH Kill User Processes		${conn_id}	python	
+
+	
+Test PrP Call Me Back
+    [Documentation]    	Default service offered in USSD menu under "other services". Menu offers to send a SMS to MSISDN of subscriber's choice
+	...					to return a call
+	${output}		USSD Start		
+	Log    			Pressing 4 for other services     console=yes
+	Write			4
+	${output}=    	Read Until    User input:	
+	Log				Pressing 1 for call me back service		console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log				Entering the mobile number	console=yes
+	${recipient}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write			${recipient}	
+	${output}=    	Read Until    User input:
+	# SMS was sent to this number
+	Should Contain	${output}	 Eine SMS wurde an die Nummer
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+	
+Test PrP Direct Access To Balance Check
+	[Documentation]   mTel offers USSD code 102 as shortcut for balance check for prepaid subscribers
+    ...
+	Log    			Going to USSD code 102 directly to check the balance     console=yes
+	${subs}=	  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write    		${ussd_tool} ${subs} 102 ${USSD LOCATION}
+    ${output}=  	Read Until    User input:
+	Should Contain	${output}	Ihre Rechnung: 10,00 Euro
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test PoP Direct Access To Balance Check
+	[Documentation]  mTel offers USSD code 102 as shortcut for balance check as well as for postpaid subscribers
+    ...
+	Log    			Going to USSD code 102 directly to check the balance     console=yes
+	${subs}=	  	Evaluate  ${TESTSUBCRIBERS PP MSISDN RANGE START}+1
+	Write    		${ussd_tool} ${subs} 102 ${USSD LOCATION}
+    ${output}=  	Read Until    User input:
+	Should Contain	${output}	Ihre Rechnung: 0,00 Euro
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	

@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20150709 13:56:13.866">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/MOC_PREPAID_ONNET-ShortDuration-robot-suite.txt" id="s1" name="MOC PREPAID ONNET-ShortDuration-robot-suite">
+<kw type="setup" name="Setup Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${date} = OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>date</arg>
+</arguments>
+<msg timestamp="20150709 13:56:16.262" level="INFO">Running command 'date 2&gt;&amp;1'</msg>
+<msg timestamp="20150709 13:56:16.265" level="INFO">${date} = Thu Jul  9 13:56:16 CEST 2015</msg>
+<status status="PASS" endtime="20150709 13:56:16.264" starttime="20150709 13:56:16.249"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Date and time: ${date}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:56:16.270" level="INFO">Date and time: Thu Jul  9 13:56:16 CEST 2015</msg>
+<status status="PASS" endtime="20150709 13:56:16.271" starttime="20150709 13:56:16.267"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Target IN machine: ${IN-APP HOST}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:56:16.276" level="INFO">Target IN machine: 10.105.113.135</msg>
+<status status="PASS" endtime="20150709 13:56:16.277" starttime="20150709 13:56:16.273"></status>
+</kw>
+<kw type="kw" name="${in_version} = calls-resource.Check IN Version">
+<doc>Checks the version of the running service</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${IN-APP HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:16.509" starttime="20150709 13:56:16.291"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${IN-APP USER}</arg>
+<arg>${IN-APP PWD}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:16.530" level="INFO">Logging into '10.105.113.135:22' as 'qa_automation'.</msg>
+<msg timestamp="20150709 13:56:17.805" level="INFO">Read output: Last login: Thu Jul  9 04:56:20 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb13 ~]$[m</msg>
+<msg timestamp="20150709 13:56:17.812" level="INFO">${output_login} = Last login: Thu Jul  9 04:56:20 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:17.808" starttime="20150709 13:56:16.522"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:17.823" level="INFO">Last login: Thu Jul  9 04:56:20 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@in-app01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:17.825" starttime="20150709 13:56:17.817"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-corein-services status</arg>
+</arguments>
+<msg timestamp="20150709 13:56:17.834" level="INFO">Executing command 'sudo service inew-mvno-corein-services status'.</msg>
+<msg timestamp="20150709 13:56:20.573" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150709 13:56:20.580" level="INFO">${output} =  inew-mvna-corein-router-mfc-3.0.1
+I-New MVNA TNZ - Core - Service 3.0.1 2015.03.26-15:26:48 is running PID: 2349 
+ inew-mvna-corein-router-moc-3.0.1
+I-New MVNA TNZ - Core - Service 3.0.1 2015.03.26-1...</msg>
+<status status="PASS" endtime="20150709 13:56:20.577" starttime="20150709 13:56:17.829"></status>
+</kw>
+<kw type="kw" name="${version_r} = String.Fetch From Right">
+<doc>Returns contents of the `string` after the last occurrence of `marker`.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Service</arg>
+</arguments>
+<msg timestamp="20150709 13:56:20.592" level="INFO">${version_r} =  3.0.1 2015.03.26-15:26:48 is running PID: 11348 </msg>
+<status status="PASS" endtime="20150709 13:56:20.591" starttime="20150709 13:56:20.585"></status>
+</kw>
+<kw type="kw" name="${version} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${version_r}</arg>
+<arg>is running</arg>
+</arguments>
+<msg timestamp="20150709 13:56:20.605" level="INFO">${version} =  3.0.1 2015.03.26-15:26:48 </msg>
+<status status="PASS" endtime="20150709 13:56:20.603" starttime="20150709 13:56:20.597"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:20.617" starttime="20150709 13:56:20.610"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>IN version: ${version}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:56:20.629" level="INFO">IN version:  3.0.1 2015.03.26-15:26:48 </msg>
+<status status="PASS" endtime="20150709 13:56:20.631" starttime="20150709 13:56:20.623"></status>
+</kw>
+<msg timestamp="20150709 13:56:20.638" level="INFO">${in_version} =  3.0.1 2015.03.26-15:26:48 </msg>
+<status status="PASS" endtime="20150709 13:56:20.635" starttime="20150709 13:56:16.279"></status>
+</kw>
+<kw type="kw" name="${xdr_version} = calls-resource.Check XDR Version">
+<doc>Checks the version of the running service</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:20.734" starttime="20150709 13:56:20.668"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:20.745" level="INFO">Logging into '10.105.113.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20150709 13:56:22.094" level="INFO">Read output: Last login: Thu Jul  9 11:51:15 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m</msg>
+<msg timestamp="20150709 13:56:22.100" level="INFO">${output_login} = Last login: Thu Jul  9 11:51:15 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:22.097" starttime="20150709 13:56:20.739"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:22.108" level="INFO">Last login: Thu Jul  9 11:51:15 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:22.110" starttime="20150709 13:56:22.104"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-xdr status</arg>
+</arguments>
+<msg timestamp="20150709 13:56:22.118" level="INFO">Executing command 'sudo service inew-mvno-xdr status'.</msg>
+<msg timestamp="20150709 13:56:22.922" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150709 13:56:22.926" level="INFO">${output} = I-New UMS MVNO - XDR - Server 5.3.1.25016 is running PID: 4192 </msg>
+<status status="PASS" endtime="20150709 13:56:22.924" starttime="20150709 13:56:22.114"></status>
+</kw>
+<kw type="kw" name="${version_r} = String.Fetch From Right">
+<doc>Returns contents of the `string` after the last occurrence of `marker`.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Server</arg>
+</arguments>
+<msg timestamp="20150709 13:56:22.941" level="INFO">${version_r} =  5.3.1.25016 is running PID: 4192 </msg>
+<status status="PASS" endtime="20150709 13:56:22.940" starttime="20150709 13:56:22.930"></status>
+</kw>
+<kw type="kw" name="${version} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${version_r}</arg>
+<arg>is running</arg>
+</arguments>
+<msg timestamp="20150709 13:56:22.952" level="INFO">${version} =  5.3.1.25016 </msg>
+<status status="PASS" endtime="20150709 13:56:22.951" starttime="20150709 13:56:22.946"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:22.961" starttime="20150709 13:56:22.956"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR version: ${version}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:56:22.971" level="INFO">XDR version:  5.3.1.25016 </msg>
+<status status="PASS" endtime="20150709 13:56:22.974" starttime="20150709 13:56:22.966"></status>
+</kw>
+<msg timestamp="20150709 13:56:22.981" level="INFO">${xdr_version} =  5.3.1.25016 </msg>
+<status status="PASS" endtime="20150709 13:56:22.978" starttime="20150709 13:56:20.644"></status>
+</kw>
+<kw type="kw" name="${crce_version} = calls-resource.Check CRCE Version">
+<doc>Checks the version of the running service</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${CRCE HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:23.075" starttime="20150709 13:56:23.010"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${CRCE USER}</arg>
+<arg>${CRCE PWD}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:23.084" level="INFO">Logging into '10.105.113.125:22' as 'qa_automation'.</msg>
+<msg timestamp="20150709 13:56:24.391" level="INFO">Read output: Last login: Thu Jul  9 04:56:21 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb13 ~]$[m</msg>
+<msg timestamp="20150709 13:56:24.396" level="INFO">${output_login} = Last login: Thu Jul  9 04:56:21 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:24.394" starttime="20150709 13:56:23.079"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.404" level="INFO">Last login: Thu Jul  9 04:56:21 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@crce01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150709 13:56:24.406" starttime="20150709 13:56:24.400"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-crce status</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.412" level="INFO">Executing command 'sudo service inew-mvno-crce status'.</msg>
+<msg timestamp="20150709 13:56:24.612" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150709 13:56:24.615" level="INFO">${output} = I-New MVNO CRCE - Negret Rating &amp; Charging Engine 5.3.14.26930
+Negret Rating &amp; Charging Engine 5.3.14.26930 is running (PID:25709, Wrapper:STARTED, Java:STARTED)
+CRCE is running.</msg>
+<status status="PASS" endtime="20150709 13:56:24.614" starttime="20150709 13:56:24.409"></status>
+</kw>
+<kw type="kw" name="${version_r} = String.Fetch From Right">
+<doc>Returns contents of the `string` after the last occurrence of `marker`.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Engine</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.625" level="INFO">${version_r} =  5.3.14.26930 is running (PID:25709, Wrapper:STARTED, Java:STARTED)
+CRCE is running.</msg>
+<status status="PASS" endtime="20150709 13:56:24.624" starttime="20150709 13:56:24.619"></status>
+</kw>
+<kw type="kw" name="${version} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${version_r}</arg>
+<arg>is running</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.634" level="INFO">${version} =  5.3.14.26930 </msg>
+<status status="PASS" endtime="20150709 13:56:24.633" starttime="20150709 13:56:24.628"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.643" starttime="20150709 13:56:24.638"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>CRCE version: ${version}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.651" level="INFO">CRCE version:  5.3.14.26930 </msg>
+<status status="PASS" endtime="20150709 13:56:24.653" starttime="20150709 13:56:24.646"></status>
+</kw>
+<msg timestamp="20150709 13:56:24.659" level="INFO">${crce_version} =  5.3.14.26930 </msg>
+<status status="PASS" endtime="20150709 13:56:24.656" starttime="20150709 13:56:22.988"></status>
+</kw>
+<kw type="kw" name="${INITIAL_BALANCE} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>10000000</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.667" level="INFO">${INITIAL_BALANCE} = 10000000</msg>
+<status status="PASS" endtime="20150709 13:56:24.666" starttime="20150709 13:56:24.662"></status>
+</kw>
+<kw type="kw" name="${return_code} = subscriber-admin-support-resource.CRCE Create Test Subscribers">
+<doc>Provisions one or multiple test subscribers on CRCE only.</doc>
+<arguments>
+<arg>${CRCE01 HOST}</arg>
+<arg>${CRCE01 WEBSERVICES PORT}</arg>
+<arg>${CRCE01 WEBSERVICES BASE PATH}</arg>
+<arg>1</arg>
+<arg>${TESTSUBCRIBERS IMSI RANGE START}</arg>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>PREPAID</arg>
+<arg>${TESTSUBCRIBERS DEFAULT LANGUAGEID}</arg>
+<arg>${TESTSUBCRIBERS DEFAULT TARIFFID}</arg>
+<arg>${INITIAL_BALANCE}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_host=${crce_host}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.710" level="INFO">msg=crce_host=10.105.113.125</msg>
+<status status="PASS" endtime="20150709 13:56:24.712" starttime="20150709 13:56:24.706"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_port=${crce_port}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.719" level="INFO">msg=crce_port=8080</msg>
+<status status="PASS" endtime="20150709 13:56:24.721" starttime="20150709 13:56:24.715"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_webservicesBasePath=${crce_webservicesBasePath}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.728" level="INFO">msg=crce_webservicesBasePath=/inew-mvno-crce-webservices/</msg>
+<status status="PASS" endtime="20150709 13:56:24.729" starttime="20150709 13:56:24.723"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=amount=${amount}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.736" level="INFO">msg=amount=1</msg>
+<status status="PASS" endtime="20150709 13:56:24.738" starttime="20150709 13:56:24.732"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=imsiRangeStart=${imsiRangeStart}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.745" level="INFO">msg=imsiRangeStart=530052041010000</msg>
+<status status="PASS" endtime="20150709 13:56:24.747" starttime="20150709 13:56:24.741"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=msisdnRangeStart=${msisdnRangeStart}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.754" level="INFO">msg=msisdnRangeStart=642041010000</msg>
+<status status="PASS" endtime="20150709 13:56:24.756" starttime="20150709 13:56:24.750"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=type=${type}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.762" level="INFO">msg=type=PREPAID</msg>
+<status status="PASS" endtime="20150709 13:56:24.764" starttime="20150709 13:56:24.758"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=languageid=${languageid}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.771" level="INFO">msg=languageid=1</msg>
+<status status="PASS" endtime="20150709 13:56:24.773" starttime="20150709 13:56:24.767"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=tariffId=${tariffId}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.779" level="INFO">msg=tariffId=101001</msg>
+<status status="PASS" endtime="20150709 13:56:24.781" starttime="20150709 13:56:24.775"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=balance=${balance}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.790" level="INFO">msg=balance=10000000</msg>
+<status status="PASS" endtime="20150709 13:56:24.791" starttime="20150709 13:56:24.786"></status>
+</kw>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Setup SoapUI Logs">
+<doc>This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.824" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/global-groovy.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/global-groovy.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:56:24.824" starttime="20150709 13:56:24.820"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:56:24.825" starttime="20150709 13:56:24.817"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.831" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/soapui.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/soapui.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:56:24.832" starttime="20150709 13:56:24.829"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:56:24.833" starttime="20150709 13:56:24.827"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.839" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/soapui-errors.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/soapui-errors.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:56:24.840" starttime="20150709 13:56:24.837"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:56:24.841" starttime="20150709 13:56:24.834"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:56:24.842" starttime="20150709 13:56:24.797"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Project">
+<doc>Initialize the runner and set the project string </doc>
+<arguments>
+<arg>${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}</arg>
+</arguments>
+<msg timestamp="20150709 13:56:24.847" level="INFO">SoapUI 5.1.3 TestCase Runner</msg>
+<status status="PASS" endtime="20150709 13:56:24.847" starttime="20150709 13:56:24.843"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crceHost=${crce_host}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.851" starttime="20150709 13:56:24.849"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crcePort=${crce_port}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.854" starttime="20150709 13:56:24.852"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crceWebservicesBasePath=${crce_webservicesBasePath}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.858" starttime="20150709 13:56:24.855"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Suite">
+<doc>Set the suite string </doc>
+<arguments>
+<arg>HighLevelOps</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.860" starttime="20150709 13:56:24.859"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Case">
+<doc>Set the test case string </doc>
+<arguments>
+<arg>createTestSubscribers</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.863" starttime="20150709 13:56:24.862"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.amount=${amount}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.867" starttime="20150709 13:56:24.865"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.imsiRangeStart=${imsiRangeStart}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.870" starttime="20150709 13:56:24.868"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.msisdnRangeStart=${msisdnRangeStart}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.873" starttime="20150709 13:56:24.871"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.type=${type}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.877" starttime="20150709 13:56:24.875"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.languageid=${languageid}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.880" starttime="20150709 13:56:24.878"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.tariffId=${tariffId}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.884" starttime="20150709 13:56:24.882"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.balance=${balance}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:56:24.887" starttime="20150709 13:56:24.885"></status>
+</kw>
+<kw type="kw" name="${execution_status}, ${return_value_dummy} = BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>SoapUI Run</arg>
+</arguments>
+<kw type="kw" name="InewSoapUILibrary.Soapui Run">
+<doc>Run the runner and report to Robot </doc>
+<arguments>
+</arguments>
+<msg timestamp="20150709 13:56:24.892" level="INFO">Running with the following project properties set: [u'crceHost=10.105.113.125', u'crcePort=8080', u'crceWebservicesBasePath=/inew-mvno-crce-webservices/', u'HighLevelOps.createTestSubscribers.input.amount=1', u'HighLevelOps.createTestSubscribers.input.imsiRangeStart=530052041010000', u'HighLevelOps.createTestSubscribers.input.msisdnRangeStart=642041010000', u'HighLevelOps.createTestSubscribers.input.type=PREPAID', u'HighLevelOps.createTestSubscribers.input.languageid=1', u'HighLevelOps.createTestSubscribers.input.tariffId=101001', u'HighLevelOps.createTestSubscribers.input.balance=10000000']</msg>
+<msg timestamp="20150709 13:57:02.112" level="INFO">13:56:25,232 WARN  [SoapUI] Missing folder [/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/ext] for external libraries
+13:56:25,233 INFO  [DefaultSoapUICore] Creating new settings at [/home/msanseovic/soapui-settings.xml]
+13:56:27,271 INFO  [WsdlProject] Loaded project from [file:/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/robot_crce_bridge-soapui-project.xml]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [crceHost] to [10.105.113.125]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [crcePort] to [8080]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [crceWebservicesBasePath] to [/inew-mvno-crce-webservices/]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.amount] to [1]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.imsiRangeStart] to [530052041010000]
+13:56:27,291 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.msisdnRangeStart] to [642041010000]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.type] to [PREPAID]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.languageid] to [1]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.tariffId] to [101001]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.balance] to [10000000]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Running SoapUI tests in project [Robotframework_CRCE-Bridge]
+13:56:27,292 INFO  [SoapUITestCaseRunner] Running TestCase [createTestSubscribers]
+13:56:27,302 INFO  [SoapUITestCaseRunner] Running SoapUI testcase [createTestSubscribers]
+13:56:27,308 INFO  [SoapUITestCaseRunner] running step [init_repeat_counter]
+13:56:27,887 INFO  [SoapUITestCaseRunner] running step [01_init_next_subscriber]
+13:56:27,982 INFO  [SoapUITestCaseRunner] running step [getSubscriberProfileByImsi]
+13:56:28,303 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:56:28,304 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+13:56:48,648 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:56:48,656 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:56:48,845 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:56:48,845 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:56:48,845 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:56:48,846 INFO  [SoapUITestCaseRunner] running step [cancel_on_SOAP_error]
+13:56:48,963 INFO  [SoapUITestCaseRunner] running step [transfer_response_values]
+13:56:49,243 INFO  [SoapUITestCaseRunner] running step [cancel_on_CRCE_error_OR_skip_delete_on_UnknownSubscriber]
+13:56:49,271 INFO  [SoapUITestCaseRunner] running step [deleteSubscriber]
+13:56:49,273 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+13:56:49,275 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:56:49,275 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+13:56:56,399 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:56:56,400 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:56:56,408 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:56:56,408 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:56:56,408 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:56:56,409 INFO  [SoapUITestCaseRunner] running step [2nd_cancel_on_SOAP_error]
+13:56:56,481 INFO  [SoapUITestCaseRunner] running step [2nd_transfer_response_values]
+13:56:56,487 INFO  [SoapUITestCaseRunner] running step [cancel_on_deletion_error]
+13:56:56,537 INFO  [SoapUITestCaseRunner] running step [02_createSubscriber]
+13:56:56,541 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+13:56:56,543 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:56:56,544 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+13:56:57,017 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:56:57,017 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:56:57,024 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:56:57,024 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:56:57,024 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:56:57,025 INFO  [SoapUITestCaseRunner] running step [3rd_cancel_on_SOAP_error]
+13:56:57,096 INFO  [SoapUITestCaseRunner] running step [3rd_transfer_response_values]
+13:56:57,108 INFO  [SoapUITestCaseRunner] running step [cancel_on_create_error]
+13:56:57,153 INFO  [SoapUITestCaseRunner] running step [activateSubscriber]
+13:56:57,157 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+13:56:57,159 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:56:57,159 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+13:57:00,125 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:57:00,125 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:57:00,133 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:57:00,133 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:57:00,133 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:57:00,134 INFO  [SoapUITestCaseRunner] running step [4th_cancel_on_SOAP_error]
+13:57:00,203 INFO  [SoapUITestCaseRunner] running step [4th_transfer_response_values]
+13:57:00,209 INFO  [SoapUITestCaseRunner] running step [cancel_on_activate_error]
+13:57:00,253 INFO  [SoapUITestCaseRunner] running step [getMainAccount]
+13:57:00,256 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+13:57:00,258 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:57:00,258 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/accounts HTTP/1.1
+13:57:01,234 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:57:01,234 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:57:01,249 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:57:01,249 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:57:01,249 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:57:01,249 INFO  [SoapUITestCaseRunner] running step [5th_cancel_on_SOAP_error]
+13:57:01,316 INFO  [SoapUITestCaseRunner] running step [5th_transfer_response_values]
+13:57:01,338 INFO  [SoapUITestCaseRunner] running step [cancel_on_getmainaccount_error]
+13:57:01,384 INFO  [SoapUITestCaseRunner] running step [setBalance]
+13:57:01,387 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+13:57:01,389 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+13:57:01,390 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/account_administration HTTP/1.1
+13:57:01,864 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+13:57:01,864 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+13:57:01,877 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+13:57:01,877 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+13:57:01,877 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+13:57:01,878 INFO  [SoapUITestCaseRunner] running step [6th_cancel_on_SOAP_error]
+13:57:01,945 INFO  [SoapUITestCaseRunner] running step [6th_transfer_response_values]
+13:57:01,956 INFO  [SoapUITestCaseRunner] running step [cancel_on_setbalance_error]
+13:57:02,001 INFO  [SoapUITestCaseRunner] running step [repeat_01_amount_times]
+13:57:02,062 INFO  [SoapUITestCaseRunner] running step [finish_successful]
+13:57:02,099 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK
+13:57:02,100 INFO  [SoapUITestCaseRunner] Finished running SoapUI testcase [createTestSubscribers], time taken: 34753ms, status: FINISHED
+13:57:02,100 INFO  [SoapUITestCaseRunner] TestCase [createTestSubscribers] finished with status [FINISHED] in 34753ms</msg>
+<status status="PASS" endtime="20150709 13:57:02.144" starttime="20150709 13:56:24.890"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.148" level="INFO">${execution_status} = PASS</msg>
+<msg timestamp="20150709 13:57:02.149" level="INFO">${return_value_dummy} = None</msg>
+<status status="PASS" endtime="20150709 13:57:02.146" starttime="20150709 13:56:24.888"></status>
+</kw>
+<kw type="kw" name="${resultCode} = subscriber-admin-support-resource.CRCE Get Groovy Log Return Property">
+<doc>This is a PRIVATE helper function to retrieve return values placed into the Groovy log by the SoaupUI TCs .</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.output.resultCode</arg>
+<arg>UNKNOWN_ERROR</arg>
+</arguments>
+<kw type="kw" name="${return_marker} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${property_name}=</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.168" level="INFO">${return_marker} = HighLevelOps.createTestSubscribers.output.resultCode=</msg>
+<status status="PASS" endtime="20150709 13:57:02.168" starttime="20150709 13:57:02.165"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${EMPTY}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.173" level="INFO">${resultCode} = </msg>
+<status status="PASS" endtime="20150709 13:57:02.172" starttime="20150709 13:57:02.170"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${EMPTY}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.177" level="INFO">${return_log_entry} = </msg>
+<status status="PASS" endtime="20150709 13:57:02.176" starttime="20150709 13:57:02.174"></status>
+</kw>
+<kw type="kw" name="${execution_status}, ${return_log_entry} = BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Grep File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Grep File">
+<doc>Returns the lines of the specified file that match the `pattern`.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.185" html="yes" level="INFO">Reading file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/global-groovy.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/global-groovy.log&lt;/a&gt;'</msg>
+<msg timestamp="20150709 13:57:02.191" level="INFO">1 out of 1 lines matched</msg>
+<status status="PASS" endtime="20150709 13:57:02.191" starttime="20150709 13:57:02.182"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.194" level="INFO">${execution_status} = PASS</msg>
+<msg timestamp="20150709 13:57:02.194" level="INFO">${return_log_entry} = 2015-07-09 13:57:02,099 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.193" starttime="20150709 13:57:02.179"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${execution_status}'=='FAIL'</arg>
+<arg>Set Variable</arg>
+<arg>${EMPTY}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${return_log_entry}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.210" starttime="20150709 13:57:02.208"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.212" level="INFO">${return_log_entry} = 2015-07-09 13:57:02,099 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.211" starttime="20150709 13:57:02.196"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${return_log_entry}'=='${NONE}'</arg>
+<arg>Set Variable</arg>
+<arg>${EMPTY}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${return_log_entry}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.232" starttime="20150709 13:57:02.228"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.236" level="INFO">${return_log_entry} = 2015-07-09 13:57:02,099 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.234" starttime="20150709 13:57:02.215"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${return_log_entry}'!='${EMPTY}'</arg>
+<arg>Fetch From Right</arg>
+<arg>${return_log_entry}</arg>
+<arg>${return_marker}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${resultCode}</arg>
+</arguments>
+<kw type="kw" name="String.Fetch From Right">
+<doc>Returns contents of the `string` after the last occurrence of `marker`.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.257" starttime="20150709 13:57:02.251"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.261" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.259" starttime="20150709 13:57:02.239"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${resultCode}'=='${NONE}'</arg>
+<arg>Set Variable</arg>
+<arg>${default_value}</arg>
+<arg>ELSE IF</arg>
+<arg>'${resultCode}'=='${EMPTY}'</arg>
+<arg>Set Variable</arg>
+<arg>${default_value}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${resultCode}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${resultCode}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.286" starttime="20150709 13:57:02.282"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.290" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.288" starttime="20150709 13:57:02.264"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.294" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.293" starttime="20150709 13:57:02.152"></status>
+</kw>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Cleanup SoapUI Logs">
+<doc>This is a PRIVATE helper function to cleanup the testsuite directory from logs created by a SoapUI testcase.</doc>
+<arguments>
+<arg>HighLevelOps-CreateTestSubscribers</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.325" starttime="20150709 13:57:02.320"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.332" starttime="20150709 13:57:02.328"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.339" starttime="20150709 13:57:02.335"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${tc_specific_files_prefix}'!='${EMPTY}'</arg>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Remove File</arg>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Remove File">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.373" html="yes" level="INFO">File '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/HighLevelOps-CreateTestSubscribers*.*"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/HighLevelOps-CreateTestSubscribers*.*&lt;/a&gt;' does not exist</msg>
+<status status="PASS" endtime="20150709 13:57:02.375" starttime="20150709 13:57:02.359"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:02.377" starttime="20150709 13:57:02.354"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:02.379" starttime="20150709 13:57:02.342"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:02.381" starttime="20150709 13:57:02.298"></status>
+</kw>
+<msg timestamp="20150709 13:57:02.386" level="INFO">${return_code} = OK</msg>
+<status status="PASS" endtime="20150709 13:57:02.384" starttime="20150709 13:56:24.674"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Be Equal As Strings">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${return_code}</arg>
+<arg>OK</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.394" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20150709 13:57:02.396" starttime="20150709 13:57:02.390"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Test Subscribers Created!</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.403" level="INFO">Test Subscribers Created!</msg>
+<status status="PASS" endtime="20150709 13:57:02.405" starttime="20150709 13:57:02.399"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:02.407" starttime="20150709 13:56:16.238"></status>
+</kw>
+<test id="s1-t1" name="Run MOC Call">
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>******* Run MOC 1s *******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.437" starttime="20150709 13:57:02.434"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Running the MOC call...</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.444" level="INFO">Running the MOC call...</msg>
+<status status="PASS" endtime="20150709 13:57:02.446" starttime="20150709 13:57:02.440"></status>
+</kw>
+<kw type="kw" name="${rc} = cg_support-resource.CG Run MOC 1s">
+<doc>Runs a standard MOC 1s session</doc>
+<arguments>
+<arg>${TESTSUBCRIBERS IMSI RANGE START}</arg>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>${MSC ADDRESS}</arg>
+<arg>${CALLSGEN HOME}</arg>
+<arg>${CALLSGEN JAR NAME}</arg>
+<arg>${CG UNIFIED WS PATH}</arg>
+<arg>${AMQ-SIG HOST}</arg>
+<arg>${AMQ-SIG PORT}</arg>
+<arg>${AMQ-SIG MOC REQ QUEUE}</arg>
+<arg>${AMQ-SIG MOC RES QUEUE}</arg>
+</arguments>
+<kw type="kw" name="${rc} = cg_support-resource.CG Run Standard MOC CGS">
+<doc>Runs a standard MOC session (meaning a session that needs only mscAddress and mocBPartyMsisdn parameters) for the passed cgs file</doc>
+<arguments>
+<arg>moc1s</arg>
+<arg>${cg_imsi}</arg>
+<arg>${cg_msisdn}</arg>
+<arg>${cd_msisdn}</arg>
+<arg>${msc_address}</arg>
+<arg>${callsgen_home}</arg>
+<arg>${callsgen_jar_name}</arg>
+<arg>${callsgen_unified_workspace_absolute_path}</arg>
+<arg>${amq_host}</arg>
+<arg>${amq_port}</arg>
+<arg>${queue_moc_req}</arg>
+<arg>${queue_moc_res}</arg>
+</arguments>
+<kw type="kw" name="${subscribers_csv_absolute_path} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/${cgs_filename}-subscribers.csv</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.524" level="INFO">${subscribers_csv_absolute_path} = /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-subscribers.csv</msg>
+<status status="PASS" endtime="20150709 13:57:02.523" starttime="20150709 13:57:02.519"></status>
+</kw>
+<kw type="kw" name="${flexml_csv_absolute_path} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/${cgs_filename}-fleXml.csv</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.534" level="INFO">${flexml_csv_absolute_path} = /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv</msg>
+<status status="PASS" endtime="20150709 13:57:02.532" starttime="20150709 13:57:02.528"></status>
+</kw>
+<kw type="kw" name="${workspace_ini_absolute_path} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/${cgs_filename}-workspace.ini</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.542" level="INFO">${workspace_ini_absolute_path} = /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini</msg>
+<status status="PASS" endtime="20150709 13:57:02.541" starttime="20150709 13:57:02.537"></status>
+</kw>
+<kw type="kw" name="${cgs_absolute_path} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/${cgs_filename}.cgs</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.551" level="INFO">${cgs_absolute_path} = /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/moc1s.cgs</msg>
+<status status="PASS" endtime="20150709 13:57:02.550" starttime="20150709 13:57:02.545"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>****** create subscribers.csv ******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.557" starttime="20150709 13:57:02.554"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${subscribers_csv_absolute_path}</arg>
+<arg>${cg_imsi};${cg_msisdn}\n</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.568" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-subscribers.csv"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-subscribers.csv&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:57:02.569" starttime="20150709 13:57:02.560"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>****** create fleXml ******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.572" starttime="20150709 13:57:02.570"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${flexml_csv_absolute_path}</arg>
+<arg>\#Header: comment;mscAddress;mocBPartyMsisdn\n</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.576" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:57:02.577" starttime="20150709 13:57:02.573"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Append To File">
+<doc>Appends the given contend to the specified file.</doc>
+<arguments>
+<arg>${flexml_csv_absolute_path}</arg>
+<arg>${cgs_filename} parameters;${msc_address};${cd_msisdn}\n</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.582" html="yes" level="INFO">Appended to file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:57:02.583" starttime="20150709 13:57:02.578"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>****** create workspace.ini ******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.586" starttime="20150709 13:57:02.584"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${workspace_ini_absolute_path}</arg>
+<arg>${WORKSPACE_INI_DEFAULTS}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.590" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:57:02.591" starttime="20150709 13:57:02.587"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Append To File">
+<doc>Appends the given contend to the specified file.</doc>
+<arguments>
+<arg>${workspace_ini_absolute_path}</arg>
+<arg>\ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MOC;${queue_moc_req};${queue_moc_res};6;1;1</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.596" html="yes" level="INFO">Appended to file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150709 13:57:02.597" starttime="20150709 13:57:02.592"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>****** Exec CG ******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:02.600" starttime="20150709 13:57:02.598"></status>
+</kw>
+<kw type="kw" name="${rc} = OperatingSystem.Run And Return Rc">
+<doc>Runs the given command in the system and returns the return code.</doc>
+<arguments>
+<arg>cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:02.609" level="INFO">Running command 'cd /opt/callsGenerator;java -jar callsgen-6.1.0.jar /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/moc1s.cgs /opt/robot/robotworkspace/external_tests/CG_unified_workspace -i /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-workspace.ini -s /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-subscribers.csv -f /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/tmp/moc1s-fleXml.csv 2&gt;&amp;1'</msg>
+<msg timestamp="20150709 13:57:08.854" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20150709 13:57:08.851" starttime="20150709 13:57:02.601"></status>
+</kw>
+<msg timestamp="20150709 13:57:08.859" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20150709 13:57:08.857" starttime="20150709 13:57:02.487"></status>
+</kw>
+<msg timestamp="20150709 13:57:08.865" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20150709 13:57:08.863" starttime="20150709 13:57:02.452"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>5s</arg>
+</arguments>
+<msg timestamp="20150709 13:57:13.875" level="INFO">Slept 5 seconds</msg>
+<status status="PASS" endtime="20150709 13:57:13.878" starttime="20150709 13:57:08.868"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>...do the checks...</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:57:13.886" level="INFO">...do the checks...</msg>
+<status status="PASS" endtime="20150709 13:57:13.888" starttime="20150709 13:57:13.882"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>******* Checking Subscriber's Account Balance *******</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:13.894" starttime="20150709 13:57:13.891"></status>
+</kw>
+<kw type="kw" name="calls-resource.Check Subscriber Balance">
+<doc>Check the CRCE DB entry for test subscriber's monetary account balance.</doc>
+<arguments>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>${EXPECTED_BALANCE_1S_MOC}</arg>
+</arguments>
+<kw type="kw" name="dblib_support-resource.DBLIB Connect to PostgresDB">
+<doc>this helper shields testsuite developers from the necessity to know driver and connection string details.</doc>
+<arguments>
+<arg>${CRCE DB HOST}</arg>
+<arg>${CRCE DB PORT}</arg>
+<arg>${CRCE DB NAME}</arg>
+<arg>${CRCE DB USER}</arg>
+<arg>${CRCE DB PWD}</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${host}:${port}/${dbName}</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.276" starttime="20150709 13:57:13.943"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:14.280" starttime="20150709 13:57:13.920"></status>
+</kw>
+<kw type="kw" name="@{queryRows} = dblib_support-resource.DBLIB Query">
+<doc>this helper executes the passed select statement and returns the result as a list.</doc>
+<arguments>
+<arg>select balance from acc_subscriber_accounts where category=1 and subscriber_id in (select id from profiler_subscriber_profiles where msisdn='${subscriber}');</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Execute Query *****</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.307" starttime="20150709 13:57:14.303"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Store Query Result To File">
+<doc></doc>
+<arguments>
+<arg>${selectStatement}</arg>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.882" starttime="20150709 13:57:14.309"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Load Result from file</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.889" starttime="20150709 13:57:14.885"></status>
+</kw>
+<kw type="kw" name="${queryResultSetLines} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.897" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/tmp_query_result.txt"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/basic/MOC/PrePaid/OnNet/tmp_query_result.txt&lt;/a&gt;'</msg>
+<msg timestamp="20150709 13:57:14.900" level="INFO">${queryResultSetLines} = 9980000|
+</msg>
+<status status="PASS" endtime="20150709 13:57:14.899" starttime="20150709 13:57:14.892"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Transform single string result into list of lines *****</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.907" starttime="20150709 13:57:14.903"></status>
+</kw>
+<kw type="kw" name="@{queryResultSet} = String.Split To Lines">
+<doc>Converts the `string` into a list of lines.</doc>
+<arguments>
+<arg>${queryResultSetLines}</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.914" level="INFO">1 lines returned</msg>
+<msg timestamp="20150709 13:57:14.917" level="INFO">@{queryResultSet} = [ 9980000| ]</msg>
+<status status="PASS" endtime="20150709 13:57:14.916" starttime="20150709 13:57:14.910"></status>
+</kw>
+<msg timestamp="20150709 13:57:14.921" level="INFO">@{queryRows} = [ 9980000| ]</msg>
+<status status="PASS" endtime="20150709 13:57:14.920" starttime="20150709 13:57:14.286"></status>
+</kw>
+<kw type="kw" name="@{fields} = String.Split String">
+<doc>Splits the `string` using `separator` as a delimiter string.</doc>
+<arguments>
+<arg>@{queryRows}[0]</arg>
+<arg>|</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.931" level="INFO">@{fields} = [ 9980000 |  ]</msg>
+<status status="PASS" endtime="20150709 13:57:14.929" starttime="20150709 13:57:14.924"></status>
+</kw>
+<kw type="kw" name="${balance} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>@{fields}[0]</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.939" level="INFO">${balance} = 9980000</msg>
+<status status="PASS" endtime="20150709 13:57:14.938" starttime="20150709 13:57:14.934"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Disconnect From Database">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20150709 13:57:14.946" level="INFO">SQL Warnings on this connection: null</msg>
+<status status="PASS" endtime="20150709 13:57:14.948" starttime="20150709 13:57:14.942"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Be Equal">
+<doc>Fails if the given objects are unequal.</doc>
+<arguments>
+<arg>${balance}</arg>
+<arg>${expected_bal}</arg>
+<arg>msg=Balance ${balance} NOT OK!</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.957" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20150709 13:57:14.958" starttime="20150709 13:57:14.950"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Balance= ${balance} OK!</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:57:14.966" level="INFO">Balance= 9980000 OK!</msg>
+<status status="PASS" endtime="20150709 13:57:14.968" starttime="20150709 13:57:14.961"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:14.970" starttime="20150709 13:57:13.898"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:14.977" starttime="20150709 13:57:14.974"></status>
+</kw>
+<doc>Test will make a MOC call, duration 1s.
+
+Arguments:
+none
+Returns:
+none
+Fails:
+
+=================================================================================</doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>MOC_involved</tag>
+<tag>TNZ_supported</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20150709 13:57:14.980" starttime="20150709 13:57:02.412"></status>
+</test>
+<kw type="teardown" name="Teardown Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Disconnect From Database</arg>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:15.013" starttime="20150709 13:57:15.009"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Cleaning up</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150709 13:57:15.019" level="INFO">Cleaning up</msg>
+<status status="PASS" endtime="20150709 13:57:15.021" starttime="20150709 13:57:15.015"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>mv *ssh_tail*.log log/</arg>
+</arguments>
+<msg timestamp="20150709 13:57:15.034" level="INFO">Running command 'mv *ssh_tail*.log log/ 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150709 13:57:15.040" starttime="20150709 13:57:15.023"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150709 13:57:15.048" starttime="20150709 13:57:15.044"></status>
+</kw>
+<status status="PASS" endtime="20150709 13:57:15.050" starttime="20150709 13:57:14.993"></status>
+</kw>
+<doc>Testing the prepaid MOC call, duration is 30s - shorter than one slice (less than 60s)
+
+============================================================</doc>
+<metadata>
+</metadata>
+<status status="PASS" endtime="20150709 13:57:15.053" starttime="20150709 13:56:13.878"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0">Critical Tests</stat>
+<stat pass="1" fail="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="1" info="" doc="" combined="" fail="0" links="">matko.sanseovic</stat>
+<stat pass="1" info="" doc="" combined="" fail="0" links="">MOC_involved</stat>
+<stat pass="1" info="" doc="" combined="" fail="0" links="">TNZ_supported</stat>
+</tag>
+<suite>
+<stat pass="1" id="s1" fail="0" name="MOC PREPAID ONNET-ShortDuration-robot-suite">MOC PREPAID ONNET-ShortDuration-robot-suite</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

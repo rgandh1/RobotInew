@@ -1,0 +1,33 @@
+*** Settings ***
+Documentation     Executes a 1 segment MOC call
+...               Run with arguments:
+...               --pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+...               --escape star:STAR
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/FALABELLA-CHILE-NewRelease-resource.txt
+Force Tags        FALABELLA_supported  thomas.maikis  IN_involved
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/component-verification-resource.txt
+Library           OperatingSystem
+Library           SSHLibrary
+
+*** Variables ***
+${TESTCASE HOME}               robot_testsuites/basic/MOC_International_30s
+
+
+*** Test Cases ***
+
+
+
+Run Call
+    Verify CRCE
+    Verify IN-MOC
+    Open Connection    ${IN-APP HOST}    Port=22    prompt=$ 
+    login    ${IN-APP USER}    ${IN-APP PWD}
+    write  sudo su -c 'tail -f /var/log/inew/core-in-service/${IN VERS}/moc/inew-in.log > /tmp/robot_in_log.log'
+    ${rc}=  Run And Return Rc  java -jar ${CALLSGEN HOME}/${CALLSGEN JAR NAME} ${CG UNIFIED WS PATH}/sessions/IN-sessions/SingleMoc30s.cgs ${CG UNIFIED WS PATH}/ -i ${ROBOT WORKSPACE PATH}/${TESTCASE HOME}/workspace.ini -s ${ROBOT WORKSPACE PATH}/${TESTCASE HOME}/SingleMocSubscriber.csv -f ${ROBOT WORKSPACE PATH}/${TESTCASE HOME}/MOCFlex.csv
+    Should be equal as Integers  ${rc}  0
+    SSHLibrary.Get File  /tmp/robot_in_log.log  ${ROBOT WORKSPACE PATH}/${TESTCASE HOME}/
+    ${EXCEPTIONS}    Grep File    ${ROBOT WORKSPACE PATH}/${TESTCASE HOME}/robot_in_log.log    Exception
+    Should be empty    ${EXCEPTIONS}

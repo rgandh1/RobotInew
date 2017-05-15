@@ -1,0 +1,99 @@
+*** Settings ***
+Documentation     UNDER CONSTRUCTION!!!
+...               This is a global keywords resource providing convenience 
+...               keywords for checking vitality (availability) of 
+...               hosts and components
+...             
+...               ============================================================
+...               Is NTP Sync          
+...       
+...               Command Output Contains => SSH-Support
+...               Queue Exists            => AMQ-support 
+...               Get Consumers Amount    => AMQ-support
+...
+...               Get AMQ Vitality State
+...               Get XDR Vitality State
+...               Get CRCE Vitality State
+...               Get IN Vitality State
+...               Get IN-ROUTER Vitality State
+...               Get IN-CONFIG Vitality State
+...               Get IN-INFRA Vitality State
+...               Get IN-XAPPS Vitality State
+...               Get IN-MOC Vitality State
+...               Get IN-MTC Vitality State
+...               Get IN-MFC Vitality State
+...               Get IN-SMS Vitality State
+...               Get IN-USSD Vitality State
+...               ============================================================
+Library           OperatingSystem
+Library           String
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+
+
+*** Variables ***
+
+
+
+*** Keywords ***
+
+Is NTP Sync
+    [Documentation]  UNDER CONSTRUCTION!!!
+    ...              Checks if the passed host is in sync with the NTP server 
+    ...
+    ...              Arguments:
+    ...                ssh_connection   open SSH connection to the interesting host 
+	...
+    ...              Returns:           
+    ...                result           ${true} if host is in sync or ${false} if not
+	...
+	...              Fails:             Never
+	...            
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]           ${ssh_connection}
+    ${stdout}=            Execute Command    ntpstat
+    ${execution_status}=  Run Keyword And Ignore Error    Should Contain  ${stdout}  synchronised to NTP server  
+    ${result}=            Run Keyword If             '${execution_status}'=='PASS'         Set Variable        ${true}   
+                          ...    ELSE IF             '${resultCode}'=='${EMPTY}'           Set Variable        ${false}  
+    [return]             ${result}   
+
+	
+	
+Get AMQ Vitality State
+    [Documentation]  UNDER CONSTRUCTION!!!
+    ...              Checks multiple vitality aspects of an AMQ instance
+	...              in a certain priority order and returns the error code 
+	...              of the first failing aspect or OK if all aspects are valid.	
+    ...
+    ...              Arguments:
+    ...                host             IP address of the AMQ host 
+    ...                service_port     AMQ's JMS service port 
+    ...                user             user name for SSH based login
+    ...                pswd             password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+	
+    ...              Returns:           
+    ...                resultCode       One of the following:
+    ...                                   OK 
+    ...                                   NTP_OUT_OF_SYNC
+    ...                                   SERVICE_NOT_LISTENING
+    ...                                   LOGIN_FAILED
+	...
+	...              Fails:             Never
+	...            
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]          ${host}  ${service_port}      ${ssh_user}  ${ssh_pswd}  ${ssh_rsa_key_file}  
+    Comment              ****** Log in via SSH ****** 
+	$(resultCode)=       LOGIN_FAILED
+    ${ssh_connection}=   SSH Login    ${ssh_user}    ${ssh_pswd}   ${ssh_rsa_key_file}  host=${host}                               
+    Comment              ****** check via netstat if service_port is LISTENing ****** 
+	$(resultCode)=       SERVICE_NOT_LISTENING
+    Comment              ****** do NTP sync ****** 
+	$(resultCode)=       NTP_OUT_OF_SYNC
+	$(is_ntp_sync)=      Is NTP Sync  ${ssh_connection}
+    Comment              ****** Log out ****** 
+	$(resultCode)=       OK
+                         SSH Logout               ${ssh_connection}	  
+    [return]             ${resultCode}   
+	

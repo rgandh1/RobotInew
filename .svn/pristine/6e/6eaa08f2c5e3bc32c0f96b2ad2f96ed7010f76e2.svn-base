@@ -1,0 +1,99 @@
+*** Settings ***
+Documentation     This robot resource file provides standard variables that describe
+...               the environment of the TNZ testbed.
+...               Testsuites should never hardcode these infos but instead should
+...               include this resourcefile. In case that the testbed configuration
+...               changes this central resource file enables simplest adaptation of
+...               all related testsuites.
+
+*** Variables ***
+${SUT IS AVAILABLE}    FALSE    #TRUE if the testbed is ready for testing otherwiese FALSE (indicating that the testbed is for whatever reason unusable at the moment)
+${SUT PROJECT TAG PREFIX}    TNZ    #This indicates the testbeds project dedication - see also project shortcut list in ../tagging-rules.txt for available prefixes
+${SUT RELEASE TAG PREFIX}    R5.3    #This indicates the testbeds core version - see also the ReleaseIntroduction/Extroduction gruop in ../tagging-rules.txt for available prefixes
+
+${TESTSUBCRIBERS IMSI RANGE START}    530052041010000
+${TESTSUBCRIBERS MSISDN RANGE START}    642041010000
+${TESTSUBCRIBERS DEFAULT LANGUAGEID}    1    #1=English
+${TESTSUBCRIBERS DEFAULT TARIFFID}    101001
+${TESTSUBCRIBERS DEFAULT SLICE SIZE SECS}    60
+${TESTSUBCRIBERS DEFAULT SLICE COSTS}    39000    #39,000 millicents = 39 cents = 0,39 NZD
+
+${MSC ADDRESS}    64278
+
+${ANDROID REMOTING HOST}    10.189.11.57  #10.189.11.129    #10.189.11.226    #10.2.1.40
+${ANDROID REMOTING PORT}    8080
+
+${AMQ-SIG HOST}    10.105.113.123
+${AMQ-SIG USER}    qa_automation
+${AMQ-SIG PWD}    qa_only!  
+${AMQ-SIG RSA FILE}    /home/qa_automation/.ssh/id_rsa    #private key file for public key authentification instead of password based authentification - requires setting up the AMQ host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${AMQ-SIG USER}@${AMQ-SIG HOST}"
+${AMQ-SIG PORT}    61616
+${AMQ-SIG MOC REQ QUEUE}    TNZ_MOC_REQ
+${AMQ-SIG MOC RES QUEUE}    TNZ_CAP_RES
+${AMQ-SIG MFC REQ QUEUE}    TNZ_MFC_REQ
+${AMQ-SIG MFC RES QUEUE}    TNZ_CAP_RES
+${AMQ-SIG MTC REQ QUEUE}    TNZ_MTC_REQ
+${AMQ-SIG MTC RES QUEUE}    TNZ_CAP_RES
+${AMQ-SIG SMS REQ QUEUE}    TNZ_MOSMPROXY_REQ
+${AMQ-SIG SMS RES QUEUE}    TNZ_USSDSMS_RES
+${AMQ-XDR HOST}    10.105.113.124		# added by matko.sanseovic on 20150226
+${AMQ-XDR SERVICE SCRIPT NAME}    amq-xdr-tb13			# added by matko.sanseovic on 20150320
+${AMQ-XDR CRCE CDR QUEUE}    inew-cs.crce.cdr		# added by matko.sanseovic on 20150327
+${AMQ-XDR CRCE CONF QUEUE}	 inew-cs.crce.conf		# added by matko.sanseovic on 20150327
+
+${CRCE01 HOST}   10.105.113.125
+${CRCE01 USER}   qa_automation
+${CRCE01 PWD}	 qa_only!
+${CRCE02 HOST}   ${EMPTY}
+#${CRCE SUBSCRIBERPEER ENDPOINT}    #http://${CRCE01 HOST}:8080/profiler/subscriber
+${CRCE01 WEBSERVICES PORT}    8080
+${CRCE01 WEBSERVICES BASE PATH}    /inew-mvno-crce-webservices/ 
+${CRCE HOST}    ${CRCE01 HOST}
+${CRCE USER}	${CRCE01 USER}
+${CRCE PWD}		${CRCE01 PWD}
+
+${IN-APP HOST}    10.105.113.135
+${IN-APP USER}    qa_automation
+${IN-APP PWD}     qa_only!    #${EMPTY} 
+${IN-APP RSA FILE}    /home/qa_automation/.ssh/id_rsa    #private key file for public key authentification instead of password based authentification - requires setting up the IN host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${IN-APP USER}@${IN-APP HOST}"
+${IN MOC LOG FILE PATH}    	/var/log/inew/core-in/log-mem/inew-in-moc-00.log
+
+${CRM HOST}       10.105.113.127
+${CRM USER}       qa_automation
+${CRM PWD}        qa_only!        
+${CRM PORTAL PORT}    1084
+${CRM PORTAL LOGIN PATH}    evoweb/web/crm/257_EN
+${CRM PORTAL USER}    crmmanager
+${CRM PORTAL PSWD}    crmmanager   #walter.heincz: recommended to be renamed to CRM PORTAL PWD for consistency reasons
+${CRM PORTAL DASHBOARD PATH}    evoweb/web/crm/393_EN.htm
+
+${XDR HOST}     10.105.113.171       # added by matko.sanseovic on 20150215
+${XDR USER}     qa_automation	  # added by matko.sanseovic on 20150215
+${XDR PWD}      qa_only!		  # added by matko.sanseovic on 20150215  
+${XDR DB HOST}  10.105.113.129       # added by walter.heincz on 20150312
+${XDR DB PORT}  5447                 # added by walter.heincz on 20150312
+${XDR DB NAME}  xdr                  # added by walter.heincz on 20150312
+${XDR DB USER}  xdr                  # added by walter.heincz on 20150312
+${XDR DB PWD}   xdr                  # added by walter.heincz on 20150312
+${XDR LOG FILE PATH}    /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log   # added by matko.sanseovic on 20150624
+
+${DWH DB HOST}	10.105.113.129		# added by matko.sanseovic on 20150519
+${DWH DB PORT}	5438				# added by matko.sanseovic on 20150519
+${DWH DB NAME}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB USER}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB PWD}	dwh					# added by matko.sanseovic on 20150519
+
+${CRCE DB HOST}	10.105.113.129		# added by matko.sanseovic on 20150630
+${CRCE DB PORT}	5442				# added by matko.sanseovic on 20150630
+${CRCE DB NAME}	crce				# added by matko.sanseovic on 20150630
+${CRCE DB USER}	crce				# added by matko.sanseovic on 20150630
+${CRCE DB PWD}	crce				# added by matko.sanseovic on 20150630
+${CRCE LOG FILE PATH}		/var/log/inew/crce/5.3.14/negret-0.log   # added by matko.sanseovic on 20150709
+
+${SOA01 HOST}    10.105.113.165      # added by walter.heincz on 20150401
+${SOA02 HOST}    10.105.113.166      # added by walter.heincz on 20150401
+
+${CUSTOMERSERVICE MONGODB HOST}     ${SOA02 HOST}    # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB PORT}     27017            # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB DB NAME}  customerservice  # added by walter.heincz on 20150401
+

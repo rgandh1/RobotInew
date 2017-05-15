@@ -1,0 +1,31 @@
+Short Description:
+===================
+This iSig TC simulates an MFC leg (triggered due to unreachability of 
+the callSubscriber() as  B-Party) whose call establishement even fails
+due to unreachability of the C-Party.
+The TC was originally called 09b_mfc_missed_call_notification_FTN_continue_to_IVR
+but now renamed since the original name implied restrictions that are not
+really part of the TCs flow.
+
+Flow detailes:
+===============
+- After session initiation the TC waits 30s to simulate waiting for the 
+  C-Party to answer.
+- Then the TC reports "busy" to IN meaning that the C-Party is not reachable 
+  too.
+- This is (or should be) responded by IN with a final continueProcessing 
+  meaning that the MFC leg is finished and HLR is responsible to decide 
+  how to resume (e.g. redirect to IVR or to probably configured alternate 
+  C-Party(s)). 
+
+Parameters: 
+============
+  mscAddress         of the B-Party (callSubscriber()) 
+  gmscAddress        of the B-Party (callSubscriber()) 
+  mfcAPartyMsisdn
+  mfcCPartyMsisdn 
+  
+  Date      Author                   Comments
+==========  =======================  ==========================================
+2014/03/12  walter.heincz            Initial creation
+------------------------------------------------------------------------------

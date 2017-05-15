@@ -1,0 +1,55 @@
+*** Settings ***
+Documentation     Testing the prepaid MFC call, duration is 1s
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        TNZ_supported  SMARTSPACE_supported  MTEL_supported  MVNA_MEX_supported  MFC_only  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../../suite-global-keyword-resource.txt 
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+
+*** Keywords ***
+	
+*** Test Cases ***
+
+Run MFC Short Call
+    [Documentation]    	Test will make a short MFC call
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails or account balance evaluation fails
+	...	
+    ...         =================================================================================
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    10000000    #10 million units should be enough for some calls even if it's in millicent units
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    3    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	${b_party_msisdn}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	${b_party_imsi}=		Evaluate  ${TESTSUBCRIBERS IMSI RANGE START}+1	
+	${c_party_msisdn}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+2
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run MFC 1s *******
+    Log					    Running the short MFC call...  console=yes
+    ${rc}=                 	CG Run MFC 1s    ${TESTSUBCRIBERS MSISDN RANGE START}  ${b_party_imsi}    ${b_party_msisdn}   ${c_party_msisdn}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}
+	Comment				   	******* Checking Subscriber's Account Balance *******
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	# calculating the target balance that should match the balance set after the call
+	Comment					${target_bal}=  Evaluate  ${INITIAL_BALANCE}-${TESTSUBCRIBERS DEFAULT SLICE COSTS}
+	Comment					Should Be Equal As Numbers  ${target_bal}  ${bal}  msg=Expected balance and retrieved balance mismatch!
+	Log						Account balance check: ${bal}   console=yes

@@ -1,0 +1,3255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20160122 15:07:29.426">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/ussd-robot-suite.txt" id="s1" name="Ussd-Robot-Suite">
+<kw type="setup" name="Setup Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${time} = OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>date</arg>
+</arguments>
+<msg timestamp="20160122 15:07:31.135" level="INFO">Running command 'date 2&gt;&amp;1'</msg>
+<msg timestamp="20160122 15:07:31.139" level="INFO">${time} = Fri Jan 22 15:07:31 CET 2016</msg>
+<status status="PASS" endtime="20160122 15:07:31.138" starttime="20160122 15:07:31.123"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Date and time: ${time}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:31.145" level="INFO">Date and time: Fri Jan 22 15:07:31 CET 2016</msg>
+<status status="PASS" endtime="20160122 15:07:31.147" starttime="20160122 15:07:31.142"></status>
+</kw>
+<kw type="kw" name="${conn_id} = SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${USSD HOST}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:31.335" level="INFO">${conn_id} = 1</msg>
+<status status="PASS" endtime="20160122 15:07:31.334" starttime="20160122 15:07:31.149"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Set Suite Variable">
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<arguments>
+<arg>${conn_id}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:31.342" level="INFO">${conn_id} = 1</msg>
+<status status="PASS" endtime="20160122 15:07:31.344" starttime="20160122 15:07:31.338"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${USSD USER}</arg>
+<arg>${USSD PWD}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:31.350" level="INFO">Logging into '10.105.113.167:22' as 'qa_automation'.</msg>
+<msg timestamp="20160122 15:07:32.512" level="INFO">Read output: Last login: Fri Jan 22 13:14:11 2016 from 10.105.101.196
+[1m[qa_automation@ussd-app01.tb13 ~]$[m</msg>
+<msg timestamp="20160122 15:07:32.515" level="INFO">${output_login} = Last login: Fri Jan 22 13:14:11 2016 from 10.105.101.196
+[1m[qa_automation@ussd-app01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20160122 15:07:32.513" starttime="20160122 15:07:31.346"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.519" level="INFO">Last login: Fri Jan 22 13:14:11 2016 from 10.105.101.196
+[1m[qa_automation@ussd-app01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20160122 15:07:32.520" starttime="20160122 15:07:32.517"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Put File">
+<doc>Uploads file(s) from the local machine to the remote machine.</doc>
+<arguments>
+<arg>../tool/USSDtest.py</arg>
+<arg>${USSD HOME}/ussd/</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.577" level="INFO">'../tool/USSDtest.py' -&gt; '/home/qa_automation//ussd//USSDtest.py'</msg>
+<status status="PASS" endtime="20160122 15:07:32.579" starttime="20160122 15:07:32.522"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.File Should Exist">
+<doc>Fails if the given `path` does NOT point to an existing file.</doc>
+<arguments>
+<arg>${USSD HOME}ussd/USSDtest.py</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.584" starttime="20160122 15:07:32.581"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Set Suite Variable">
+<doc>Makes a variable available everywhere within the scope of the current suite.</doc>
+<arguments>
+<arg>${ussd_tool}</arg>
+<arg>${USSD HOME}ussd/USSDtest.py</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.615" level="INFO">${ussd_tool} = /home/qa_automation/ussd/USSDtest.py</msg>
+<status status="PASS" endtime="20160122 15:07:32.616" starttime="20160122 15:07:32.585"></status>
+</kw>
+<kw type="kw" name="Create Subscriber">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${INITIAL_BALANCE} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>10000000</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.632" level="INFO">${INITIAL_BALANCE} = 10000000</msg>
+<status status="PASS" endtime="20160122 15:07:32.631" starttime="20160122 15:07:32.629"></status>
+</kw>
+<kw type="kw" name="${return_code} = subscriber-admin-support-resource.CRCE Create Test Subscribers">
+<doc>Provisions one or multiple test subscribers on CRCE only.</doc>
+<arguments>
+<arg>${CRCE01 HOST}</arg>
+<arg>${CRCE01 WEBSERVICES PORT}</arg>
+<arg>${CRCE01 WEBSERVICES BASE PATH}</arg>
+<arg>2</arg>
+<arg>${TESTSUBCRIBERS IMSI RANGE START}</arg>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>PREPAID</arg>
+<arg>${TESTSUBCRIBERS DEFAULT LANGUAGEID}</arg>
+<arg>${TESTSUBCRIBERS DEFAULT TARIFFID}</arg>
+<arg>${INITIAL_BALANCE}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_host=${crce_host}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.655" level="INFO">msg=crce_host=10.105.113.125</msg>
+<status status="PASS" endtime="20160122 15:07:32.656" starttime="20160122 15:07:32.653"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_port=${crce_port}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.660" level="INFO">msg=crce_port=8080</msg>
+<status status="PASS" endtime="20160122 15:07:32.661" starttime="20160122 15:07:32.658"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_webservicesBasePath=${crce_webservicesBasePath}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.665" level="INFO">msg=crce_webservicesBasePath=/inew-mvno-crce-webservices/</msg>
+<status status="PASS" endtime="20160122 15:07:32.666" starttime="20160122 15:07:32.663"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=amount=${amount}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.670" level="INFO">msg=amount=2</msg>
+<status status="PASS" endtime="20160122 15:07:32.670" starttime="20160122 15:07:32.667"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=imsiRangeStart=${imsiRangeStart}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.675" level="INFO">msg=imsiRangeStart=530052041010000</msg>
+<status status="PASS" endtime="20160122 15:07:32.675" starttime="20160122 15:07:32.672"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=msisdnRangeStart=${msisdnRangeStart}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.680" level="INFO">msg=msisdnRangeStart=642041010000</msg>
+<status status="PASS" endtime="20160122 15:07:32.680" starttime="20160122 15:07:32.677"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=type=${type}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.684" level="INFO">msg=type=PREPAID</msg>
+<status status="PASS" endtime="20160122 15:07:32.685" starttime="20160122 15:07:32.682"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=languageid=${languageid}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.688" level="INFO">msg=languageid=1</msg>
+<status status="PASS" endtime="20160122 15:07:32.689" starttime="20160122 15:07:32.686"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=tariffId=${tariffId}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.694" level="INFO">msg=tariffId=101001</msg>
+<status status="PASS" endtime="20160122 15:07:32.694" starttime="20160122 15:07:32.691"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=balance=${balance}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.698" level="INFO">msg=balance=10000000</msg>
+<status status="PASS" endtime="20160122 15:07:32.699" starttime="20160122 15:07:32.696"></status>
+</kw>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Setup SoapUI Logs">
+<doc>This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.718" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/global-groovy.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/global-groovy.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160122 15:07:32.720" starttime="20160122 15:07:32.715"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:32.721" starttime="20160122 15:07:32.713"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.727" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/soapui.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/soapui.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160122 15:07:32.728" starttime="20160122 15:07:32.724"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:32.729" starttime="20160122 15:07:32.722"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.735" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/soapui-errors.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/soapui-errors.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160122 15:07:32.736" starttime="20160122 15:07:32.733"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:32.737" starttime="20160122 15:07:32.730"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:32.738" starttime="20160122 15:07:32.701"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Project">
+<doc>Initialize the runner and set the project string </doc>
+<arguments>
+<arg>${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:32.744" level="INFO">SoapUI 5.1.3 TestCase Runner</msg>
+<status status="PASS" endtime="20160122 15:07:32.744" starttime="20160122 15:07:32.740"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crceHost=${crce_host}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.748" starttime="20160122 15:07:32.746"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crcePort=${crce_port}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.752" starttime="20160122 15:07:32.749"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>crceWebservicesBasePath=${crce_webservicesBasePath}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.755" starttime="20160122 15:07:32.753"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Suite">
+<doc>Set the suite string </doc>
+<arguments>
+<arg>HighLevelOps</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.759" starttime="20160122 15:07:32.757"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Case">
+<doc>Set the test case string </doc>
+<arguments>
+<arg>createTestSubscribers</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.762" starttime="20160122 15:07:32.760"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.amount=${amount}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.765" starttime="20160122 15:07:32.763"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.imsiRangeStart=${imsiRangeStart}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.769" starttime="20160122 15:07:32.767"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.msisdnRangeStart=${msisdnRangeStart}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.773" starttime="20160122 15:07:32.771"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.type=${type}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.776" starttime="20160122 15:07:32.774"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.languageid=${languageid}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.780" starttime="20160122 15:07:32.778"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.tariffId=${tariffId}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.784" starttime="20160122 15:07:32.781"></status>
+</kw>
+<kw type="kw" name="InewSoapUILibrary.Soapui Set Project Property">
+<doc>Sets project properties for the current test run.</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.input.balance=${balance}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:32.787" starttime="20160122 15:07:32.785"></status>
+</kw>
+<kw type="kw" name="${execution_status}, ${return_value_dummy} = BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>SoapUI Run</arg>
+</arguments>
+<kw type="kw" name="InewSoapUILibrary.Soapui Run">
+<doc>Run the runner and report to Robot </doc>
+<arguments>
+</arguments>
+<msg timestamp="20160122 15:07:32.793" level="INFO">Running with the following project properties set: [u'crceHost=10.105.113.125', u'crcePort=8080', u'crceWebservicesBasePath=/inew-mvno-crce-webservices/', u'HighLevelOps.createTestSubscribers.input.amount=2', u'HighLevelOps.createTestSubscribers.input.imsiRangeStart=530052041010000', u'HighLevelOps.createTestSubscribers.input.msisdnRangeStart=642041010000', u'HighLevelOps.createTestSubscribers.input.type=PREPAID', u'HighLevelOps.createTestSubscribers.input.languageid=1', u'HighLevelOps.createTestSubscribers.input.tariffId=101001', u'HighLevelOps.createTestSubscribers.input.balance=10000000']</msg>
+<msg timestamp="20160122 15:07:37.790" level="INFO">15:07:32,963 WARN  [SoapUI] Missing folder [/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/ext] for external libraries
+15:07:32,963 INFO  [DefaultSoapUICore] Creating new settings at [/root/soapui-settings.xml]
+15:07:34,879 INFO  [WsdlProject] Loaded project from [file:/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/robot_crce_bridge-soapui-project.xml]
+15:07:34,889 INFO  [SoapUITestCaseRunner] Setting project property [crceHost] to [10.105.113.125]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [crcePort] to [8080]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [crceWebservicesBasePath] to [/inew-mvno-crce-webservices/]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.amount] to [2]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.imsiRangeStart] to [530052041010000]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.msisdnRangeStart] to [642041010000]
+15:07:34,890 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.type] to [PREPAID]
+15:07:34,891 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.languageid] to [1]
+15:07:34,891 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.tariffId] to [101001]
+15:07:34,891 INFO  [SoapUITestCaseRunner] Setting project property [HighLevelOps.createTestSubscribers.input.balance] to [10000000]
+15:07:34,891 INFO  [SoapUITestCaseRunner] Running SoapUI tests in project [Robotframework_CRCE-Bridge]
+15:07:34,891 INFO  [SoapUITestCaseRunner] Running TestCase [createTestSubscribers]
+15:07:34,900 INFO  [SoapUITestCaseRunner] Running SoapUI testcase [createTestSubscribers]
+15:07:34,906 INFO  [SoapUITestCaseRunner] running step [init_repeat_counter]
+15:07:35,318 INFO  [SoapUITestCaseRunner] running step [01_init_next_subscriber]
+15:07:35,382 INFO  [SoapUITestCaseRunner] running step [getSubscriberProfileByImsi]
+15:07:35,567 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:35,567 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+15:07:35,594 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:35,601 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:35,762 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:35,762 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:35,762 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:35,762 INFO  [SoapUITestCaseRunner] running step [cancel_on_SOAP_error]
+15:07:35,824 INFO  [SoapUITestCaseRunner] running step [transfer_response_values]
+15:07:36,232 INFO  [SoapUITestCaseRunner] running step [cancel_on_CRCE_error_OR_skip_delete_on_UnknownSubscriber]
+15:07:36,258 INFO  [SoapUITestCaseRunner] running step [deleteSubscriber]
+15:07:36,260 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:36,262 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:36,262 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+15:07:36,434 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:36,434 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:36,441 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:36,442 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:36,442 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:36,442 INFO  [SoapUITestCaseRunner] running step [2nd_cancel_on_SOAP_error]
+15:07:36,513 INFO  [SoapUITestCaseRunner] running step [2nd_transfer_response_values]
+15:07:36,519 INFO  [SoapUITestCaseRunner] running step [cancel_on_deletion_error]
+15:07:36,569 INFO  [SoapUITestCaseRunner] running step [02_createSubscriber]
+15:07:36,572 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:36,574 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:36,575 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+15:07:36,602 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:36,602 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:36,608 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:36,608 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:36,608 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:36,609 INFO  [SoapUITestCaseRunner] running step [3rd_cancel_on_SOAP_error]
+15:07:36,677 INFO  [SoapUITestCaseRunner] running step [3rd_transfer_response_values]
+15:07:36,688 INFO  [SoapUITestCaseRunner] running step [cancel_on_create_error]
+15:07:36,731 INFO  [SoapUITestCaseRunner] running step [activateSubscriber]
+15:07:36,734 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:36,736 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:36,736 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+15:07:36,807 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:36,807 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:36,814 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:36,814 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:36,814 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:36,815 INFO  [SoapUITestCaseRunner] running step [4th_cancel_on_SOAP_error]
+15:07:36,875 INFO  [SoapUITestCaseRunner] running step [4th_transfer_response_values]
+15:07:36,880 INFO  [SoapUITestCaseRunner] running step [cancel_on_activate_error]
+15:07:36,918 INFO  [SoapUITestCaseRunner] running step [getMainAccount]
+15:07:36,921 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:36,923 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:36,923 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/accounts HTTP/1.1
+15:07:37,021 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,021 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,036 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,036 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,036 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,036 INFO  [SoapUITestCaseRunner] running step [5th_cancel_on_SOAP_error]
+15:07:37,103 INFO  [SoapUITestCaseRunner] running step [5th_transfer_response_values]
+15:07:37,121 INFO  [SoapUITestCaseRunner] running step [cancel_on_getmainaccount_error]
+15:07:37,142 INFO  [SoapUITestCaseRunner] running step [setBalance]
+15:07:37,144 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,145 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,146 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/account_administration HTTP/1.1
+15:07:37,207 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,207 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,213 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,213 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,213 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,213 INFO  [SoapUITestCaseRunner] running step [6th_cancel_on_SOAP_error]
+15:07:37,245 INFO  [SoapUITestCaseRunner] running step [6th_transfer_response_values]
+15:07:37,249 INFO  [SoapUITestCaseRunner] running step [cancel_on_setbalance_error]
+15:07:37,270 INFO  [SoapUITestCaseRunner] running step [repeat_01_amount_times]
+15:07:37,300 INFO  [SoapUITestCaseRunner] running step [01_init_next_subscriber]
+15:07:37,302 INFO  [SoapUITestCaseRunner] running step [getSubscriberProfileByImsi]
+15:07:37,303 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,305 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,305 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+15:07:37,317 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,317 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,328 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,328 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,328 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,328 INFO  [SoapUITestCaseRunner] running step [cancel_on_SOAP_error]
+15:07:37,329 INFO  [SoapUITestCaseRunner] running step [transfer_response_values]
+15:07:37,349 INFO  [SoapUITestCaseRunner] running step [cancel_on_CRCE_error_OR_skip_delete_on_UnknownSubscriber]
+15:07:37,350 INFO  [SoapUITestCaseRunner] running step [deleteSubscriber]
+15:07:37,352 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,353 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,353 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+15:07:37,447 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,447 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,451 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,451 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,451 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,451 INFO  [SoapUITestCaseRunner] running step [2nd_cancel_on_SOAP_error]
+15:07:37,451 INFO  [SoapUITestCaseRunner] running step [2nd_transfer_response_values]
+15:07:37,454 INFO  [SoapUITestCaseRunner] running step [cancel_on_deletion_error]
+15:07:37,455 INFO  [SoapUITestCaseRunner] running step [02_createSubscriber]
+15:07:37,457 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,458 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,458 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/provisioning HTTP/1.1
+15:07:37,478 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,478 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,482 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,482 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,482 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,482 INFO  [SoapUITestCaseRunner] running step [3rd_cancel_on_SOAP_error]
+15:07:37,482 INFO  [SoapUITestCaseRunner] running step [3rd_transfer_response_values]
+15:07:37,489 INFO  [SoapUITestCaseRunner] running step [cancel_on_create_error]
+15:07:37,489 INFO  [SoapUITestCaseRunner] running step [activateSubscriber]
+15:07:37,490 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,492 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,492 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/profiler/subscriber HTTP/1.1
+15:07:37,547 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,547 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,553 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,553 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,553 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,553 INFO  [SoapUITestCaseRunner] running step [4th_cancel_on_SOAP_error]
+15:07:37,554 INFO  [SoapUITestCaseRunner] running step [4th_transfer_response_values]
+15:07:37,559 INFO  [SoapUITestCaseRunner] running step [cancel_on_activate_error]
+15:07:37,559 INFO  [SoapUITestCaseRunner] running step [getMainAccount]
+15:07:37,561 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,563 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,563 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/accounts HTTP/1.1
+15:07:37,581 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,582 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,593 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,593 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,594 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,594 INFO  [SoapUITestCaseRunner] running step [5th_cancel_on_SOAP_error]
+15:07:37,594 INFO  [SoapUITestCaseRunner] running step [5th_transfer_response_values]
+15:07:37,614 INFO  [SoapUITestCaseRunner] running step [cancel_on_getmainaccount_error]
+15:07:37,615 INFO  [SoapUITestCaseRunner] running step [setBalance]
+15:07:37,617 DEBUG [HttpClientSupport$SoapUIHttpClient] Stale connection check
+15:07:37,619 DEBUG [HttpClientSupport$SoapUIHttpClient] Attempt 1 to execute request
+15:07:37,619 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Sending request: POST /inew-mvno-crce-webservices/accounting/account_administration HTTP/1.1
+15:07:37,684 DEBUG [SoapUIMultiThreadedHttpConnectionManager$SoapUIDefaultClientConnection] Receiving response: HTTP/1.1 200 OK
+15:07:37,685 DEBUG [HttpClientSupport$SoapUIHttpClient] Connection can be kept alive indefinitely
+15:07:37,696 INFO  [SoapUITestCaseRunner] Assertion [SOAP Response] has status VALID
+15:07:37,696 INFO  [SoapUITestCaseRunner] Assertion [Schema Compliance] has status UNKNOWN
+15:07:37,696 INFO  [SoapUITestCaseRunner] Assertion [Not SOAP Fault] has status VALID
+15:07:37,697 INFO  [SoapUITestCaseRunner] running step [6th_cancel_on_SOAP_error]
+15:07:37,697 INFO  [SoapUITestCaseRunner] running step [6th_transfer_response_values]
+15:07:37,706 INFO  [SoapUITestCaseRunner] running step [cancel_on_setbalance_error]
+15:07:37,707 INFO  [SoapUITestCaseRunner] running step [repeat_01_amount_times]
+15:07:37,708 INFO  [SoapUITestCaseRunner] running step [finish_successful]
+15:07:37,778 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK
+15:07:37,779 INFO  [SoapUITestCaseRunner] Finished running SoapUI testcase [createTestSubscribers], time taken: 2828ms, status: FINISHED
+15:07:37,780 INFO  [SoapUITestCaseRunner] TestCase [createTestSubscribers] finished with status [FINISHED] in 2828ms</msg>
+<status status="PASS" endtime="20160122 15:07:37.800" starttime="20160122 15:07:32.791"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.807" level="INFO">${execution_status} = PASS</msg>
+<msg timestamp="20160122 15:07:37.810" level="INFO">${return_value_dummy} = None</msg>
+<status status="PASS" endtime="20160122 15:07:37.804" starttime="20160122 15:07:32.789"></status>
+</kw>
+<kw type="kw" name="${resultCode} = subscriber-admin-support-resource.CRCE Get Groovy Log Return Property">
+<doc>This is a PRIVATE helper function to retrieve return values placed into the Groovy log by the SoaupUI TCs .</doc>
+<arguments>
+<arg>HighLevelOps.createTestSubscribers.output.resultCode</arg>
+<arg>UNKNOWN_ERROR</arg>
+</arguments>
+<kw type="kw" name="${return_marker} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${property_name}=</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.858" level="INFO">${return_marker} = HighLevelOps.createTestSubscribers.output.resultCode=</msg>
+<status status="PASS" endtime="20160122 15:07:37.856" starttime="20160122 15:07:37.850"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${EMPTY}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.868" level="INFO">${resultCode} = </msg>
+<status status="PASS" endtime="20160122 15:07:37.867" starttime="20160122 15:07:37.862"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${EMPTY}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.872" level="INFO">${return_log_entry} = </msg>
+<status status="PASS" endtime="20160122 15:07:37.872" starttime="20160122 15:07:37.869"></status>
+</kw>
+<kw type="kw" name="${execution_status}, ${return_log_entry} = BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Grep File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Grep File">
+<doc>Returns the lines of the specified file that match the `pattern`.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.880" html="yes" level="INFO">Reading file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/global-groovy.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/global-groovy.log&lt;/a&gt;'</msg>
+<msg timestamp="20160122 15:07:37.887" level="INFO">1 out of 1 lines matched</msg>
+<status status="PASS" endtime="20160122 15:07:37.888" starttime="20160122 15:07:37.877"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.889" level="INFO">${execution_status} = PASS</msg>
+<msg timestamp="20160122 15:07:37.890" level="INFO">${return_log_entry} = 2016-01-22 15:07:37,778 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.889" starttime="20160122 15:07:37.874"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${execution_status}'=='FAIL'</arg>
+<arg>Set Variable</arg>
+<arg>${EMPTY}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${return_log_entry}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.906" starttime="20160122 15:07:37.904"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.908" level="INFO">${return_log_entry} = 2016-01-22 15:07:37,778 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.907" starttime="20160122 15:07:37.891"></status>
+</kw>
+<kw type="kw" name="${return_log_entry} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${return_log_entry}'=='${NONE}'</arg>
+<arg>Set Variable</arg>
+<arg>${EMPTY}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${return_log_entry}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.917" starttime="20160122 15:07:37.915"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.919" level="INFO">${return_log_entry} = 2016-01-22 15:07:37,778 INFO  [log] HighLevelOps.createTestSubscribers.output.resultCode=OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.918" starttime="20160122 15:07:37.910"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${return_log_entry}'!='${EMPTY}'</arg>
+<arg>Fetch From Right</arg>
+<arg>${return_log_entry}</arg>
+<arg>${return_marker}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${resultCode}</arg>
+</arguments>
+<kw type="kw" name="String.Fetch From Right">
+<doc>Returns contents of the `string` after the last occurrence of `marker`.</doc>
+<arguments>
+<arg>${return_log_entry}</arg>
+<arg>${return_marker}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.929" starttime="20160122 15:07:37.926"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.931" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.930" starttime="20160122 15:07:37.920"></status>
+</kw>
+<kw type="kw" name="${resultCode} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${resultCode}'=='${NONE}'</arg>
+<arg>Set Variable</arg>
+<arg>${default_value}</arg>
+<arg>ELSE IF</arg>
+<arg>'${resultCode}'=='${EMPTY}'</arg>
+<arg>Set Variable</arg>
+<arg>${default_value}</arg>
+<arg>ELSE</arg>
+<arg>Set Variable</arg>
+<arg>${resultCode}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>${resultCode}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.942" starttime="20160122 15:07:37.940"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.944" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.943" starttime="20160122 15:07:37.932"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.946" level="INFO">${resultCode} = OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.946" starttime="20160122 15:07:37.817"></status>
+</kw>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Cleanup SoapUI Logs">
+<doc>This is a PRIVATE helper function to cleanup the testsuite directory from logs created by a SoapUI testcase.</doc>
+<arguments>
+<arg>HighLevelOps-CreateTestSubscribers</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.962" starttime="20160122 15:07:37.959"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.965" starttime="20160122 15:07:37.963"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:37.968" starttime="20160122 15:07:37.966"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${tc_specific_files_prefix}'!='${EMPTY}'</arg>
+<arg>Run Keyword And Ignore Error</arg>
+<arg>Remove File</arg>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Remove File</arg>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Remove File">
+<doc>Removes a file with the given path.</doc>
+<arguments>
+<arg>${tc_specific_files_prefix}*.*</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.984" html="yes" level="INFO">File '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/HighLevelOps-CreateTestSubscribers*.*"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/ussd/TNZ/HighLevelOps-CreateTestSubscribers*.*&lt;/a&gt;' does not exist</msg>
+<status status="PASS" endtime="20160122 15:07:37.985" starttime="20160122 15:07:37.977"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:37.986" starttime="20160122 15:07:37.975"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:37.987" starttime="20160122 15:07:37.969"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:37.988" starttime="20160122 15:07:37.948"></status>
+</kw>
+<msg timestamp="20160122 15:07:37.991" level="INFO">${return_code} = OK</msg>
+<status status="PASS" endtime="20160122 15:07:37.989" starttime="20160122 15:07:32.636"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Be Equal As Strings">
+<doc>Fails if objects are unequal after converting them to strings.</doc>
+<arguments>
+<arg>${return_code}</arg>
+<arg>OK</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.994" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20160122 15:07:37.995" starttime="20160122 15:07:37.992"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Test Subscribers Created!</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:37.998" level="INFO">Test Subscribers Created!</msg>
+<status status="PASS" endtime="20160122 15:07:37.999" starttime="20160122 15:07:37.996"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:38.000" starttime="20160122 15:07:32.617"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:38.002" starttime="20160122 15:07:31.109"></status>
+</kw>
+<test id="s1-t1" name="Test USSD Start">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:38.034" level="INFO">/home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000</msg>
+<status status="PASS" endtime="20160122 15:07:38.035" starttime="20160122 15:07:38.022"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:38.619" level="INFO">=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:38.623" level="INFO">${output} = =====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+Us...</msg>
+<status status="PASS" endtime="20160122 15:07:38.622" starttime="20160122 15:07:38.036"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:38.628" level="INFO">USSD Start: =====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:38.628" starttime="20160122 15:07:38.625"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:40.634" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:40.636" starttime="20160122 15:07:38.630"></status>
+</kw>
+<msg timestamp="20160122 15:07:40.643" level="INFO">${output} = =====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+Us...</msg>
+<status status="PASS" endtime="20160122 15:07:40.640" starttime="20160122 15:07:38.013"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Enter the number of what you would like to do</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.651" starttime="20160122 15:07:40.647"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.681" starttime="20160122 15:07:40.676"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:40.686" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:40.724" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:40.727" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:40.726" starttime="20160122 15:07:40.683"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.734" starttime="20160122 15:07:40.730"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.740" starttime="20160122 15:07:40.736"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.747" starttime="20160122 15:07:40.743"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:40.756" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:40.804" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:40.807" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:40.809" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:40.806" starttime="20160122 15:07:40.750"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.821" starttime="20160122 15:07:40.811"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.827" starttime="20160122 15:07:40.824"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.834" starttime="20160122 15:07:40.830"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.840" starttime="20160122 15:07:40.836"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.847" starttime="20160122 15:07:40.843"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.854" starttime="20160122 15:07:40.849"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.862" starttime="20160122 15:07:40.856"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.869" starttime="20160122 15:07:40.864"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.876" starttime="20160122 15:07:40.872"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.882" starttime="20160122 15:07:40.878"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:40.888" starttime="20160122 15:07:40.884"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:40.890" starttime="20160122 15:07:40.657"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:40.893" starttime="20160122 15:07:38.003"></status>
+</test>
+<test id="s1-t2" name="Test USSD TopUp via CreditCard">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:40.941" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:40.943" starttime="20160122 15:07:40.934"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:41.548" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:41.552" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:41.551" starttime="20160122 15:07:40.945"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:41.556" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:41.557" starttime="20160122 15:07:41.554"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.561" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:43.563" starttime="20160122 15:07:41.558"></status>
+</kw>
+<msg timestamp="20160122 15:07:43.569" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:43.567" starttime="20160122 15:07:40.917"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 1 for Top-Up</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.576" level="INFO">Pressing 1 for Top-Up</msg>
+<status status="PASS" endtime="20160122 15:07:43.577" starttime="20160122 15:07:43.572"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.587" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:43.588" starttime="20160122 15:07:43.580"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.607" level="INFO">=====================
+How would you like to top up?
+1. Voucher
+2. Credit / debit card
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:43.610" level="INFO">${output} = =====================
+How would you like to top up?
+1. Voucher
+2. Credit / debit card
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:43.609" starttime="20160122 15:07:43.591"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>TopUp 1: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.617" level="INFO">TopUp 1: =====================
+How would you like to top up?
+1. Voucher
+2. Credit / debit card
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:43.618" starttime="20160122 15:07:43.613"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 2 for Top-Up with Credit Card</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.624" level="INFO">Pressing 2 for Top-Up with Credit Card</msg>
+<status status="PASS" endtime="20160122 15:07:43.626" starttime="20160122 15:07:43.621"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>2</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.634" level="INFO">2</msg>
+<status status="PASS" endtime="20160122 15:07:43.636" starttime="20160122 15:07:43.628"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.677" level="INFO">=====================
+Sorry, you must have a registered credit or debit card to use this service.
+Jump online at skinny.co.nz to get set up, or call us on 204 &amp; select top up.
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:43.680" level="INFO">${output} = =====================
+Sorry, you must have a registered credit or debit card to use this service.
+Jump online at skinny.co.nz to get set up, or call us on 204 &amp; select top up.
+Enter * to return, # ...</msg>
+<status status="PASS" endtime="20160122 15:07:43.679" starttime="20160122 15:07:43.638"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>TopUp 2: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.687" level="INFO">TopUp 2: =====================
+Sorry, you must have a registered credit or debit card to use this service.
+Jump online at skinny.co.nz to get set up, or call us on 204 &amp; select top up.
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:43.688" starttime="20160122 15:07:43.683"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Sorry, you must have a registered credit or debit card</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.696" starttime="20160122 15:07:43.692"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.723" starttime="20160122 15:07:43.719"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.728" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:43.762" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:43.765" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:43.764" starttime="20160122 15:07:43.725"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.771" starttime="20160122 15:07:43.768"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.778" starttime="20160122 15:07:43.774"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.784" starttime="20160122 15:07:43.780"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.792" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:43.837" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:43.840" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:43.842" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:43.839" starttime="20160122 15:07:43.786"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.854" starttime="20160122 15:07:43.844"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.860" starttime="20160122 15:07:43.856"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.866" starttime="20160122 15:07:43.862"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.873" starttime="20160122 15:07:43.869"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.879" starttime="20160122 15:07:43.875"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.886" starttime="20160122 15:07:43.881"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.893" starttime="20160122 15:07:43.888"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.900" starttime="20160122 15:07:43.896"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.906" starttime="20160122 15:07:43.903"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.912" starttime="20160122 15:07:43.909"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:43.918" starttime="20160122 15:07:43.915"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:43.920" starttime="20160122 15:07:43.701"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:43.923" starttime="20160122 15:07:40.897"></status>
+</test>
+<test id="s1-t3" name="Test USSD Check Balance">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:43.968" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:43.969" starttime="20160122 15:07:43.961"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:44.564" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:44.571" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:44.568" starttime="20160122 15:07:43.972"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:44.579" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:44.581" starttime="20160122 15:07:44.574"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.588" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:46.592" starttime="20160122 15:07:44.583"></status>
+</kw>
+<msg timestamp="20160122 15:07:46.599" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:46.597" starttime="20160122 15:07:43.945"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 2 for checking balance</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.607" level="INFO">Pressing 2 for checking balance</msg>
+<status status="PASS" endtime="20160122 15:07:46.609" starttime="20160122 15:07:46.603"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>2</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.620" level="INFO">2</msg>
+<status status="PASS" endtime="20160122 15:07:46.622" starttime="20160122 15:07:46.612"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.755" level="INFO">=====================
+Your balance is $100.00 and you've collected 0.00 bonus points.
+You're on our standard rates - to save even more jump on line at skinny.co.nz. 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:46.756" level="INFO">${output} = =====================
+Your balance is $100.00 and you've collected 0.00 bonus points.
+You're on our standard rates - to save even more jump on line at skinny.co.nz. 
+=====================
+User inp...</msg>
+<status status="PASS" endtime="20160122 15:07:46.756" starttime="20160122 15:07:46.624"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Your balance is $100.00</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.760" starttime="20160122 15:07:46.758"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.785" starttime="20160122 15:07:46.777"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.791" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:46.826" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:46.828" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:46.827" starttime="20160122 15:07:46.788"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.835" starttime="20160122 15:07:46.831"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.841" starttime="20160122 15:07:46.837"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.847" starttime="20160122 15:07:46.843"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:46.856" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:46.901" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:46.904" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:46.905" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:46.903" starttime="20160122 15:07:46.850"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.920" starttime="20160122 15:07:46.908"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.929" starttime="20160122 15:07:46.925"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.935" starttime="20160122 15:07:46.931"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.941" starttime="20160122 15:07:46.937"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.947" starttime="20160122 15:07:46.943"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.953" starttime="20160122 15:07:46.949"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.961" starttime="20160122 15:07:46.956"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.967" starttime="20160122 15:07:46.963"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.973" starttime="20160122 15:07:46.969"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.979" starttime="20160122 15:07:46.975"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:46.985" starttime="20160122 15:07:46.981"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:46.987" starttime="20160122 15:07:46.762"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:46.989" starttime="20160122 15:07:43.927"></status>
+</test>
+<test id="s1-t4" name="Test USSD Subscription Check">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:47.037" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:47.038" starttime="20160122 15:07:47.030"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:47.601" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:47.603" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:47.602" starttime="20160122 15:07:47.041"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:47.607" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:47.608" starttime="20160122 15:07:47.605"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.610" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:49.611" starttime="20160122 15:07:47.609"></status>
+</kw>
+<msg timestamp="20160122 15:07:49.614" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:49.613" starttime="20160122 15:07:47.013"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 3 for setup check</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.617" level="INFO">Pressing 3 for setup check</msg>
+<status status="PASS" endtime="20160122 15:07:49.618" starttime="20160122 15:07:49.615"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>3</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.624" level="INFO">3</msg>
+<status status="PASS" endtime="20160122 15:07:49.625" starttime="20160122 15:07:49.619"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.642" level="INFO">=====================
+What would you like to view?
+1. Subscription Check
+2. Your auto top up
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:49.643" level="INFO">${output} = =====================
+What would you like to view?
+1. Subscription Check
+2. Your auto top up
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:49.643" starttime="20160122 15:07:49.626"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 1 for subscription check</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.646" level="INFO">Pressing 1 for subscription check</msg>
+<status status="PASS" endtime="20160122 15:07:49.647" starttime="20160122 15:07:49.645"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.652" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:49.653" starttime="20160122 15:07:49.648"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.726" level="INFO">=====================
+You are on standard rates.
+1. Buy Plan
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:49.727" level="INFO">${output} = =====================
+You are on standard rates.
+1. Buy Plan
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:49.727" starttime="20160122 15:07:49.654"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>You are on standard rates.</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.731" starttime="20160122 15:07:49.729"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.743" starttime="20160122 15:07:49.741"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.745" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:49.777" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:49.778" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:49.778" starttime="20160122 15:07:49.744"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.781" starttime="20160122 15:07:49.780"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.784" starttime="20160122 15:07:49.782"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.786" starttime="20160122 15:07:49.785"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.790" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:49.852" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:49.853" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:49.854" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:49.853" starttime="20160122 15:07:49.787"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.859" starttime="20160122 15:07:49.855"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.862" starttime="20160122 15:07:49.860"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.865" starttime="20160122 15:07:49.863"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.868" starttime="20160122 15:07:49.866"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.870" starttime="20160122 15:07:49.869"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.873" starttime="20160122 15:07:49.871"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.876" starttime="20160122 15:07:49.874"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.879" starttime="20160122 15:07:49.877"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.882" starttime="20160122 15:07:49.880"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.884" starttime="20160122 15:07:49.882"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:49.886" starttime="20160122 15:07:49.885"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:49.887" starttime="20160122 15:07:49.733"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:49.889" starttime="20160122 15:07:46.994"></status>
+</test>
+<test id="s1-t5" name="Test Buying">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:49.908" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:49.909" starttime="20160122 15:07:49.905"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:50.507" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:50.510" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:50.509" starttime="20160122 15:07:49.910"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:50.514" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:50.515" starttime="20160122 15:07:50.512"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.518" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:52.519" starttime="20160122 15:07:50.516"></status>
+</kw>
+<msg timestamp="20160122 15:07:52.522" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:52.521" starttime="20160122 15:07:49.899"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 4 for buying menu</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.525" level="INFO">Pressing 4 for buying menu</msg>
+<status status="PASS" endtime="20160122 15:07:52.526" starttime="20160122 15:07:52.523"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>4</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.532" level="INFO">4</msg>
+<status status="PASS" endtime="20160122 15:07:52.533" starttime="20160122 15:07:52.527"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.750" level="INFO">=====================
+You are on Standard rates. What would you like to do?
+1. Add Combo
+2. Buy an Add-On
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:52.753" level="INFO">${output} = =====================
+You are on Standard rates. What would you like to do?
+1. Add Combo
+2. Buy an Add-On
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:52.752" starttime="20160122 15:07:52.534"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 1 for subscription check</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.756" level="INFO">Pressing 1 for subscription check</msg>
+<status status="PASS" endtime="20160122 15:07:52.757" starttime="20160122 15:07:52.754"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.762" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:52.763" starttime="20160122 15:07:52.758"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.915" level="INFO">=====================
+Enter the Combo number you want to buy, then press reply
+1. $4 Busy Fingers
+2. $5 Data Weekly
+0. Next Page
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:52.917" level="INFO">${output} = =====================
+Enter the Combo number you want to buy, then press reply
+1. $4 Busy Fingers
+2. $5 Data Weekly
+0. Next Page
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:52.916" starttime="20160122 15:07:52.764"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Enter the Combo number</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:52.920" starttime="20160122 15:07:52.918"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 2 for buying Weekly Combo offer</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.923" level="INFO">Pressing 2 for buying Weekly Combo offer</msg>
+<status status="PASS" endtime="20160122 15:07:52.924" starttime="20160122 15:07:52.921"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>2</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.929" level="INFO">2</msg>
+<status status="PASS" endtime="20160122 15:07:52.930" starttime="20160122 15:07:52.925"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.956" level="INFO">=====================
+You have selected the Data Weekly Combo which costs $5.
+Please select:
+1. To confirm your purchase
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:52.958" level="INFO">${output} = =====================
+You have selected the Data Weekly Combo which costs $5.
+Please select:
+1. To confirm your purchase
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:52.958" starttime="20160122 15:07:52.931"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>You have selected the Data Weekly Combo which costs $5.</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:52.962" starttime="20160122 15:07:52.960"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 1 for confirmation</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.964" level="INFO">Pressing 1 for confirmation</msg>
+<status status="PASS" endtime="20160122 15:07:52.965" starttime="20160122 15:07:52.963"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:52.970" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:52.971" starttime="20160122 15:07:52.966"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.089" level="INFO">=====================
+Great, you've bought this Combo successfully. Please select:
+0. Main Menu
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:53.092" level="INFO">${output} = =====================
+Great, you've bought this Combo successfully. Please select:
+0. Main Menu
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:53.090" starttime="20160122 15:07:52.972"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Great, you've bought this Combo successfully</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.095" starttime="20160122 15:07:53.093"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.106" starttime="20160122 15:07:53.104"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.108" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:53.140" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:53.141" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:53.141" starttime="20160122 15:07:53.107"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.144" starttime="20160122 15:07:53.142"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.146" starttime="20160122 15:07:53.145"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.149" starttime="20160122 15:07:53.147"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.152" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:53.215" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:53.216" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:53.217" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:53.216" starttime="20160122 15:07:53.150"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.222" starttime="20160122 15:07:53.218"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.225" starttime="20160122 15:07:53.223"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.227" starttime="20160122 15:07:53.226"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.231" starttime="20160122 15:07:53.228"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.233" starttime="20160122 15:07:53.232"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.236" starttime="20160122 15:07:53.234"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.239" starttime="20160122 15:07:53.237"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.242" starttime="20160122 15:07:53.240"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.244" starttime="20160122 15:07:53.243"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.247" starttime="20160122 15:07:53.245"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:53.249" starttime="20160122 15:07:53.248"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:53.250" starttime="20160122 15:07:53.097"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:53.251" starttime="20160122 15:07:49.891"></status>
+</test>
+<test id="s1-t6" name="Test What Is My Number">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.271" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:53.271" starttime="20160122 15:07:53.268"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.838" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:53.840" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:53.840" starttime="20160122 15:07:53.272"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:53.844" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:53.845" starttime="20160122 15:07:53.842"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.847" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:55.848" starttime="20160122 15:07:53.845"></status>
+</kw>
+<msg timestamp="20160122 15:07:55.851" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:55.850" starttime="20160122 15:07:53.261"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 8 for last menu item</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.854" level="INFO">Pressing 8 for last menu item</msg>
+<status status="PASS" endtime="20160122 15:07:55.854" starttime="20160122 15:07:55.852"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>8</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.861" level="INFO">8</msg>
+<status status="PASS" endtime="20160122 15:07:55.861" starttime="20160122 15:07:55.855"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.879" level="INFO">=====================
+What would you like to do?
+1. Credit transfer
+2. Use Call Me Back
+3. What's my number?
+4. What's included
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:55.881" level="INFO">${output} = =====================
+What would you like to do?
+1. Credit transfer
+2. Use Call Me Back
+3. What's my number?
+4. What's included
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:55.880" starttime="20160122 15:07:55.862"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 3 for what is my number service</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.883" level="INFO">Pressing 3 for what is my number service</msg>
+<status status="PASS" endtime="20160122 15:07:55.884" starttime="20160122 15:07:55.882"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>3</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.889" level="INFO">3</msg>
+<status status="PASS" endtime="20160122 15:07:55.890" starttime="20160122 15:07:55.885"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.914" level="INFO">=====================
+Your number is:
+02041010000
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:55.915" level="INFO">${output} = =====================
+Your number is:
+02041010000
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:55.915" starttime="20160122 15:07:55.891"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>02041010000</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:55.918" starttime="20160122 15:07:55.917"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:55.929" starttime="20160122 15:07:55.927"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.931" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:55.963" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:55.964" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:55.964" starttime="20160122 15:07:55.930"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:55.967" starttime="20160122 15:07:55.965"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:55.969" starttime="20160122 15:07:55.968"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:55.971" starttime="20160122 15:07:55.970"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:55.975" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:56.038" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:56.040" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:56.041" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:56.039" starttime="20160122 15:07:55.972"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.046" starttime="20160122 15:07:56.042"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.048" starttime="20160122 15:07:56.047"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.051" starttime="20160122 15:07:56.049"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.053" starttime="20160122 15:07:56.051"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.055" starttime="20160122 15:07:56.054"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.058" starttime="20160122 15:07:56.056"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.061" starttime="20160122 15:07:56.059"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.063" starttime="20160122 15:07:56.062"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.066" starttime="20160122 15:07:56.064"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.068" starttime="20160122 15:07:56.066"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:56.070" starttime="20160122 15:07:56.069"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:56.071" starttime="20160122 15:07:55.920"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:56.073" starttime="20160122 15:07:53.253"></status>
+</test>
+<test id="s1-t7" name="Test USSD Credit Transfer">
+<kw type="kw" name="${output} = USSD Start">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:56.091" level="INFO">Killed</msg>
+<status status="PASS" endtime="20160122 15:07:56.092" starttime="20160122 15:07:56.089"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:56.626" level="INFO">[1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:56.628" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:56.627" starttime="20160122 15:07:56.093"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>USSD Start: ${output}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:56.632" level="INFO">USSD Start: [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. Top-up
+2. View balance
+3. View setup
+4. Get a Combo or Add-On
+8. Other stuff
+
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:56.632" starttime="20160122 15:07:56.630"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Sleep">
+<doc>Pauses the test executed for the given time.</doc>
+<arguments>
+<arg>2s</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.635" level="INFO">Slept 2 seconds</msg>
+<status status="PASS" endtime="20160122 15:07:58.636" starttime="20160122 15:07:56.633"></status>
+</kw>
+<msg timestamp="20160122 15:07:58.639" level="INFO">${output} = [1m[qa_automation@ussd-app01.tb13 ~]$[m /home/qa_automation/ussd/USSDtest.py 64204101 0000 888 64204000
+=====================
+Enter the number of what you would like to do, then press reply
+1. ...</msg>
+<status status="PASS" endtime="20160122 15:07:58.638" starttime="20160122 15:07:56.082"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 8 for last menu item</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.642" level="INFO">Pressing 8 for last menu item</msg>
+<status status="PASS" endtime="20160122 15:07:58.642" starttime="20160122 15:07:58.640"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>8</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.649" level="INFO">8</msg>
+<status status="PASS" endtime="20160122 15:07:58.649" starttime="20160122 15:07:58.643"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.667" level="INFO">=====================
+What would you like to do?
+1. Credit transfer
+2. Use Call Me Back
+3. What's my number?
+4. What's included
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:58.669" level="INFO">${output} = =====================
+What would you like to do?
+1. Credit transfer
+2. Use Call Me Back
+3. What's my number?
+4. What's included
+Enter * to return, # to exit 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:58.668" starttime="20160122 15:07:58.651"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Pressing 1 for credit transfer</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.671" level="INFO">Pressing 1 for credit transfer</msg>
+<status status="PASS" endtime="20160122 15:07:58.672" starttime="20160122 15:07:58.670"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.677" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:58.678" starttime="20160122 15:07:58.673"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.738" level="INFO">=====================
+Please enter the Skinny mobile number of the person getting your credit: 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:58.740" level="INFO">${output} = =====================
+Please enter the Skinny mobile number of the person getting your credit: 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:58.739" starttime="20160122 15:07:58.679"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Entering recipient mobile number</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.743" level="INFO">Entering recipient mobile number</msg>
+<status status="PASS" endtime="20160122 15:07:58.743" starttime="20160122 15:07:58.741"></status>
+</kw>
+<kw type="kw" name="${recipient} = BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}+1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.749" level="INFO">${recipient} = 642041010001</msg>
+<status status="PASS" endtime="20160122 15:07:58.749" starttime="20160122 15:07:58.744"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${recipient}</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.755" level="INFO">642041010001</msg>
+<status status="PASS" endtime="20160122 15:07:58.756" starttime="20160122 15:07:58.751"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.837" level="INFO">=====================
+Your balance is $95.00.
+Please enter a transfer amount in whole dollars: 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:58.839" level="INFO">${output} = =====================
+Your balance is $95.00.
+Please enter a transfer amount in whole dollars: 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:58.838" starttime="20160122 15:07:58.757"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Entering amount to transfer</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.842" level="INFO">Entering amount to transfer</msg>
+<status status="PASS" endtime="20160122 15:07:58.843" starttime="20160122 15:07:58.840"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>10</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.848" level="INFO">10</msg>
+<status status="PASS" endtime="20160122 15:07:58.849" starttime="20160122 15:07:58.844"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.916" level="INFO">=====================
+Do you really want to do this, press 1. If not, press # 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:58.917" level="INFO">${output} = =====================
+Do you really want to do this, press 1. If not, press # 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:58.917" starttime="20160122 15:07:58.850"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Final confirmation</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.920" level="INFO">Final confirmation</msg>
+<status status="PASS" endtime="20160122 15:07:58.921" starttime="20160122 15:07:58.918"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>1</arg>
+</arguments>
+<msg timestamp="20160122 15:07:58.926" level="INFO">1</msg>
+<status status="PASS" endtime="20160122 15:07:58.927" starttime="20160122 15:07:58.922"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Read Until">
+<doc>Consumes and returns the server output until `expected` is encountered.</doc>
+<arguments>
+<arg>User input:</arg>
+</arguments>
+<msg timestamp="20160122 15:07:59.094" level="INFO">=====================
+Nice one. Your mate 2041010001 has been sent $10.00 credit from your balance. 
+=====================
+User input:</msg>
+<msg timestamp="20160122 15:07:59.096" level="INFO">${output} = =====================
+Nice one. Your mate 2041010001 has been sent $10.00 credit from your balance. 
+=====================
+User input:</msg>
+<status status="PASS" endtime="20160122 15:07:59.095" starttime="20160122 15:07:58.928"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>Nice one.</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.100" starttime="20160122 15:07:59.098"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${conn_id}</arg>
+<arg>python</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.110" starttime="20160122 15:07:59.108"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20160122 15:07:59.112" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20160122 15:07:59.143" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:59.145" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20160122 15:07:59.144" starttime="20160122 15:07:59.111"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.147" starttime="20160122 15:07:59.146"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>BEFORE SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.149" starttime="20160122 15:07:59.148"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.152" starttime="20160122 15:07:59.150"></status>
+</kw>
+<kw type="kw" name="${stderr}, ${rc} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>pkill -9 -u ${user} ${command_name}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<msg timestamp="20160122 15:07:59.155" level="INFO">Executing command 'pkill -9 -u qa_automation python'.</msg>
+<msg timestamp="20160122 15:07:59.218" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20160122 15:07:59.219" level="INFO">${stderr} = </msg>
+<msg timestamp="20160122 15:07:59.220" level="INFO">${rc} = 0</msg>
+<status status="PASS" endtime="20160122 15:07:59.218" starttime="20160122 15:07:59.153"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.225" starttime="20160122 15:07:59.221"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Old approach with kill:</arg>
+<arg>For unknow reasons somtimes still processes stayed in the list an could not be killed even in subsequent executions</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.227" starttime="20160122 15:07:59.226"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>@{processes_list}=</arg>
+<arg>Split String</arg>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.229" starttime="20160122 15:07:59.228"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>:FOR</arg>
+<arg>${process}</arg>
+<arg>IN</arg>
+<arg>@{processes_list}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.232" starttime="20160122 15:07:59.230"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Log</arg>
+<arg>SSH Kill User Processes is killing: ${process}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.234" starttime="20160122 15:07:59.233"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${pid}=</arg>
+<arg>Fetch From Left</arg>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.237" starttime="20160122 15:07:59.235"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>${stderr}</arg>
+<arg>${rc}=</arg>
+<arg>Execute Command</arg>
+<arg>sudo kill -9 ${pid}</arg>
+<arg>return_stdout=False</arg>
+<arg>return_stderr=True</arg>
+<arg>return_rc=True</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.239" starttime="20160122 15:07:59.238"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg></arg>
+<arg>Run Keyword If</arg>
+<arg>'${rc}' != '0'</arg>
+<arg>Log</arg>
+<arg>${stderr}</arg>
+<arg>level=WARN</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.242" starttime="20160122 15:07:59.240"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>${processes_string}=</arg>
+<arg>Execute Command</arg>
+<arg>ps U ${user} --no-heading | grep ${command_name} | grep -v grep</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.245" starttime="20160122 15:07:59.243"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>AFTER SSH Kill User Processes:</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.247" starttime="20160122 15:07:59.246"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Log</arg>
+<arg>${processes_string}</arg>
+<arg>console=yes</arg>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.249" starttime="20160122 15:07:59.248"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:59.250" starttime="20160122 15:07:59.101"></status>
+</kw>
+<doc></doc>
+<tags>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_specific</tag>
+<tag>USSD_only</tag>
+</tags>
+<status status="PASS" critical="yes" endtime="20160122 15:07:59.251" starttime="20160122 15:07:56.075"></status>
+</test>
+<kw type="teardown" name="Teardown Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20160122 15:07:59.274" starttime="20160122 15:07:59.272"></status>
+</kw>
+<status status="PASS" endtime="20160122 15:07:59.277" starttime="20160122 15:07:59.265"></status>
+</kw>
+<doc>This suite uses USSDtest.py class to test the USSD interface. Various test cases (scenarios) will be checked</doc>
+<metadata>
+</metadata>
+<status status="PASS" endtime="20160122 15:07:59.277" starttime="20160122 15:07:29.434"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="7" fail="0">Critical Tests</stat>
+<stat pass="7" fail="0">All Tests</stat>
+</total>
+<tag>
+<stat pass="7" info="" doc="" combined="" fail="0" links="">matko.sanseovic</stat>
+<stat pass="7" info="" doc="" combined="" fail="0" links="">TNZ_specific</stat>
+<stat pass="7" info="" doc="" combined="" fail="0" links="">USSD_only</stat>
+</tag>
+<suite>
+<stat pass="7" id="s1" fail="0" name="Ussd-Robot-Suite">Ussd-Robot-Suite</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

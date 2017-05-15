@@ -1,0 +1,55 @@
+*** Settings ***
+Documentation     Testing the prepaid MOC call, duration is 196s - longer than one slice (more than 60s)
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        MTEL_supported   MOC_only   matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../../../suite-global-keyword-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+
+*** Keywords ***
+	
+*** Test Cases ***
+
+Run MOC 196s Call
+    [Documentation]    	Test will make a MOC call, duration 196s. 
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails or account balance evaluation fails
+	...	
+    ...         =================================================================================
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    1000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+	${calling_int} 			Convert To Integer	${TESTSUBCRIBERS MSISDN RANGE START}
+	${called_party}			Evaluate	${calling_int}+1	
+    Comment                 ******* Run MOC 1s *******
+    Log					    Running the MOC call...  console=yes
+    ${rc}=                 	CG Run MOC 196s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${called_party}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}	
+	Comment				   	******* Checking Subscriber's Account Balance *******
+	# first we should get subscriber id
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	# calculating the target balance that should match the balance set after the call (4 slices should be charged, and in case VMCO special charging is applied)
+	${target_bal}=  		Evaluate  ${INITIAL_BALANCE}-4*${TESTSUBCRIBERS DEFAULT SLICE COSTS}
+	Run Keyword If			'${SUT PROJECT TAG PREFIX}'=='VIRGIN_COLUMBIA'   Should Be Equal As Numbers   ${bal}   99920080  msg=Expected balance and retrieved balance mismatch!
+	...						ELSE	Should Be Equal As Numbers  ${target_bal}  ${bal}  msg=Expected balance and retrieved balance mismatch!
+	Log						Account balance check OK!   console=yes

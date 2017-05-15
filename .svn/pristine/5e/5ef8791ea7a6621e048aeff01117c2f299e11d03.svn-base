@@ -1,0 +1,164 @@
+*** Settings ***
+Documentation     This suite uses USSDtest.py class to test the USSD interface. Various test cases (scenarios) will be checked. As USSD self care menus are different from customer to customer - so are these tests. The goal is to make a rough check of the main (and not all) functions - menu items.
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        USSD_only  mTel_PPLIGHT_TB25_specific   matko.sanseovic  
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+
+*** Keywords ***
+Setup Suite
+    ${time}=    		Run    date
+    Log    				Date and time: ${time}    console=yes
+	Log					USSD test on mTel PP Light TB25	console=yes
+	# copy the tool class to the target test machine
+	${conn_id}			Open Connection    ${USSD HOST}
+	Set Suite Variable	${conn_id} 
+    ${output_login}=    Login    ${USSD USER}    ${USSD PWD}
+	Log  				${output_login}
+	Put File 			../tool/USSDtest.py 	${USSD HOME}/ussd/
+	SSHLibrary.File Should Exist	${USSD HOME}ussd/USSDtest.py	
+	Set Suite Variable	${ussd_tool}	${USSD HOME}/ussd/USSDtest.py
+	# we will create subscriber first, we need MSISDN to check over USSD
+	Create Subscriber	
+
+Teardown Suite
+	Close All Connections
+
+Create Subscriber
+    [Documentation]  Suite will create two subscribers that will attempt USSD scenarios  
+    ...
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+	Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+
+USSD Start
+    [Documentation]    Keyword for starting the USSD menu and getting to the initial point. Returns the complete menu for evaluation
+    ...
+    Write    		${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}
+    ${output}=  	Read Until    User input:	
+	Log    			USSD Start: ${output}
+	Sleep			2s
+	[Return]		${output}
+	
+	
+*** Test Cases ***
+Test USSD Start
+    [Documentation]    Simple test that checks if USSD can be started
+    ...
+	${output}		USSD Start		
+	# Initial point of USSD menu
+	Should Contain	${output}	Waehlen Sie:
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+		
+Test USSD Check Balance	
+    [Documentation]    Basic test for balance check. Expected value is set with the default test sutomation subscriber
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 2 for checking balance    console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Ihre Rechnung: 10,00 Euro
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test USSD Subscription Check
+    [Documentation]     Menu entry for checking the subscriptions, if any subscription is active for subscriber it will be listed here. By default subscribers
+    ...					have default (basic) tariff active
+	${output}		USSD Start		
+	Log    			Pressing 3 for subscription menu     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 1 for subscription check     console=yes
+	Write			1
+    ${output}=    	Read Until    User input:
+	Should Contain	${output}	Sie sind im Grundtarif.
+	# You are on standard tarrif
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test Buying	
+    [Documentation]    	Activating bundle from the USSD menu. Precondition is that there is enaugh balance in account. Subscriber will buy a bundle for 5 EUR,and in
+    ...					balance there is 10 EUR. So activation should be OK
+	${output}		USSD Start		
+	Log    			Pressing 3 for subscription menu     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 2 for purchase management     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 2 for buying the option     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 2 for one-off data bundle     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 1 for One-Off bundle    console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	Sie moechten Super Net fuer den Preis von 5,00 Euro
+	Log    			Pressing 1 to select     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	# Bundle was succesfully purchased and the cost was 5,00 EUR
+	Should Contain	${output}	Super Net wurde erfolgreich fuer den Preis von 5,00 Euro gekauft
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+
+Test What Is My Number	
+    [Documentation]    	Default service offered in USSD menu under "other services". Menu returns subscriber's MSISDN
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 4 for other services     console=yes
+	Write			4
+	${output}=    	Read Until    User input:	
+	Log				Pressing 2 for what is my number service	console=yes
+	Write			2
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	${TESTSUBCRIBERS MSISDN RANGE START}
+	## Exit#
+	SSH Kill User Processes		${conn_id}	python	
+
+	
+Test Call Me Back
+    [Documentation]    	Default service offered in USSD menu under "other services". Menu offers to send a SMS to MSISDN of subscriber's choice
+	...					to return a call
+	${output}		USSD Start		
+	Log    			Pressing 4 for other services     console=yes
+	Write			4
+	${output}=    	Read Until    User input:	
+	Log				Pressing 1 for call me back service		console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log				Entering the mobile number	console=yes
+	${recipient}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write			${recipient}	
+	${output}=    	Read Until    User input:
+	# SMS was sent to this number
+	Should Contain	${output}	 Eine SMS wurde an die Nummer
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+	
+Test Direct Access To Balance Check
+	[Documentation]    		# mTel offers USSD code 102 as shortcut for balance check
+    ...
+	Log    			Going to USSD code 102 directly to check the balance     console=yes
+	${subs}=	  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write    		${ussd_tool} ${subs} 102 ${USSD LOCATION}
+    ${output}=  	Read Until    User input:
+	Should Contain	${output}	Ihre Rechnung: 10,00 Euro
+	## Exit
+	SSH Kill User Processes		${conn_id}	python

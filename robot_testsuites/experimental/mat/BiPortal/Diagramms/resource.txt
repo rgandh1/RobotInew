@@ -1,0 +1,152 @@
+*** Settings ***
+
+Documentation  A resource file containing the application specific keywords
+...            that create our own domain specific language. This resource
+...            implements keywords for testing HTML version of the test
+...            application.
+Library        Selenium2Library
+
+
+*** Variables ***
+
+${SERVER}        10.208.80.127:8080/
+${BROWSER}       firefox
+${DELAY}         1.2
+${VALID USER}    idwh
+${VALID PASSWD}  idwh
+${LOGIN URL}     http://${SERVER}
+${REPORTYEAR}    2013
+${REPORTMONTH}   Mar
+${REPORTDATE}    25/03/2013
+${REPORTHOUR}    12
+
+
+
+*** Keywords ***
+
+Open Browser To Login Page
+    Open Browser  ${LOGIN URL}  ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed  ${DELAY}
+
+
+Go To Login Page
+    Go To  ${LOGIN URL}
+
+
+Input Username  [Arguments]  ${username}
+    Input Text  name=username  ${username}
+
+Input Password  [Arguments]  ${password}
+    Input Text  name=password  ${password}
+
+Submit Credentials
+    Click Button  name=login_submit
+
+Logout
+    Click Element  //div[@id='header']/span/input
+
+
+Go to Report Page
+   Click Element  //a[span/text()='Browse reports']
+
+Select ServiceUsage
+   Click Element  //a[span/text()='Service usage over 24 hours']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Input Text  paramsPanel:groups:0:group:components:1:component:param-field  ${REPORTHOUR}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Service usage over 24 hours
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select TargetUsage
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Target network usage - 24 hours']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Input Text  paramsPanel:groups:0:group:components:1:component:param-field  ${REPORTHOUR}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Target network usage
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select IncomingSubscriber
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Incoming subscribers']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Incoming subscribers
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select CumulativeIncome
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Cumulative income from topups']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Cumulative income from topups
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select AverageTopup
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Usage 1']
+   Click Element  //a[span/text()='Average topup value']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Average topup value
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select ActivatedSubscribers
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Activations']
+   Click Element  //a[span/text()='Activated subscribers - 30 days']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Incoming subscribers - last 30 days
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select Daily Usage
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Usage 1']
+   Click Element  //a[span/text()='Daily activations']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Daily activations
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']
+
+Select Daily Control Plan Activations
+   Click Element  //span[@class='minus']
+   Click Element  //a[span/text()='Usage 1']
+   Click Element  //a[span/text()='Daily control plan activations']
+   Click Element  //button[span/text()='Run']
+   Input Text  paramsPanel:groups:0:group:components:0:component:param-field:datepicker  ${REPORTDATE}
+   Click Element  //a[span/text()='Dashboards']
+   Click Element  //button[@name='button.display']
+   Page Should Contain  Daily Control Plan Activations
+   Click Element  //button[text()='Export to PDF']
+   Click Element  //button[text()='Export to CSV']
+   Click Element  //button[text()='Back']

@@ -1,0 +1,24 @@
+Short Description:
+===================
+This iSig TC simulates a MOC establishment attempt that is canceled
+by the callSubscriber() (=A-Party) after 20s.
+
+Flow details:
+==============
+- After session initiation the TC waits 20s to simulate waiting for the 
+  B-Party to answer.
+- Then the TC reports "abandon" to IN meaning that the A-Party is no 
+  longer willing to wait for the B-Party to answer.
+- This is (or should be) responded by IN with a final continueProcessing 
+  meaning that the MOC leg is finished and HLR is responsible to decide 
+  how to resume. 
+
+Parameters: 
+============
+  mscAddress         of the A-Party (callSubscriber()) 
+  mocBPartyMsisdn
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/03/12  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

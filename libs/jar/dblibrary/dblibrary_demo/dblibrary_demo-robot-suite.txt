@@ -1,0 +1,63 @@
+*** Settings ***
+Documentation     Demonstrates database access via dbLibrary (and convenince dblib_support-resource.txt)
+...               For dbLibrary documentation see ../docs folder
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  experimental  inactive
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Library           String
+Library           org.robot.database.keywords.DatabaseLibrary    
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+
+
+
+*** Variables ***
+
+
+*** Keywords ***
+
+
+*** Test Cases ***
+
+Select From PostgresDB
+    [Documentation]  Demonstrates reading from database
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    Comment              Connect To Database    org.postgresql.Driver  jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}   ${XDR DB USER}  ${XDR DB PWD} 
+                         DBLIB Connect To PostgresDB    ${XDR DB HOST}  ${XDR DB PORT}  ${XDR DB NAME}  ${XDR DB USER}  ${XDR DB PWD} 
+                         Table must exist       crce_cdr
+
+    Comment              ***** get latest ticket *****
+    @{queryRows}=        DBLIB Query  select * from crce_cdr order by id desc LIMIT 1   #convenience keyword from dblib_support-resource.txt
+                         Length Should be  ${queryRows}  1
+
+    Comment              ***** log id column value (id is the 1st field of the pipe separated fields list) *****
+    @{cdrFields}=        Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+                         Log  Latest Ticket id: @{cdrFields}[0]  WARN       #log 1st field (id)
+
+	                  Disconnect From Database
+	
+
+Select From MongoDB
+    [Documentation]  Demonstrates reading from database
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    Comment              Connect To Database         mongodb.jdbc.MongoDriver  jdbc:mongo://${CUSTOMERSERVICE MONGODB HOST}:${CUSTOMERSERVICE MONGODB PORT}/${CUSTOMERSERVICE MONGODB DB NAME}  userdummy  pswddummy 
+                         DBLIB Connect To MongoDB    ${CUSTOMERSERVICE MONGODB HOST}  ${CUSTOMERSERVICE MONGODB PORT}  ${CUSTOMERSERVICE MONGODB DB NAME}  
+                         Table must exist            customer
+
+    Comment              ***** get a CRM created customer *****
+    @{queryRows}=        DBLIB Query  SELECT _id, providerId, languageId, state, details.type, registrationInfo.channel FROM customer WHERE registrationInfo.channel='CRM' LIMIT 1  #convenience keyword from dblib_support-resource.txt
+                         Length Should be  ${queryRows}  1
+
+    Comment              ***** log _id column value (_id is the 1st field of the pipe separated fields list) *****
+    @{rowFields}=        Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+                         Log  found customer _id: @{rowFields}[0]  WARN       #log 1st field (id)
+
+	                  Disconnect From Database
+
+

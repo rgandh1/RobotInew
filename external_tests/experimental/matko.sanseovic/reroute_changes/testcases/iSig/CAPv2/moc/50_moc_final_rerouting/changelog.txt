@@ -1,0 +1,24 @@
+Short Description:
+===================
+This iSig TC simulates a MOC initialization that is
+redirected to any other number without further tracking (charging) the call 
+e.g. - charge-free (toll-free) number
+     - redirection to IVR due to forbidden number or insufficient initial funds, ... 
+
+
+Flow details:
+==============
+The session initiation attempt (reportNotification) is simply 
+answered by IN with a reRoute stating that moreEventsExpected=0
+- i.e. the call is ongoing but from IN perspective the session 
+is finished (call is no further tracked).
+
+Parameters: 
+============
+  mscAddress         of the A-Party (callSubscriber()) 
+  mocBPartyMsisdn    Charge Free Number
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/05/06  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

@@ -1,0 +1,17 @@
+*** Settings ***
+
+Documentation  A test suite with a single test for creating a user. This test has
+...            a workflow that is created using keywords from the resource file.
+Resource       resource.txt
+
+
+*** Test Cases ***	
+
+Incoming Subscriber
+    Open Browser To Login Page
+    Input Username    idwh
+    Input Password    idwh
+    Submit Credentials
+    Go To Report Page
+    Select IncomingSubscriber
+    Close All Browsers

@@ -1,0 +1,24 @@
+void connectToDatabase                         (String driverClassName, String connectString, String dbUser, String dbPassword)  throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException 
+void disconnectFromDatabase                    ()                                                                                throws SQLException
+String getTransactionIsolationLevel            ()                                                                                throws SQLException
+
+void tableMustExist                            (String tableName)                                                                throws SQLException, DatabaseLibraryException
+void tableMustBeEmpty                          (String tableName)                                                                throws SQLException, DatabaseLibraryException
+void deleteAllRowsFromTable                    (String tableName)                                                                throws SQLException
+void tableMustContainNumberOfRows              (String tableName, String rowNumValue)                                            throws SQLException, DatabaseLibraryException
+void tableMustContainMoreThanNumberOfRows      (String tableName, String rowNumValue)                                            throws SQLException, DatabaseLibraryException
+void tableMustContainLessThanNumberOfRows      (String tableName, String rowNumValue)                                            throws SQLException, DatabaseLibraryException
+void tablesMustContainSameAmountOfRows         (String firstTableName, String secondTableName)                                   throws SQLException, DatabaseLibraryException
+void checkContentForRowIdentifiedByRownum      (String columnNames, String expectedValues, String tableName, String rowNumValue) throws SQLException, DatabaseLibraryException
+void checkContentForRowIdentifiedByWhereClause (String columnNames, String expectedValues, String tableName, String whereClause) throws SQLException, DatabaseLibraryException
+String readSingleValueFromTable                (String tableName, String columnName, String whereClause)                         throws SQLException
+void transactionIsolationLevelMustBe           (String levelName)	                                                         throws SQLException, DatabaseLibraryException 
+void checkPrimaryKeyColumnsForTable            (String tableName, String columnList)                                             throws SQLException, DatabaseLibraryException
+String getPrimaryKeyColumnsForTable            (String tableName)                                                                throws SQLException
+void executeSQL                                (String sqlString)                                                                throws SQLException
+void executeSQLFromFile                        (String fileName)                                                                 throws SQLException, IOException, DatabaseLibraryException
+void executeSQLFromFileIgnoreErrors            (String fileName)                                                                 throws SQLException, IOException, DatabaseLibraryException
+void verifyNumberOfRowsMatchingWhere           (String tableName, String where, String rowNumValue)                              throws SQLException, DatabaseLibraryException
+void rowShouldNotExistInTable                  (String tableName, String whereClause)                                            throws SQLException, DatabaseLibraryException
+void storeQueryResultToFile                    (String sqlString, String fileName)                                               throws SQLException, IOException
+void compareQueryResultToFile                  (String sqlString, String fileName)                                               throws SQLException, DatabaseLibraryException, FileNotFoundException

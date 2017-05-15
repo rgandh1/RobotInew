@@ -1,0 +1,194 @@
+*** Settings ***
+
+Documentation  A resource file containing the application specific keywords
+...            that create our own domain specific language. This resource
+...            implements keywords for testing HTML version of the test
+...            application.
+
+Library        Selenium2Library
+Library        DateTime
+
+
+*** Variables ***
+
+${SERVER}        10.105.150.212:1085/evoweb/cms/lcm/
+${BROWSER}       firefox
+${DELAY}         0.4
+${VALID USER}    lcmmanager
+${VALID PASSWD}  lcmmanager
+${LOGIN URL}     http://${SERVER}257_EN-LCM.htm
+${WELCOME URL}   http://${SERVER}257_EN-LCM.htm
+${ERROR URL}     http://${SERVER}/html/error.html
+${REWARD}        MB#MB#1048576
+${TARIFF}	 101002
+
+
+*** Keywords ***
+
+Open Browser To Login Page
+    Open Browser  ${LOGIN URL}  ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed  ${DELAY}
+
+Go To Login Page
+    Go To  ${LOGIN URL}
+
+InputUserAndPassword 
+    [Arguments]  ${username}  ${password}
+    Input Text  id=username  ${username}
+    Input Text  id=password  ${password}
+    Click Button  name=login_submit
+	
+Submit Credentials
+    Click Button  name=login_submit
+
+Logout
+    Select Window  title=Loyality Campaign Manager
+    Click Button  id=logout
+	
+
+Create Campaign 	[Arguments]  ${campaign_name}
+    Click Element  //div[@id='content']/fieldset/form/div/input[3]
+    Select from List  id=db_type  notification_based    
+    ${now}= 	Get Current Date	result_format=timestamp
+    ${timestamp} =	Convert Date	${now}	result_format=%Y%d%m%H%M%S	
+    Input Text  id=db_name  ${campaign_name} ${timestamp}
+    ${STARTDATE}= 	Convert Date	${now}	result_format=%d.%m.%Y - %H:%M	
+    ${date}=	Add Time To Date 	${now} 	30 days	
+    ${ENDDATE} =	Convert Date	${date}	result_format=%d.%m.%Y - %H:%M	
+    Input Text  id=db_start  ${STARTDATE}
+    Input Text  id=db_end  ${ENDDATE}
+    Input Text  id=db_description  This is a campaign to test the robot framework test automation
+    Click Element  id=savecampaign_1
+	
+
+Open Triggerwindow
+    Select Window  title=Loyality Campaign Manager
+    Click Element  link=Triggers
+	
+Create ReferralUsageTrigger
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Trigger']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  Referral Usage Trigger
+    Select from List  id=db_type  ON_REFERRAL_USAGE
+    Input Text  id=db_min  1
+    Input Text  id=db_max  3
+    Click Element  id=submitform
+
+Open Rewardwindow
+    Select Window  title=Loyality Campaign Manager
+    Click Element  link=Rewards
+
+Open Notificationswindow
+    Select Window  title=Loyality Campaign Manager
+    Click Element  link=Notifications
+
+Open Subscriberswindow
+    Select Window  title=Loyality Campaign Manager
+    Click Element  link=Subscribers
+
+Create Reward
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Reward']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  1024 MB/30 Days Reward
+    Select from List  db_rewardtype  valuebased
+    Select from List  db_currency  ${REWARD} 
+    Input Text  id=db_reward  1024
+    Input Text  id=db_expiryperiod  30
+    Click Element  //form[@id='form_reward']/div/input[4]
+    Select Window  title=Loyality Campaign Manager
+    Click Element  id=savecampaign_1
+
+
+Create PlanActivationTrigger
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Trigger']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction 
+    Input Text  id=db_name  On Plan Activation
+    Select from List  id=db_type  ON_PLAN_ACTIVATION
+    Select from List  id=db_availabletariffs  ${TARIFF}
+    Input Text  id=db_min  100
+    Input Text  id=db_max  5000
+    Click Element  id=submitform
+	
+	
+SaveCampaignNoValues
+    Click Element  //div[@id='content']/fieldset/form/div/input[3]
+    Click Element  id=savecampaign_1
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		"Campaign Name" cannot be shorter than 3 characters.
+    Element Should Contain	id=errormsg		"Campaign Type" is a required field.
+
+SaveCampaignOnlyCampaignType
+    Select from List  id=db_type  notification_based
+    Click Element  id=savecampaign_1
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		"Campaign Name" cannot be shorter than 3 characters.
+
+SaveCampaignEndDateInPast
+    ${now}= 	Get Current Date	result_format=timestamp
+    ${timestamp} =	Convert Date	${now}	result_format=%Y%d%m%H%M%S	
+    Input Text  id=db_name  Test Failed Campaign ${timestamp}
+    ${STARTDATE}= 	Convert Date	${now}	result_format=%d.%m.%Y - %H:%M	
+    ${date}=	Subtract Time From Date 	${now} 	5 days	
+    ${ENDDATE} =	Convert Date	${date}	result_format=%d.%m.%Y - %H:%M	
+    Input Text  id=db_start  ${STARTDATE}
+    Input Text  id=db_end  ${ENDDATE}
+    Click Element  id=savecampaign_1
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		The field "Campaign End" cannot be in the past.
+    Element Should Contain	id=errormsg		The field "Campaign Start" cannot be greater than "Campaign End".
+    ${date}=	Add Time To Date 	${now} 	30 days	
+    ${ENDDATE} =	Convert Date	${date}	result_format=%d.%m.%Y - %H:%M
+    Input Text  id=db_end  ${ENDDATE}
+    Click Element  id=savecampaign_1	
+
+ClickChangeRangeWithoutSubscribers	
+    Select Frame  contentiframe
+    Click Element  id=upload_subscribers_button
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		Please specify a subscriber range.
+	
+SaveTriggerWithoutName
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Trigger']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction
+    Click Element  id=submitform
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		"Name" cannot be shorter than 10 characters.
+    Click Element	//input[@value='Cancel']
+
+SaveRewardWithoutName
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Reward']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction
+    Click Element	//input[@value='Save']
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		"Bundle" is a required field.
+    Element Should Contain	id=errormsg		"Name" cannot be shorter than 1 characters.
+    Click Element	//input[@value='Cancel']
+
+
+SaveNotificationWithoutName	
+    Select Frame  contentiframe
+    Click Element  //input[@value='Add Notification']
+    Select Window  title=Loyality Campaign Manager
+    Select Frame  interaction
+    Click Element	//input[@value='Save']	
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		"Notification Text" cannot be shorter than 10 characters.
+    Click Element	//input[@value='Cancel']
+
+Check Dates
+    ${now}= 	Get Current Date	result_format=timestamp
+    ${STARTDATE}= 	Convert Date	${now}	result_format=%d.%m.%Y - %H:%M	
+    ${date}=	Add Time To Date 	${now} 	30 days	
+    ${ENDDATE} =	Convert Date	${date}	result_format=%d.%m.%Y - %H:%M	
+    ${timestamp} =	Convert Date	${now}	result_format=%Y%d%m%H%M%S

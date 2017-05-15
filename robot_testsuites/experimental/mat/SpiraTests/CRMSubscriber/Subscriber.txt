@@ -1,0 +1,37 @@
+*** Settings ***
+Documentation     A test suite with a single test for valid login. This test has
+...               a workflow that is created using keywords from the resource file.
+Resource          resource.txt
+
+*** Test Cases ***
+CRM_PP_002 - Credit enquiry
+    Login To CRM
+    Open Subscriber Profile
+    Verify Credit enquiry
+    Close All Browsers
+
+CRM_PP_ADM_003 - Credit Transfer
+    Login To CRM
+    Open Subscriber Profile
+    Comment    Transfer some credit
+    Transfer to much credit
+    Verify transfer
+
+CRM_PP_ADM_010 - Add Balance
+    Login to CRM as a CC
+    Open Subscriber Profile
+    Add Balance below
+    Add Balance above
+    Add Balance right
+    Close all browsers
+
+CRM_PP_ADM_019 - Automatically Display of Subscriber
+    Login To CRM as a CC
+    Direct Link
+    Close All Browsers
+
+CRM_PP_ADM_020 - Credit Transfer
+    Login To CRM as a CC
+    Open Subscriber Profile
+    Transfer some Credit
+    Verify transferchannel

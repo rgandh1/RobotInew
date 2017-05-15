@@ -1,0 +1,10 @@
+##############################################################################
+# This script is a kind of "syntax" checker running over all existing
+# test suites. It doesn't execute the test suites but checks if all contained
+# keywords are resolvable.
+# All non-experimental test suites are considered being CRITICAL 
+#
+# Author: walter.heincz
+##############################################################################
+
+jybot --runmode DryRun --outputdir logs --timestampoutputs --noncritical experimental --exclude pybot_requiring --pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar --escape star:STAR --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt /opt/robot/robotworkspace/robot_testsuites

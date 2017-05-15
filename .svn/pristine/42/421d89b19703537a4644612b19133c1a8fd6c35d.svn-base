@@ -1,0 +1,142 @@
+** Settings ***
+Documentation     This robot resource file provides standard variables that describe
+...               the environment of the FALABELLA testbed. 
+...               Testsuites should never hardcode these infos but instead should 
+...               include this resourcefile. In case that the testbed configuration 
+...               changes this central resource file enables simplest adaptation of 
+...               all related testsuites.
+
+** Variables ***
+${SUT IS AVAILABLE}           TRUE                          #TRUE if the testbed is ready for testing otherwiese FALSE (indicating that the testbed is for whatever reason unusable at the moment)
+${SUT PROJECT TAG PREFIX}     FALABELLA_CHILE    #This indicates the testbeds project dedication -  see also project shortcut list in ../tagging-rules.txt for available prefixes
+${SUT RELEASE TAG PREFIX}     R5.3                          #This indicates the testbeds core version       - see also the ReleaseIntroduction/Extroduction gruop in ../tagging-rules.txt for available prefixes
+     
+${TESTSUBCRIBERS IMSI RANGE START}    730013000010000     
+${TESTSUBCRIBERS MSISDN RANGE START}      56952910000  
+${TESTSUBCRIBERS DEFAULT LANGUAGEID}                1    #1=English
+${TESTSUBCRIBERS DEFAULT TARIFFID}             101005
+${TESTSUBCRIBERS DEFAULT SLICE SIZE SECS}          60
+${TESTSUBCRIBERS DEFAULT SLICE COSTS}           39000    #39,000 millicents = 39 cents = 0,39 NZD
+
+${MSC ADDRESS}               5691000000      
+
+${ANDROID REMOTING HOST}      10.189.11.226   #10.2.1.40 ${EMPTY}
+${ANDROID REMOTING PORT}      8080
+
+${AMQ-SIG HOST}               10.105.180.123
+${AMQ-SIG USER}		  qa_automation
+${AMQ-SIG PWD}		  qa_only!
+${AMQ-SIG RSA FILE}           /home/qa_automation/.ssh/id_rsa  #private key file for public key authentification instead of password based authentification - requires setting up the AMQ host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${AMQ-SIG USER}@${AMQ-SIG HOST}" 
+${AMQ-SIG PORT}               61616
+${AMQ-SIG MOC REQ QUEUE}      FALABELLA_MOC_REQ
+${AMQ-SIG MOC RES QUEUE}      FALABELLA_CAP_RES
+${AMQ-SIG MFC REQ QUEUE}      FALABELLA_MFC_REQ
+${AMQ-SIG MFC RES QUEUE}      FALABELLA_CAP_RES
+${AMQ-SIG MTC REQ QUEUE}      FALABELLA_MTC_REQ
+${AMQ-SIG MTC RES QUEUE}      FALABELLA_CAP_RES
+${AMQ-SIG SMS REQ QUEUE}      FALABELLA_SMSC_MAP_SUBMIT_REQ
+${AMQ-SIG SMS RES QUEUE}      FALABELLA_MAP_RES
+
+${AMQ-XDR HOST}               10.105.180.124
+${AMQ-XDR SERVICE SCRIPT NAME}    	activemq		# modified by matko.sanseovic on 20150609
+${AMQ-XDR CRCE CDR QUEUE}    inew-cs.crce.cdr		# added by matko.sanseovic on 20150327
+${AMQ-XDR CRCE CONF QUEUE}	 inew-cs.crce.conf		# added by matko.sanseovic on 20150327
+${AMQ-XDR USER}		  qa_automation
+${AMQ-XDR PWD}		  qa_only!
+
+${CRCE01 HOST}                10.105.180.125
+${CRCE01 USER}                qa_automation
+${CRCE01 WEBSERVICES PORT}         8080
+${CRCE01 WEBSERVICES BASE PATH}    /inew-mvno-crce-webservices/     #use / on older projects
+${CRCE01 PWD}			  qa_only!       #${EMPTY}
+${CRCE01 RSA FILE}            /home/qa_automation/.ssh/id_rsa  #private key file for public key authentification instead of password based authentification - requires setting up the CRCE01 host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${CRCE01 USER}@${CRCE01 HOST}" 
+${CRCE02 HOST}                ${EMPTY}
+${CRCE HOST}                  ${CRCE01 HOST}
+${CRCE USER}			  ${CRCE01 USER}
+${CRCE PWD}			  ${CRCE01 PWD}
+
+${IN-APP HOST}    10.105.180.135
+${IN-APP USER}    qa_automation
+${IN-APP PWD}     qa_only!    #${EMPTY} 
+${IN-APP RSA FILE}    /home/qa_automation/.ssh/id_rsa    #private key file for public key authentication instead of password based authentication - requires setting up the IN host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${IN-APP USER}@${IN-APP HOST}"
+${IN-APP MOC LOG FILE PATH}    /var/log/inew/core-in-service/1.3.5/moc/inew-in.log
+
+${CRM HOST}                   10.105.180.127
+${CRM USER}			  qa_automation
+${CRM PWD}			  qa_only!
+${CRM PORTAL PORT}            1087
+${CRM PORTAL LOGIN PATH}      evoweb/web/crm/257_EN
+${CRM PORTAL USER}            crmmanager
+${CRM PORTAL PSWD}            crmmanager
+${CRM PORTAL DASHBOARD PATH}  evoweb/web/crm/393_EN.htm
+
+${XDR DB HOST}  10.105.180.129       # added by walter.heincz on 20150312
+${XDR DB PORT}  5447                 # added by walter.heincz on 20150312
+${XDR DB NAME}  xdr                  # added by walter.heincz on 20150312
+${XDR DB USER}  xdr                  # added by walter.heincz on 20150312
+${XDR DB PWD}   xdr                  # added by walter.heincz on 20150312
+${XDR LOG FILE PATH}    /var/log/inew/xdr/5.2.2/inew-mvno-xdr.log   # added by matko.sanseovic on 20150624
+
+${DWH DB HOST}	10.105.180.129		# added by matko.sanseovic on 20150519
+${DWH DB PORT}	5438				# added by matko.sanseovic on 20150519
+${DWH DB NAME}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB USER}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB PWD}	dwh					# added by matko.sanseovic on 20150519
+
+${CRCE DB HOST}	10.105.180.129		# added by matko.sanseovic on 20150529
+${CRCE DB PORT}	5442				# added by matko.sanseovic on 20150529
+${CRCE DB NAME}	crce					# added by matko.sanseovic on 20150529
+${CRCE DB USER}	crce					# added by matko.sanseovic on 20150529
+${CRCE DB PWD}	crce					# added by matko.sanseovic on 20150529
+${CRCE LOG FILE PATH}
+
+${SOA01 HOST}    10.105.180.165      # added by walter.heincz on 20150401
+${SOA02 HOST}    10.105.180.166      # added by walter.heincz on 20150401
+
+${CUSTOMERSERVICE MONGODB HOST}     ${SOA02 HOST}    # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB PORT}     27017            # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB DB NAME}  customerservice  # added by walter.heincz on 20150401
+
+${DWH HOST}                   10.105.180.133
+${DWH USER}			  qa_automation
+${DWH PWD}			  qa_only!
+${IN-APP HOST}                10.105.180.135
+${IN-APP USER}                qa_automation
+${IN-APP PWD}			  qa_only!
+${IN-CONF HOST}               10.105.180.137
+${IN-CONF USER}		  qa_automation
+${IN-CONF PWD}		  qa_only!
+${IVR-APP HOST}               10.105.180.143
+${IVR-APP USER}		  qa_automation
+${IVR-APP PWD}		  qa_only!
+${LCM HOST}                   10.105.180.149
+${LCM USER}			  qa_automation
+${LCM PWD}			  qa_only!
+${NGW HOST}                   10.105.180.157
+${NGW USER}			  qa_automation
+${NGW PWD}			  qa_only!
+${OCS HOST}                   10.105.180.159
+${OCS USER}			  qa_automation
+${OCS PWD}			  qa_only!
+${SMSC HOST}                  10.105.180.163
+${SMSC USER}			  qa_automation
+${SMSC PWD}			  qa_only!
+${SOA HOST}                   10.105.180.165
+${SOA USER}			  qa_automation
+${SOA PWD}			  qa_only!
+${USSD-APP HOST}              10.105.180.167
+${USSD-APP USER}		  qa_automation
+${USSD-APP PWD}		  qa_only!
+${XDR HOST}                   10.105.180.171
+${XDR USER}			  qa_automation
+${XDR PWD}			  qa_only!
+${DB HOST}                    10.105.180.129
+${DB USER}			  qa_automation
+${DB PWD}			  qa_only!
+
+${IN VERS}                    1.3.1
+${SUBSCRIBERPEER ENDPOINT}    http://${CRCE01 HOST}:${CRCE01 WEBSERVICES PORT}${CRCE01 WEBSERVICES BASE PATH}profiler/subscriber
+
+
+
+...

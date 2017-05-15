@@ -1,0 +1,43 @@
+*** Settings ***
+Documentation     Test the Currency Web Service - GetCurrencies through SOAP UI
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/
+...               ============================================================
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE} 
+Library           String
+#Library           Collections
+Library           org.robot.database.keywords.DatabaseLibrary
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+
+
+*** Variables ***
+@{QueryResult}
+${ProviderId}
+${CurrencyIdQuery}
+${CurrencyId}
+
+*** Keywords ***
+
+
+*** Test Cases ***
+Test the Currency Web Service
+	Log	Robot workspace resource used is:${ROBOT_WORKSPACE_RESOURCE}	console=yes
+	Log	Sut file used is:${SUT_RESOURCE}	console=yes
+	Log	The CRCE used is:${CRCE DB HOST}	console=yes
+	DBLIB Connect to PostgresDB  ${CRCE DB HOST}	${CRCE DB PORT}	${CRCE DB NAME}	${CRCE DB USER}	${CRCE DB PWD}
+	@{QueryResult}=  DBLIB Query  Select provider_id from acc_currencies where provider_id is not null limit 1
+	Log	@{QueryResult}	console=yes
+	
+	${ProviderId}=	Get Line	@{QueryResult}	0
+	${ProviderId}=	Fetch From Left	${ProviderId}	|
+	Log	${ProviderId}	console=yes
+	
+	${CurrencyIdQuery}=	Catenate  Select distinct id as currency_id from acc_currencies where provider_id=  ${ProviderId}  order by currency_id asc limit 1
+	Log	${CurrencyIdQuery}	console=yes
+	@{QueryResult}=  DBLIB Query  ${CurrencyIdQuery}
+	
+	${CurrencyId}=  Get Line	@{QueryResult}	0
+	${CurrencyId}=	Fetch From Left	${CurrencyId}	|

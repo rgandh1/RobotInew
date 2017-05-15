@@ -1,0 +1,23 @@
+##############################################################################
+# This TNZ related bulk execution script is a DEMO that runs all 
+# experimental testsuites of walter.heincz
+#
+# Author: walter.heincz
+##############################################################################
+WORKSPACE_PATH=/opt/robot/robotworkspace
+
+#create virtual display (X11 server) in background for Selenium to run the Browser there
+echo "Initializing virtual display (X11 virtual frame buffer) ..."
+Xvfb :99 -ac &
+XvfbPid=$! 
+sleep 2   #give Xvfb time to write his output
+echo "Xvfb running in background under PID=$XvfbPid"
+export DISPLAY=:99
+
+#run the robot testsuite
+echo "Starting Robot ..."
+
+jybot --argumentfile ../default.args --argumentfile sut-specific.args --include TNZ_supported $WORKSPACE_PATH/robot_testsuites/e2e-testing
+#kill the X11 server
+echo "Killing virtual display PID $XvfbPid ..."
+kill -9 $XvfbPid

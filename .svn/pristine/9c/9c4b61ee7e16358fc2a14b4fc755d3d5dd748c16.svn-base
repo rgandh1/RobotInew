@@ -1,0 +1,54 @@
+Similar to the robotworkspace/tagging-rules.txt which is used to organize (agree) necessary unification of tag name usage
+this file is used to organize necessary unification of flexXml parameter (column) name usage within all CG TCs.
+Without this centralized administration it would not be possible to reliably create a robot test suite that
+combines multiple CG TCs of different authors, since it would not be ensured that the meaning of a single 
+parameter (e.g vlrAddress) is identical in the context of different CG TCs.
+
+When a CG TC author creates a new TC and therefore needs some fleXml parameters, he first has to
+search the list below whether or not a corresponding parameter is already defined. If so he 
+MUST use the pre-defined parameter name. Otherwise if no corresponding parameter is defined for his purpose,
+then he has to create an additional list entry with his prefered parameter name, so that in future other authors
+will use his definition if they have a similar need.
+
+Column Name                 Introducing Author   Description
+==========================  ===================  =================================================================================
+comment                     walter.heincz        Used to comment the fleXml record when it's part of a set of multiple records
+-------------------------------------------------------------------------------------------------------------------------------
+mscAddress                  walter.heincz        Address of the MVNO platform's MSC used by all TCs
+-------------------------------------------------------------------------------------------------------------------------------
+roamingVlrAddress           walter.heincz        Address of a roaming subscriber's location VLR used by roaming MTC TCs 
+                                                 Non-roaming TCs use the mscAddress as VLR Address too
+-------------------------------------------------------------------------------------------------------------------------------
+gmscAddress                 walter.heincz        Address of the Gateway MSC in case of an MFC TCs
+                                                 In non-roaming MTC cases gmscAddress has to be identical with mscAddress 
+-------------------------------------------------------------------------------------------------------------------------------
+mocBPartyMsisdn             walter.heincz        B-Party MSISDN of MOC TCs 
+                                                 A-Party of MOC TCs is always the callSubscriber()
+-------------------------------------------------------------------------------------------------------------------------------
+mocBPartyMsisdnTranslated   walter.heincz        mocBPartyMsisdn translated by IN's Number Translation feature                                              
+-------------------------------------------------------------------------------------------------------------------------------
+mtcAPartyMsisdn             walter.heincz        A-Party MSISDN of MTC TCs 
+                                                 B-Party of MTC TCs is always the callSubscriber()
+-------------------------------------------------------------------------------------------------------------------------------
+mfcAPartyMsisdn             walter.heincz        A-Party MSISDN of MFC TCs 
+                                                 B-Party of MFC TCs is always the callSubscriber()
+-------------------------------------------------------------------------------------------------------------------------------
+mfcCPartyMsisdn             walter.heincz        C-Party of MFC TCs
+-------------------------------------------------------------------------------------------------------------------------------
+smscAddress                 walter.heincz        Address of the MVNO platform's SMSC used by all TCs
+-------------------------------------------------------------------------------------------------------------------------------
+smsDestinationMsisdn        walter.heincz        B-Party MSISDN of the SMS TCs 
+                                                 A-Party of SMS TCs is always the callSubscriber()
+-------------------------------------------------------------------------------------------------------------------------------
+smsDataCodingScheme         walter.heincz        Coding scheme of a single segment SMS message 
+-------------------------------------------------------------------------------------------------------------------------------
+smsUserDataLength           walter.heincz        Length of a single segment SMS message 
+-------------------------------------------------------------------------------------------------------------------------------
+smsUserDataMessagePart      walter.heincz        Message of a single segment SMS 
+-------------------------------------------------------------------------------------------------------------------------------
+smsUserDataDecoded          walter.heincz        Decoded flag of a single segment SMS message
+-------------------------------------------------------------------------------------------------------------------------------
+smsHeaderPresentInUserData  walter.heincz        Header containment flag of a single segment SMS message
+-------------------------------------------------------------------------------------------------------------------------------
+
+

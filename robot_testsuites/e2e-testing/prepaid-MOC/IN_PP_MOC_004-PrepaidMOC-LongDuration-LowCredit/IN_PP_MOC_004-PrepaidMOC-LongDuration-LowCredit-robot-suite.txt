@@ -1,0 +1,132 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_PP_MOC_004 - Prepaid MOC - Long Duration, Low Credit, Call released with Warning Tone TC
+...               ATTENTION: This is nearly an exact copy of IN_PP_MOC_003-PrepaidMOC-ShortDuration-LowCredit-robot-suite.txt except that the slice amount was raised from 1 to 3
+...                          Although it would be more efficient (from point of maintainability) to combine both TCs in one Robot suite file 
+...                          this redundant duplication seemed acceptable to reach the goal of  "Having each Excel TC in a separate file titeled with the TC name"
+...               ---------------------------------------------------------------
+...               Run Prepaid MOC Long Duration Low Credit
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+${MOC_TICKET_CHANNEL}=   MOC
+
+${CALL_DURATION_MILLIS}=              1000  #1 second
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+Setup Testcase
+    [Documentation]  Extracts the TC's complex setup into a separate keyword due to the limitations of the [Setup] tag
+    ...
+    ...              Arguments: None
+    ...              Returns:   Nothing - the function fails if the CG call doesn't succeed
+    ...              Author:    walter.heincz 
+    ...              =========================================================
+  ${three_slices_costs}=    Run Keyword If  '${FAKE_CALLS}'=='true'    Evaluate                           3*${TESTSUBCRIBERS DEFAULT SLICE COSTS}     
+                            ...       ELSE                             Evaluate                           3*${MOC_SLICE_COSTS}
+                            Run Keyword If  '${FAKE_CALLS}'=='true'    CRCE Set Main Balance By Imsi      ${CRCE01 HOST}                            ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}  ${three_slices_costs}
+                            ...       ELSE                             CRCE Set Main Balance By Imsi      ${CRCE01 HOST}                            ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${ATTACHED_ONNET_PHONE_1_IMSI}       ${three_slices_costs}  
+                            Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox                
+
+Teardown Testcase
+    [Documentation]  Extzracts the TC's complex terdow into a separate keyword due to the limitations of the [Teardown] tag
+    ...
+    ...              Arguments:  None
+    ...              Returns:    Nothing 
+    ...              Author: walter.heincz 
+    ...              =========================================================
+                     Run Keyword If  '${FAKE_CALLS}'=='true'      CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}  10000000     
+                     ...       ELSE                               CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${ATTACHED_ONNET_PHONE_1_IMSI}       10000000        
+                     Close Browser                
+
+
+Run Duration Monitored Voice Call And Check Phone 1 Ticket
+    [Documentation]  Runs a call between the passed devices and checks if a CRM ticket was written for Phone 1
+    ...
+    ...              Arguments:               
+    ...                cg_device_imsi    
+    ...                cd_device_imsi    
+    ...                dial_msisdn       
+    ...                max_duration_secs    Maximum duration the call shall be monitored 
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${cd_device_imsi}  ${dial_msisdn}    ${max_duration_secs} 
+    ${phone1_imsi}=                         Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+    ...                                     ELSE                                      Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}              ${type_dummy}=                            CRM Get Latest Ticket    ${phone1_imsi}
+    ${MAX_CALL_DURATION_TOLERANCE_SECS}=    Set Variable    3
+    ${max_limes}=                           Evaluate        ${max_duration_secs}+${MAX_CALL_DURATION_TOLERANCE_SECS}
+    ${min_limes}=                           Evaluate        ${max_duration_secs}-${MAX_CALL_DURATION_TOLERANCE_SECS}
+    ${max_limes_overflow}=                  Evaluate        ${max_duration_secs}+2*${MAX_CALL_DURATION_TOLERANCE_SECS}
+    ${duration_secs}=                       Run Keyword If  '${FAKE_CALLS}'=='true'    Run Voice Call And Return Duration                 ${cg_device_imsi}     ${cd_device_imsi}                 ${dial_msisdn}        ${max_duration_secs}
+    ...                                     ELSE                                       Run Voice Call And Return Duration                 ${cg_device_imsi}     ${cd_device_imsi}                 ${dial_msisdn}        ${max_limes_overflow}
+                                            Run Keyword If  ${duration_secs} < ${min_limes}    Fail                  msg=Call duration of ${duration_secs}s < expected duration of ${max_duration_secs}s
+                                            Run Keyword If  ${max_limes} < ${duration_secs}    Fail                  msg=Call duration of ${duration_secs}s exceeded the expected duration of ${max_duration_secs}s 
+                                            Run Keyword If  '${FAKE_CALLS}'=='true'            Fake Voice Call Impact On Testbed                        
+                                            CRM New Ticket Should Exist                        ${phone1_imsi}           ${marker_ticket_timestamp}      ticket_type=Voice     ticket_channel=${MOC_TICKET_CHANNEL}
+  
+
+Fake Voice Call Impact On Testbed
+    [Documentation]  Runs a CG MOC 1s session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...
+    ...              Arguments:               None
+    ...            
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MOC 1s                  ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_DESTINATION_MSISDN}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+                     Should be equal as Integers    ${rc}                                  0                                        msg=Faking CG session failed
+
+
+
+
+*** Test Cases ***
+
+
+
+Run Prepaid MOC Long Duration Low Credit
+    [Documentation]  Sets the phone 1 subcriber to a 3 slices balance and then runs a call to phone 2 and checks if it's automatically released after the 3 slices duration
+    ...              Plus verification that a ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Setup Testcase
+    ${three_slices_duration_secs}=    Evaluate     3*${MOC_SLICE_SIZE_SECS}              
+                     Run Duration Monitored Voice Call And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_ONNET_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN_FORMAT1}     ${three_slices_duration_secs}    
+    [Teardown]       Teardown Testcase

@@ -1,0 +1,43 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+Library           SudsLibrary
+Library           XML
+Library           Collections
+
+*** Variables ***
+${SERVER}         10.107.82.220/
+${CALLSGEN}       /opt/callsGen/
+${TESTCASEPATH}    /opt/robot/testcases/SoapUi/referral_service/
+${SUBSCRIBERWSDL}    http://10.0.20.13:9090/profiler/subscriber?wsdl
+${MSISDN}         579510888804
+${ACCOUNTSWSDL}    http://10.0.20.13:9090/accounting/accounts?wsdl
+
+*** Keywords ***
+Run Call
+    ${rc}=    Run And Return Rc    java -jar /opt/callsGenerator/callsgen-3.0.0.b1.jar /opt/callsGenerator/workspaces/TB_VirginChile/testsessions/moccall.cgs /opt/callsGenerator/workspaces/TB_VirginChile
+    Should be Equal As Integers    ${rc}    0
+
+Check Balance
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Create Soap Client    ${SUBSCRIBERWSDL}    Subscribers
+    Set Return Xml    true
+    ${RESP}    Call Soap Method    getSubscriberProfile    ${MSISDN}
+    ${RESPID}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/id
+    Switch Soap Client    Accounting
+    Set Return Xml    true
+    ${ACCRESP}    Call Soap Method    getAccounts    ${RESPID}
+    ${BALANCE1}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/balance
+    Set Suite Variable    ${RESPID}
+    Set Suite Variable    ${BALANCE1}
+
+Compare Balance
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Set Return Xml    true
+    ${ACCRESP}    Call Soap Method    getAccounts    ${RESPID}
+    ${BALANCE2}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/balance
+    ${BALANCEFIRST}=    Convert to List    ${BALANCE1}
+    ${BALANCESECOND}=    Convert to List    ${BALANCE2}
+    Run Keyword and Expect Error    *    Lists should be equal    ${BALANCEFIRST}    ${BALANCESECOND}

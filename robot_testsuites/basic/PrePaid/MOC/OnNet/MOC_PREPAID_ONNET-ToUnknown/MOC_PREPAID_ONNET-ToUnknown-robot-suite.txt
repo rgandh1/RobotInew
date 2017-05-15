@@ -1,0 +1,53 @@
+*** Settings ***
+Documentation     Testing the prepaid MOC call to the unknown subscriber
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        TNZ_supported  SMARTSPACE_supported  VIRGIN_COLUMBIA_supported  MTEL_supported  MOC_only  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../../../suite-global-keyword-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+
+*** Keywords ***
+	
+*** Test Cases ***
+
+Run MOC ToUnknown Call
+    [Documentation]    	Test will make a MOC call to unknown subscriber
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails or account balance evaluation fails
+	...	
+    ...         =================================================================================
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    10000000    #10 million units should be enough for some calls even if it's in millicent units
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	${unknown_subscriber}=  Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Log  					Unknown subscriber's MSISDN: ${unknown_subscriber} 	console=yes
+	${rc}    ${provcId}    ${imsi}    ${id}    ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile  ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${unknown_subscriber}
+	Log 					Deleting "unknown" subscriber...    console=yes
+	${rc}					CRCE Delete Subscriber	${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}  ${id}
+	Log 					Deleting subscriber returned rc= ${rc}  console=yes
+	Run Keyword If 			'${rc}'=='OK' 	 Log  	Test Subscribers prepared!    console=yes
+							...  ELSE   Fail  msg=Subscriber preparation failed!
+    Comment                 ******* Run MOC 1s to unknown subscriber*******
+    Log					    Running the MOC call...  console=yes
+    ${rc}=                 	CG Run MOC 1s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${unknown_subscriber}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Log						CG return code is: ${rc}   console=yes
+	${rc}    ${provId}    ${imsi}    ${id}   ${state}    ${tariffId}    ${type}  CRCE Get Subscriber Profile    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	${resultCode}    ${accId}   ${bal}    ${cat}    ${curr}=   	CRCE Get Main Account	${CRCE HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${id}
+	Log						Balance of the calling party is: ${bal}  console=yes

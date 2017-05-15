@@ -1,0 +1,26 @@
+Short Description:
+===================
+This iSig TC simulates a roaming MTC establishment attempt (to
+the callSubscriber() (=A-Party) being in a foreign location) that 
+is canceled by the A-Party after 10s.
+
+Flow details:
+==============
+- After session initiation the TC waits 20s to simulate waiting for the 
+  callSubscriber() to answer.
+- Then the TC reports "abandon" to IN meaning that the A-Party is no 
+  longer willing to wait for the B-Party to answer.
+- This is (or should be) responded by IN with a final continueProcessing 
+  meaning that the MTC leg is finished and HLR is responsible to decide 
+  how to resume. 
+
+Parameters: 
+============
+  mscAddress         of the B-Party (callSubscriber()) 
+  roamingVlrAddress  of the B-Party's current (foreign) location
+  mtcAPartyMsisdn
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/03/12  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

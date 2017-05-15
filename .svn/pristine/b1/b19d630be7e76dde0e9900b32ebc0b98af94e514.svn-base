@@ -1,0 +1,22 @@
+*** Settings ***
+Documentation     A test suite with a single test for valid login. This test has
+...               a workflow that is created using keywords from the resource file.
+Resource          resource.txt
+
+*** Test Cases ***
+Add Balance
+    Login To CRM
+    Open Subscriber Profile
+    Add some Balance
+    Verify topup
+
+Change Language
+    Login To CRM
+    Open Subscriber Profile
+    Change Language to Spanish
+    Verify language Spanish
+    Change Language to English
+    Verify language English
+
+Send SMPP MSG
+    Open Browser    http://10.107.80.224:13013/cgi-bin/sendsms?user=foo&pass=bar&to=573190003050&text=This+is+a+test+message    ${BROWSER}

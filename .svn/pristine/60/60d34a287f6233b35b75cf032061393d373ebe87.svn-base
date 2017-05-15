@@ -1,0 +1,27 @@
+Short Description:
+===================
+This iSig TC simulates a MOC of 1s duration to a virtual number
+(configured in IN's number translation feature) and that is
+released  by the A-Party (i.e. callSubscriber()).
+
+Flow details:
+==============
+1. The session initiation request with the virtual number as mocBPartyMsisdn
+   is (or should be) acknowledged by IN with a <routeReq> to the translated MSISDN 
+   instead of a normal <continue>
+2. After call establishment (answer) the TC waits 5s to simulate 
+   the ongoing chat. 
+3. Then the TC reports to IN that the A-Party released the call 
+   This is (or should be) responded by IN with a final release 
+   meaning that the MOC leg is finished. 
+
+Parameters: 
+============
+  mscAddress                 of the A-Party (callSubscriber()) 
+  mocBPartyMsisdn            the virtual number used as B-Party
+  mocBPartyMsisdnTranslated  the real B-Party MSISDN rerouted to by IN
+
+  Date      Author                   Comments
+==========  =======================  =========================================
+2014/05/20  walter.heincz            Initial creation 
+------------------------------------------------------------------------------

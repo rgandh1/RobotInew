@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>[taken from the request]</sessionId>
+  <networkProtocolId>CAPv2</networkProtocolId>
+  <trafficType>Originating</trafficType>
+  <messages>
+    <reportNotificationAck/>
+    <superviseReq>
+      <requestSequenceNr>0</requestSequenceNr>
+      <time>60000</time>
+      <releaseAfterTimeExpires>false</releaseAfterTimeExpires>
+      <playWarningTone>false</playWarningTone>
+    </superviseReq>
+    <eventReportReq>
+      <requestSequenceNr>1</requestSequenceNr>
+      <events>
+        <routeSelectFailure monitorMode="Interrupt"/>
+        <busy monitorMode="Interrupt"/>
+        <noAnswer monitorMode="Interrupt">
+          <noAnswerTimer>180000</noAnswerTimer>
+        </noAnswer>
+        <answer monitorMode="Notify"/>
+        <disconnectCalling monitorMode="Interrupt"/>
+        <disconnectCalled monitorMode="Interrupt"/>
+        <abandon monitorMode="Notify"/>
+      </events>
+    </eventReportReq>
+    <routeReq>
+      <requestSequenceNr>2</requestSequenceNr>
+      <moreEventsExpected>true</moreEventsExpected>
+      <destinationAddress>
+        <address>@CG check(callFleXmlRecValue(mocBPartyMsisdnTranslated))</address>
+        <natureOfAddress>International</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+      <redirectingInformation>
+        <redirectingIndicator>callRerouted</redirectingIndicator>
+        <originalRedirectionReason>unknownOrNotAvailable</originalRedirectionReason>
+        <redirectingCounter>4</redirectingCounter>
+        <redirectingReason>unconditional</redirectingReason>
+      </redirectingInformation>
+    </routeReq>    
+  </messages>
+</iSig>

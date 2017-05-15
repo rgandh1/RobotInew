@@ -1,0 +1,45 @@
+*** Settings ***
+Documentation     Testing the prepaid the no answer MTC call
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Force Tags        TNZ_supported  SMARTSPACE_supported  VIRGIN_COLUMBIA_supported  mTel_PPLIGHT_TB25_supported  mTel_supported  MTC_only  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource		  ../../suite-global-keyword-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+
+*** Keywords ***
+	
+*** Test Cases ***
+
+Run MTC NoAnswer Call
+    [Documentation]    	Test will make the no answer MTC call
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails: in case CG session fails or account balance evaluation fails
+	...	
+    ...         =================================================================================
+	Comment					******* Create test subscribers *******
+	${INITIAL_BALANCE}=    	Set Variable    10000000    #10 million units should be enough for some calls even if it's in millicent units
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+	${calling_party_msisdn}=  Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes	
+    Comment                 ******* Run MTC 1s *******
+    Log					    Running the short MTC call...  console=yes
+    ${rc}=                 	CG Run MTC NoAnswer    ${calling_party_msisdn}    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Log					   	...do the checks...   console=yes
+	Should Be Equal As Numbers 	${rc}  0   msg=CG Session ended with rc ${rc}

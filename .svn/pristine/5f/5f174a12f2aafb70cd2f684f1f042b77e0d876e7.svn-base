@@ -1,0 +1,56 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+
+*** Variables ***
+${SERVER}         10.105.119.127:1085/evoweb/cms/lcm/
+${BROWSER}        firefox
+${DELAY}          0.5
+${VALID USER}     lcmadmin
+${VALID PASSWD}    lcmadmin
+${LOGIN URL}      http://${SERVER}257_EN-LCM.htm
+${WELCOME URL}    http://${SERVER}257_EN-LCM.htm
+${ERROR URL}      http://${SERVER}/html/error.html
+
+*** Keywords ***
+Open Browser To Login Page
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Button    name=login_submit
+
+Logout
+    Click Button    id=logout
+
+Open User
+    Click Element    link=User Management
+    Click Element    //table[@id='mytable']/tbody/tr[1]/td[7]/input
+
+Disable User
+    Select from List    id=db_enabled    0
+    Click Element    name=save
+
+Enable User
+    Select from List    id=db_enabled    1
+    Click Element    name=save
+
+Usercreation
+    Click Link    User Management
+    Click Button    //input[@value='Create User']
+    Input Text    db_username    Test User
+    Input Text    db_password    testuser
+    Input Text    db_passwordrepeat    testuser
+    Select From List    db_enabled    Enabled
+    select From List    db_salutation    Mr.
+    Input Text    db_firstname    Test
+    Input Text    db_lastname    User
+    Input Text    db_email    test_user@test.at
+    Input Text    db_address    Am Anger 1
+    Input Text    db_zipcode    7210
+    Input Text    db_city    Mattersburg
+    Input Text    db_country    Austria

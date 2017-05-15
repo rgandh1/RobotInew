@@ -1,0 +1,85 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing convenience 
+...               keywords for dbLibrary
+...               ============================================================
+...               DBLIB Connect to PostgresDB                
+...               DBLIB Connect to MongoDB               
+...
+...               DBLIB Query                
+...               ============================================================
+Library           OperatingSystem
+Library           String
+Library           org.robot.database.keywords.DatabaseLibrary    
+
+
+*** Variables ***
+
+${TMP_QUERY_RESULT_FILE}=  tmp_query_result.txt
+
+
+
+*** Keywords ***
+
+DBLIB Connect to PostgresDB   
+    [Documentation]  this helper shields testsuite developers from the necessity to know driver and connection string details.
+    ... 
+    ...              Arguments:
+    ...                host              Postgres host IP
+    ...                port              Postgres port 
+    ...                dbName            Name of datebase to connect to 
+    ...                user              User name 
+    ...                pswd              Password      
+    ...
+    ...              Returns:            Nothing
+    ...
+    ...              Fails:              when no database connection can be established 
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]      ${host}  ${port}  ${dbName}  ${user}  ${pswd}
+		    Connect To Database    org.postgresql.Driver  jdbc:postgresql://${host}:${port}/${dbName}   ${user}  ${pswd} 
+                  
+
+DBLIB Connect to MongoDB   
+    [Documentation]  this helper shields testsuite developers from the necessity to know driver and connection string details.
+    ... 
+    ...              Arguments:
+    ...                host              MongoDB host IP
+    ...                port              MongoDB port 
+    ...                dbName            Name of datebase to connect to 
+    ...
+    ...              Returns:            Nothing
+    ...
+    ...              Fails:              when no database connection can be established 
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]      ${host}  ${port}  ${dbName} 
+                     Connect To Database    mongodb.jdbc.MongoDriver  jdbc:mongo://${host}:${port}/${dbName}   userdummy  pswddummy 
+                     Log   JDBC Driver for MongoDB is a trial version that limits the returned resultsets' volume to max 100 rows  WARN
+
+
+DBLIB Query   
+    [Documentation]  this helper executes the passed select statement and returns the result as a list.
+    ...              Since dbLibrary provides only "Store Query Result To File" keyword for retrieving result sets
+    ...              this keyword simplifies the necessary steps to load the result file's content into an in-memory list variable
+    ... 
+    ...              Arguments:
+    ...                selectStatement   SQL SELECT statement to be executed 
+    ...
+    ...              Returns:           
+    ...                queryResultSet    List of rows (pipe separated fields string) from the result file 
+    ...
+    ...              Fails:              when no database connection is established or the passed selectStatement is invalid 
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${selectStatement}  
+    Comment                  ***** Execute Query *****
+                             Store Query Result To File  ${selectStatement}          ${TMP_QUERY_RESULT_FILE}
+    Comment                  ***** Load Result from file
+    ${queryResultSetLines}=  OperatingSystem.Get File                    ${TMP_QUERY_RESULT_FILE}    # matko.sanseovic added OperatingSystem explicit call
+    Comment                  ***** Transform single string result into list of lines *****
+    @{queryResultSet}=       Split to lines  ${queryResultSetLines}
+    [return]                 @{queryResultSet}  
+

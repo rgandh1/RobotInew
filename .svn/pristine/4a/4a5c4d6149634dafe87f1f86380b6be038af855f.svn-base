@@ -1,0 +1,174 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           DatabaseLibrary
+
+*** Variables ***
+${SERVER}         10.0.20.17:1084
+${BROWSER}        firefox
+${DELAY}          0.6
+${LOGIN URL}      http://${SERVER}/evoweb/web/crm/257_EN.htm
+${CRMMANAGER}     crmmanager
+${CRMMANAGERPASSWD}    crmmanager
+${NEW USERNAME}    testuser123
+${NEW ROLENAME}    Role for Testautomation
+${NEW TESTSHOP}    Test Shop
+${NEW TESTAGENT}    testagent123
+${MSISDN}         56951125162
+${CRMDB NAME}     crm_vmla
+${CRMDB USER}     crm_vmla
+${CRMDB PWD}      crm_vmla
+${CRMDB HOST}     10.0.20.175
+${CRMDB PORT}     5436
+${CRMDB ROLE}     role
+${CRMDB SHOP}     shop
+
+*** Keywords ***
+Login To CRM as manager
+    Input Text    id=username    ${CRMMANAGER}
+    Input Text    id=password    ${CRMMANAGERPASSWD}
+    Click Element    name=login_submit
+
+Create User
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}
+    Input Text    name=db_password    ${NEW USERNAME}
+    Input Text    name=db_passwordrepeat    ${NEW USERNAME}
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+
+Delete User From Database
+    Connect to Database    psycopg2    ${CRMDB NAME}    ${CRMDB USER}    ${CRMDB PWD}    ${CRMDB HOST}    ${CRMDB PORT}
+    table must exist    ${CRMDB ROLE}
+    table must exist    ${CRMDB SHOP}
+    Execute Sql String    DELETE FROM ${CRMDB ROLE} WHERE username='${NEW USERNAME}';
+    Execute Sql String    DELETE FROM ${CRMDB ROLE} WHERE username='${NEW USERNAME}cc';
+    Execute Sql String    DELETE FROM ${CRMDB ROLE} WHERE username='${NEW USERNAME}ccl';
+    Execute Sql String    DELETE FROM ${CRMDB ROLE} WHERE username='${NEW USERNAME}sa';
+    Execute Sql String    DELETE FROM ${CRMDB ROLE} WHERE username='${NEW TESTAGENT}';
+    Execute Sql String    DELETE FROM ${CRMDB SHOP} WHERE name='${NEW TESTSHOP}';
+
+Select User Role
+    Select from list    name=db_rolegroupid    ${NEW ROLENAME}
+    Click Element    save
+    Page Should Contain    The user has been saved successfully.
+
+create User Role
+    Click Button    Role Management
+    Click Button    Create Role
+    Input Text    db_name    ${NEW ROLENAME}
+    Click Button    save
+    Click Link    Dashboard
+    Click Button    Role Management
+    Page should contain    ${NEW ROLENAME}
+
+Delete User Role
+    Click Button    Role Management
+    Click Element    //tr[td[text()='${NEW ROLENAME}']]/td[input[@value='Delete']]
+
+Open CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+
+Login To CRM as new user
+    Input Text    id=username    ${NEW USERNAME}
+    Input Text    id=password    ${NEW USERNAME}
+    Click Element    name=login_submit
+
+Open Subscriber
+    Input Text    filter_msisdn    ${MSISDN}
+    Click Button    Submit
+    Page should contain    ${MSISDN}
+
+Create User Customercare
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}cc
+    Input Text    name=db_password    ${NEW USERNAME}
+    Input Text    name=db_passwordrepeat    ${NEW USERNAME}
+    Select from list    name=db_enabled    Enabled
+    Select from List    name=db_troubleticket    Tickets can be assigned to this user
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Select from list    name=db_rolegroupid    Customercare
+    Click Element    save
+    Page Should Contain    The user has been saved successfully.
+    Click Link    Dashboard
+
+Create User CustomercareLimited
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}ccl
+    Input Text    name=db_password    ${NEW USERNAME}
+    Input Text    name=db_passwordrepeat    ${NEW USERNAME}
+    Select from list    name=db_enabled    Enabled
+    Select from List    name=db_troubleticket    Tickets can be assigned to this user
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Select from list    name=db_rolegroupid    Customercare Limited
+    Click Element    save
+    Page Should Contain    The user has been saved successfully.
+    Click Link    Dashboard
+
+Create User Shop Agent
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}sa
+    Input Text    name=db_password    ${NEW USERNAME}
+    Input Text    name=db_passwordrepeat    ${NEW USERNAME}
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Select from list    name=db_rolegroupid    Shop Agent
+    Click Element    save
+    Page Should Contain    The user has been saved successfully.
+    Click Link    Dashboard
+
+Create new Shop
+    Click Button    Shops
+    Click Button    Create shop
+    Input Text    db_name    ${NEW TESTSHOP}
+    Input Text    db_address    Shopaddress 3
+    Input Text    db_city    Mattersburg
+    Input Text    db_zipcode    7210
+    Input Text    db_phone    021012345
+    Click Button    Save
+    Page Should Contain    The shop has been saved successfully
+    Page Should Contain    ${NEW TESTSHOP}
+    Close All Browsers
+
+Create new Shopagent
+    Click Button    Shop Agents
+    Click Button    Create Shop Agent
+    Input Text    db_name    Test Agent
+    Input Text    db_username    ${NEW TESTAGENT}
+    Input Text    db_password    testagent
+    Input Text    db_passwordrepeat    testagent
+    Select From List    db_shop_id    ${NEW TESTSHOP}, Mattersburg(7210)
+    Input Text    db_phone    02101223334
+    Input Text    db_email    testagent@test.at
+    Select From List    db_enabled    Enabled
+    Click Button    Save
+    Page Should Contain    ${NEW TESTAGENT}
+    Close All Browsers

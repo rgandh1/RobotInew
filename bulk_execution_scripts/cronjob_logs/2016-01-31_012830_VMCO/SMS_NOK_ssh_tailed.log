@@ -1,0 +1,34 @@
+[2016-01-31 00:34:41,597][INFO ][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 194] ------ start consuming from queue://inew-cs.crce.cdr -------
+[2016-01-31 00:34:41,597][INFO ][ActiveMQ Session Task-157][HealthMonitor                                     ][ 115] it is time for next active db check.
+[2016-01-31 00:34:41,597][INFO ][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 308] --------- start processing record ---------
+[2016-01-31 00:34:41,597][INFO ][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 309] ......|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T09:36:19.022+0000|2015-02-22T15:00:50.025+0000|SMS_NOK123456XdrComponentTest|1|1|74456|573190001000|PREPAID|ACTIVE||0|NONE|OK||1.0|Charge|0|1|732123710001000|573190001000|false|573190001000|(network) XdrComponentTest|Local (on-net)||||SMS_SUBMIT||false|64270000000|(network) XdrComponentTest|2015-02-22T15:00:25.025+0000|0|0|0|1|120|1|false|101026|15730641|101001|0|0|Pesos|10000000|PREPAID|xxxxxx|FeatureNotFound(0);|
+[2016-01-31 00:34:41,597][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 167] performing db health check . . .
+[2016-01-31 00:34:41,597][ERROR][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 353] [ERROR] on parsing XDR. 
+com.inewcs.mvno.xdr.api.XDRException: [Error] XDR is not valid! xdrType=crce_cdr. current size=58
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.doProcess(XDRConsumerImpl.java:348)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl$XdrTask.process(XDRConsumerImpl.java:311)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:208)
+	at com.inewcs.mvno.xdr.XDRConsumerImpl.receiveMessage(XDRConsumerImpl.java:30)
+	at com.inewcs.mvno.protocol.AbstractIProtConnectorConsumerJMS.onMessage(AbstractIProtConnectorConsumerJMS.java:174)
+	at org.apache.activemq.ActiveMQMessageConsumer.dispatch(ActiveMQMessageConsumer.java:1321)
+	at org.apache.activemq.ActiveMQSessionExecutor.dispatch(ActiveMQSessionExecutor.java:131)
+	at org.apache.activemq.ActiveMQSessionExecutor.iterate(ActiveMQSessionExecutor.java:202)
+	at org.apache.activemq.thread.PooledTaskRunner.runTask(PooledTaskRunner.java:129)
+	at org.apache.activemq.thread.PooledTaskRunner$1.run(PooledTaskRunner.java:47)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+[2016-01-31 00:34:41,598][INFO ][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 313] -------- xdr processed successfully --------
+[2016-01-31 00:34:41,598][INFO ][ActiveMQ Session Task-157][XDRConsumerImpl                                   ][ 211] ------ finished consuming from queue://inew-cs.crce.cdr -------
+[2016-01-31 00:34:41,598][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 175] connection is valid.
+[2016-01-31 00:34:42,172][INFO ][Timer-78       ][XDRBackgroundFileWriter                           ][ 115] flushed 4 records to file XAPP_20160130131242.csv.tmp
+[2016-01-31 00:34:47,515][INFO ][Timer-49       ][XDRBackgroundFileWriter                           ][ 115] flushed 3 records to file CRCE_CDR_20160130131247.csv.tmp
+[2016-01-31 00:34:50,482][WARN ][Timer-59       ][AbstractXDRFileHandler                            ][ 165] FILE CLOSED::CRCE_RECHARGE_20160131003320.csv.tmp
+[2016-01-31 00:34:50,482][INFO ][Timer-59       ][AbstractXDRFileHandler                            ][ 199] file renamed from: CRCE_RECHARGE_20160131003320.csv.tmp to: CRCE_RECHARGE_20160131003320.csv
+[2016-01-31 00:34:50,482][WARN ][Timer-59       ][AbstractXDRFileHandler                            ][ 178] File Writer closed!
+[2016-01-31 00:34:50,482][WARN ][Timer-59       ][AbstractXDRFileHandler                            ][  98] CREATING NEW FILE ...
+[2016-01-31 00:34:50,482][INFO ][Timer-59       ][AbstractXDRFileHandler                            ][ 110] creationTime: 2016-01-31 00:34:50
+[2016-01-31 00:34:50,483][WARN ][Timer-59       ][AbstractXDRFileHandler                            ][ 118] NEW FILE CREATED::/var/opt/inew/xdr/common/etl_export/crce_recharge/CRCE_RECHARGE_20160131003450.csv.tmp
+[2016-01-31 00:34:50,483][INFO ][Timer-59       ][AbstractXDRFileHandler                            ][ 126] expirationTime: 2016-01-31 00:35:50
+[2016-01-31 00:34:50,483][INFO ][Timer-59       ][AbstractXDRFileHandler                            ][  78] --- started file handler ---
+[2016-01-31 00:34:51,404][INFO ][Timer-51       ][XDRBackgroundFileWriter                           ][ 115] flushed 2 records to file ERROR_CRCE_CDR_20160130131251.csv.tmp

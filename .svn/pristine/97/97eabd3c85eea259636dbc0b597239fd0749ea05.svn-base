@@ -1,0 +1,192 @@
+
+
+Some experienced values
+========================
+
+  To get a general impression of the load test find some reference values below.
+
+  System under test: Columbia testbed
+  TestCase modification: TestStep PROV.getSimDetailsBySImsi deactivated since it fails on most of the CG created subscribers
+  LoadTest Settings:
+    Duration: 60 seconds
+    Strategy: Simple
+    Test Delay: 0
+    Random: 0
+ 
+  1) Testing Host: HP Pavillon Entertainment PC (notebook)
+
+     a) Threads: 10
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+       CRCE.getAccountSummary                       27   3109   129.76   627   10.43    450154    7493    0	
+       CRCE.getAccountSummary Repetiton             29    728   114.44   627   10.43    450154    7493    0	
+       CRCE.getSubscriberProfileByImsi              29    704   120.12   627   10.43   1019554   16973    0	
+       CRCE.getSubscriberProfileByImsi Repetition   25   1176   119.28   627   10.43   1019554   16973    0	
+       CRCE.getTariffByProviderId                   24   1288   118.45   627   10.43   2927463   48735    0	
+       CRCE.getTariffPlansBySubscriber              33    764   123.38   627   10.43   1128889   18793    0	
+       PROV.getSimDetailsByImsi (disabled)           0      0      0.0     0    0.0          0       0    0	
+       XDR.getDetails                               49   1438   219.63   627   10.43   1949803   32459    0	
+       TestCase:                                   216   9207   945.1    627   10.43   8945571  148921    0	
+
+
+     b) Threads: 20
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+       CRCE.getAccountSummary                       33   4208   203.52                  661908   10993    	
+       CRCE.getAccountSummary Repetiton             26    597   167.51                  661908   10993    	
+       CRCE.getSubscriberProfileByImsi              27   3209   189.36                 1411412   23441    	
+       CRCE.getSubscriberProfileByImsi Repetition   23    949   176.05                 1411412   23441    	
+       CRCE.getTariffByProviderId                   29    778   173.24                 4052692   67308    	
+       CRCE.getTariffPlansBySubscriber              37   2152   177.12                 1560520   25917    	
+       PROV.getSimDetailsByImsi (disabled)           0      0     0.0      0    0.0          0       0    	
+       XDR.getDetails                               47   2089   273.27                 2251700   37396    	
+       TestCase:                                   222  13982  1360.11   868   14.41  12011552  199490    0
+
+     c) Threads: 40
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       39   1809   351.88                  653746   10876    	
+	CRCE.getAccountSummary Repetiton             30    981   340.98                  653746   10876    	
+	CRCE.getSubscriberProfileByImsi              29   1622   368.08                 1396778   23238    	
+	CRCE.getSubscriberProfileByImsi Repetition   29   1730   360.44                 1396778   23238    	
+	CRCE.getTariffByProviderId                   26   1229   338.67                 4010671   66725    	
+	CRCE.getTariffPlansBySubscriber              32   1026   354.99                 1544401   25694    	
+	PROV.getSimDetailsByImsi (disabled)           0      0     0.0      0    0.0          0       0    	
+	XDR.getDetails                               49   4835   613.97                 2241693   37295    	
+	TestCase:                                   234  13232  2729.04   859   14.29  11897813   197943   0
+
+
+     Some weeks later on 2013-06-24: ------------------------------------------------------------------------
+
+     a) Threads: 10
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+       CRCE.getAccountSummary                       19    350    40.47                  747768   12442    
+       CRCE.getAccountSummary Repetiton             17    517    41.34                  747768   12442    
+       CRCE.getSubscriberProfileByImsi              16    465    39.56                 1596776   26569    
+       CRCE.getSubscriberProfileByImsi Repetition   14    225    40.82                 1596776   26569    
+       CRCE.getTariffByProviderId                   15    203    37.86                 4584958   76291    
+       CRCE.getTariffPlansBySubscriber              23    357    48.56                 1764694   29363    
+       PROV.getSimDetailsByImsi (disabled)           0      0      0.0     0    0.0          0       0    
+       XDR.getDetails                               54   1648   354.05                 2435164   40519    
+       TestCase:                                   158   3765   602.69   982   16.33  13473904  224198    0
+
+     b) Threads: 20
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+       CRCE.getAccountSummary                       16    366    45.69                  877374   14564    
+       CRCE.getAccountSummary Repetiton             17    306    45.3                   877374   14564    
+       CRCE.getSubscriberProfileByImsi              15    407    43.35                 1829476   30368    
+       CRCE.getSubscriberProfileByImsi Repetition   14    353    46.29                 1829476   30368    
+       CRCE.getTariffByProviderId                   13    310    38.06                 5252625   87192    
+       CRCE.getTariffPlansBySubscriber              20    362    50.71                 2310748   38357    
+       PROV.getSimDetailsByImsi (disabled)           0      0     0.0       0   0.0          0       0    
+       XDR.getDetails                               66   5573   779.14                 2579008   42810    
+       TestCase:                                   161   7677  1048.57   1125  18.67  15556081  258226    0
+
+
+     c) Threads: 40
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+        CRCE.getAccountSummary                      17    472    50.24                  872316   14509    
+        CRCE.getAccountSummary Repetiton            16    478    45.88                  872316   14509    
+        CRCE.getSubscriberProfileByImsi             14    694    49.39                 1821341   30295    
+        CRCE.getSubscriberProfileByImsi Repetition  14   1232    55.38                 1821341   30295    
+        CRCE.getTariffByProviderId                  14   1304    42.01                 5229280   86982    
+        CRCE.getTariffPlansBySubscriber             19    300    46.66                 2290378   38097    
+        PROV.getSimDetailsByImsi (disabled)          0      0     0.0      0    0.0          0       0    
+        XDR.getDetails                             160   6996  1798.16                 2592505   43122    
+        TestCase:                                  254  11476  2087.74  1120   18.62  15499477  257813    0
+
+
+
+ 
+
+
+  2) Testing Host: TestAutomationServer 10.0.0.50
+
+     a) Threads: 10
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       9   2149    43.32                  770240   11461    	
+	CRCE.getAccountSummary Repetiton             7    246    25.25                  770240   11461    	
+	CRCE.getSubscriberProfileByImsi              9   2250    51.44                 1642290   24437    	
+	CRCE.getSubscriberProfileByImsi Repetition   9    295    32.23                 1642290   24437    	
+	CRCE.getTariffByProviderId                   6   1024    44.12                 4715690   70169    	
+	CRCE.getTariffPlansBySubscriber              9    314    34.97                 1844221   27442    	
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0      0    0.0          0       0    	
+	XDR.getDetails                              39   2610   347.59                 2471825   36780    	
+	TestCase:                                   88   8888   578.96  1010   15.02  13856796  206190    0	      
+ 
+     b) Threads: 20
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       7   1024    25.66                  905272   14798    0	
+	CRCE.getAccountSummary Repetiton             7   1020    25.7                   905272   14798    0	
+	CRCE.getSubscriberProfileByImsi              8   1055    37.64                 1876659   30677    0	
+	CRCE.getSubscriberProfileByImsi Repetition   8   1055    39.72                 1876659   30677    0	
+	CRCE.getTariffByProviderId                   6    680    39.19                 5388026   88078    0	
+	CRCE.getTariffPlansBySubscriber             11    646    34.05                 2428894   39705    0	
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0      0    0.0          0       0    0	
+	XDR.getDetails                              59   6258   812.76                 2624193   42897    1	
+	TestCase:                                  106  11738  1014.75  1154   18.86  16004975  261634    1	
+ 
+     c) Threads: 40
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       6   1045    35.48                  879050   14519    	
+	CRCE.getAccountSummary Repetiton             6    679    31.61                  879050   14519    	
+	CRCE.getSubscriberProfileByImsi              8   1050    42.74                 1832729   30271    	
+	CRCE.getSubscriberProfileByImsi Repetition   7   1025    40.83                 1832729   30271    	
+	CRCE.getTariffByProviderId                   6   1908    42.24                 5261963   86912    	
+	CRCE.getTariffPlansBySubscriber              6   1053    33.93                 2316613   38263    	
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0      0    0.0          0       0    	
+	XDR.getDetails                              71   7939  1816.4                  2599842   42942    	
+	TestCase:                                  110  14699  2043.26  1127   18.61  15601976  257700    0	
+
+
+     Some weeks later on 2013-06-24: ------------------------------------------------------------------------
+
+     a) Threads: 10
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                      10    481    19.86                   887708   14689    
+	CRCE.getAccountSummary Repetiton             6    484    21.56                   887708   14689    
+	CRCE.getSubscriberProfileByImsi              8    491    19.67                  1847373   30570    
+	CRCE.getSubscriberProfileByImsi Repetition   8    498    19.48                  1847373   30570    
+	CRCE.getTariffByProviderId                   6     69    12.56                  5303984   87770    
+	CRCE.getTariffPlansBySubscriber              9     95    27.24                  2355562   38980    
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0       0    0.0          0       0	  
+	XDR.getDetails                              51   2429   394.77                  2607417   43147    
+	TestCase:                                   98   4547   515.18   1136   18.79  15737125  260419    0
+
+     b) Threads: 20
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       9    113    19.22                   899004   14804    
+	CRCE.getAccountSummary Repetiton             5    115    19.56                   899004   14804    
+	CRCE.getSubscriberProfileByImsi              6    189    18.12                  1866896   30744    
+	CRCE.getSubscriberProfileByImsi Repetition   5    203    18.49                  1866896   30744    
+	CRCE.getTariffByProviderId                   5    181    11.25                  5360012   88269    
+	CRCE.getTariffPlansBySubscriber              5    160    25.92                  2402167   39559    
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0       0    0.0          0       0    
+	XDR.getDetails                              69   6220   908.24                  2621070   43164    
+	TestCase:                                  104   7181  1020.83   1148   18.9   15915049  262092    0
+    
+     c) Threads: 40
+                                                   min    max   avg      cnt  tps        bytes     bps  err
+                                                  ----  -----  -------  ----  ------  --------  ------  --- 
+	CRCE.getAccountSummary                       6    548    27.98                   853572   14045 
+	CRCE.getAccountSummary Repetiton             6    376    31.12                   853572   14045
+	CRCE.getSubscriberProfileByImsi              7    514    29.47                  1788740   29432
+	CRCE.getSubscriberProfileByImsi Repetition   7    502    30.0                   1788740   29432
+	CRCE.getTariffByProviderId                   5    267    17.49                  5135900   84508
+	CRCE.getTariffPlansBySubscriber              6    497    33.75                  2206615   36308
+	PROV.getSimDetailsByImsi (disabled)          0      0     0.0       0    0.0          0       0
+	XDR.getDetails                              72   9098  1917.03                  2556521   42066
+	TestCase:                                  109  11802  2086.85   1100   18.09  15183660  249838    0
+
+
+
+
+

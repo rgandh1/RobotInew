@@ -1,0 +1,103 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_PP_MOC_007 - Prepaid MOC to unknown CdPN TC
+...               ATTENTION: AndroidRemoting is not able to dedect an IVR announcement played as ringbacktone (no ISUP ANswerMessage)
+...                          Thus this test suite can NOT distinguish wether or not the expected IVR announcement is played
+...                          between DIALING and the expacted CONNECTION timeout. 
+...                          We assume that this happended but manual testing is necessary in case
+...                          - no connection dedection is not enough to indicate correct unknown CdPN handling
+...                          - it is necessary to even verify that not only ANY but a certain announcement was played 
+...               ---------------------------------------------------------------
+...               Run Prepaid MOC To Unknown CdPN
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+${CALL_DURATION_MILLIS}=              2000  #1 second
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #is initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #is initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+
+Run Voice Call Phone 1 To Unknown Number
+    [Documentation]  executes a Phone 1 call to a passed unknown subscriber msisdn 
+    ...              The function expects that an (IVR-)connection could be established 
+    ...
+    ...              Arguments:
+    ...                dial_msisdn            unknown subscriber MSISDN that shall be dialed on the calling phone 
+    ...
+    ...              Returns:                 Nothing - the function fails if the call DID succeed - i.e. a connection was established instead of rerouting to (no ISUP ANswerMessage sending) IVR announcement
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]      ${dial_msisdn}  
+    ${resultCode}=   ARS Voice Call To Unattached Phone    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${dial_msisdn}    ${CALL_DURATION_MILLIS}   
+                     Should Be Equal As Strings            ${resultCode}              CONNECT_FAILED       msg=Call to unknown number was expected to stay in DIALING mode (non-ISUPAnswer sending IVR announcement) and thus fail due to CONNECT_FAILED
+    Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Unknown MSISDN Call Impact On Testbed
+
+
+Run Unknown MSISDN Call And Check Nonexistent Ticket
+    [Documentation]  Runs a Phone 1 call to the unknown subscriber MSISDN (redirected to IVR) and verifies that NO CRM ticket was written
+    ...
+    ...              Arguments:               
+    ...                dial_msisdn            unknown subscriber MSISDN that shall be dialed on the calling phone
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'      Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+                     ...             ELSE                         Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}       ${type_dummy}=               CRM Get Latest Ticket    ${phone1_imsi}
+                     Run Voice Call Phone 1 To Unknown Number     ${dial_msisdn}
+                     CRM New Ticket Should Not Exist              ${phone1_imsi}           ${marker_ticket_timestamp}
+
+
+Fake Unknown MSISDN Call Impact On Testbed
+    [Documentation]  Since no ticket should be written in case of IVR rerouting we need not fake anything
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    Comment          Nothing to fake 
+
+
+
+
+
+*** Test Cases ***
+
+Run Prepaid MOC To Unknown CdPN
+    [Documentation]  Initiate a call to an unknown that is (should be) redirected to IVR
+    ...              Plus verification that NO ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Unknown MSISDN Call And Check Nonexistent Ticket    ${UNKNOWN_ONNET_MSISDN}
+    [Teardown]       Close Browser    
+

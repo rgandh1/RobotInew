@@ -1,0 +1,29 @@
+*** Settings ***
+Documentation     Executes a soaupUI loadtest defined in a soapui-project file.
+...               Run with arguments:
+...               --pythonpath /opt/robot:/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/STAR.jar
+...               --escape star:STAR
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+Force Tags        TNZ_supported  walter.heincz inactive
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Library           OperatingSystem
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSoapUILibrary.py
+
+*** Variables ***
+${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}  external_tests/experimental/hew/SU_MDL_TNZ/Projects/Soap/tnz_ws_mix_loadtest/TNZ-WS-PerformanceTests-soapui-project.xml
+
+*** Test Cases ***
+Run SoapUI TestCase
+    [Documentation]    Runs the loadtest's TC from soapui project
+    SoapUI Project     ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}
+    SoapUI Suite       TestSuite_1
+    SoapUI Case        MixedServices_TestCase
+    SoapUI Run
+
+Run SooapUI LoadTest
+    [Documentation]    Runs the loadtest from soapui project
+    [Tags]             LoadTest  
+    SoapUI LoadTest    ${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}    TestSuite_1    MixedServices_TestCase    MixedServices_LoadTest
+    SoapUI Run

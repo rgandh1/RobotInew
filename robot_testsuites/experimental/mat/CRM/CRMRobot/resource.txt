@@ -1,0 +1,77 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+
+*** Variables ***
+${SERVER}         10.107.82.220/
+${BROWSER}        firefox
+${DELAY}          0.4
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${LOGIN URL}      http://${SERVER}393_EN.htm
+${ERROR URL}      http://${SERVER}/html/error.html
+${WELCOME URL}    http://${SERVER}393_EN.htm
+${CALLSGEN}       /opt/callsGen/
+${CRCELOGPATH}    /var/log/inew/crce/4.1.9
+${CRCESERVERIP}    10.107.82.202
+${CRCEUSER}       root
+${CRCEPASSWORD}    inewadm
+${TESTCASEPATH}    /opt/robot/robotframework-selenium2library-master/robotframework-selenium2library-master/demo/CRMRobot/
+
+*** Keywords ***
+Open Browser To Login Page
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+
+Go To Login Page
+    Go To    ${LOGIN URL}
+
+Login To CRM
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+    Go To    ${WELCOME URL}
+
+Logout
+    Click Button    id=logout
+
+Run Call
+    ${rc}=    Run And Return Rc    java -jar /opt/callsGenerator/callsgen-3.0.0.b1.jar /opt/callsGenerator/testsessionrobot.cgs /opt/callsGenerator/workspaces/TB_COLUMBIA
+    Should be Equal As Integers    ${rc}    0
+
+Check CRM For Call
+    Input Text    name=filter_msisdn    573190003050
+    Click Element    //input[@value='Submit']
+    Click Element    link=History
+    Select Frame    contentiframe
+    Click Element    //input[@value='Search']
+    Page should Contain    ${COLHOUR}:${COLMIN}
+
+Get Columbian Time
+    ${COLUMBIAHOUR}=    Get Time    hour    NOW-7h
+    ${COLUMBIAMINUTE}=    Get Time    min    NOW
+    Set Global Variable    ${COLHOUR}    ${COLUMBIAHOUR}
+    Set Global Variable    ${COLMIN}    ${COLUMBIAMINUTE}
+
+Connect to CRCE Server
+    Open Connection    ${CRCESERVERIP}    Port=22    prompt=#
+    login    ${CRCEUSER}    ${CRCEPASSWORD}
+    Write    cd ${CRCELOGPATH}
+    Write    tail -f negret-0.log > test.log
+
+Close Tail
+    Open Connection    ${CRCESERVERIP}    Port=22    prompt=#
+    login    ${CRCEUSER}    ${CRCEPASSWORD}
+    Write    cd ${CRCELOGPATH}
+    Write    grep Exception test.log > test2.log
+    Get File    ${CRCELOGPATH}/test2.log    ${TESTCASEPATH}
+
+Compare Logfile
+    File should be empty    test2.log

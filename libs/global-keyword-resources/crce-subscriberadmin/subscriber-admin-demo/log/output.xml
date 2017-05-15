@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20160204 15:25:20.840">
+<suite source="/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/subscriber-admin_demo-robot-suite.txt" id="s1" name="Subscriber-Admin Demo-Robot-Suite">
+<test id="s1-t1" name="Run Test Subscriber Creation">
+<kw type="kw" name="${return_code} = subscriber-admin-support-resource.CRCE Create Test Subscribers">
+<doc>Provisions one or multiple test subscribers on CRCE only.</doc>
+<arguments>
+<arg>${CRCE01 HOST}</arg>
+<arg>${CRCE01 WEBSERVICES PORT}</arg>
+<arg>${CRCE01 WEBSERVICES BASE PATH}</arg>
+<arg>10</arg>
+<arg>${TESTSUBCRIBERS IMSI RANGE START}</arg>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}</arg>
+<arg>PREPAID</arg>
+<arg>${TESTSUBCRIBERS DEFAULT LANGUAGEID}</arg>
+<arg>${TESTSUBCRIBERS DEFAULT TARIFFID}</arg>
+<arg>${INITIAL_BALANCE}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_host=${crce_host}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.250" level="INFO">msg=crce_host=10.105.113.125</msg>
+<status status="PASS" endtime="20160204 15:25:22.252" starttime="20160204 15:25:22.247"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_port=${crce_port}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.256" level="INFO">msg=crce_port=8080</msg>
+<status status="PASS" endtime="20160204 15:25:22.257" starttime="20160204 15:25:22.254"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=crce_webservicesBasePath=${crce_webservicesBasePath}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.262" level="INFO">msg=crce_webservicesBasePath=/inew-mvno-crce-webservices/</msg>
+<status status="PASS" endtime="20160204 15:25:22.263" starttime="20160204 15:25:22.259"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=amount=${amount}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.267" level="INFO">msg=amount=10</msg>
+<status status="PASS" endtime="20160204 15:25:22.269" starttime="20160204 15:25:22.265"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=imsiRangeStart=${imsiRangeStart}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.273" level="INFO">msg=imsiRangeStart=530052041010000</msg>
+<status status="PASS" endtime="20160204 15:25:22.274" starttime="20160204 15:25:22.270"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=msisdnRangeStart=${msisdnRangeStart}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.279" level="INFO">msg=msisdnRangeStart=642041010000</msg>
+<status status="PASS" endtime="20160204 15:25:22.280" starttime="20160204 15:25:22.276"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=type=${type}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.284" level="INFO">msg=type=PREPAID</msg>
+<status status="PASS" endtime="20160204 15:25:22.285" starttime="20160204 15:25:22.282"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=languageid=${languageid}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.290" level="INFO">msg=languageid=1</msg>
+<status status="PASS" endtime="20160204 15:25:22.291" starttime="20160204 15:25:22.287"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=tariffId=${tariffId}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.295" level="INFO">msg=tariffId=101001</msg>
+<status status="PASS" endtime="20160204 15:25:22.296" starttime="20160204 15:25:22.292"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>msg=balance=${balance}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.300" level="INFO">msg=balance=123456</msg>
+<status status="PASS" endtime="20160204 15:25:22.301" starttime="20160204 15:25:22.298"></status>
+</kw>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Setup SoapUI Logs">
+<doc>This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.330" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/global-groovy.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/global-groovy.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.332" starttime="20160204 15:25:22.326"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.333" starttime="20160204 15:25:22.323"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.341" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.342" starttime="20160204 15:25:22.337"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.343" starttime="20160204 15:25:22.335"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.351" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui-errors.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui-errors.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.352" starttime="20160204 15:25:22.348"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.354" starttime="20160204 15:25:22.345"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.355" starttime="20160204 15:25:22.305"></status>
+</kw>
+<kw type="kw" name="SoapUI Project">
+<doc></doc>
+<arguments>
+<arg>${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.398" level="FAIL">No keyword with name 'SoapUI Project' found.</msg>
+<status status="FAIL" endtime="20160204 15:25:22.399" starttime="20160204 15:25:22.396"></status>
+</kw>
+<status status="FAIL" endtime="20160204 15:25:22.401" starttime="20160204 15:25:22.221"></status>
+</kw>
+<doc>Creates 10 Testsubscribers via subscriber admin highlevel function
+
+Author: walter.heincz
+=========================================================</doc>
+<tags>
+<tag>TNZ_supported walter.heincz experimental End2EndTest, inactive</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20160204 15:25:22.403" starttime="20160204 15:25:22.196">No keyword with name 'SoapUI Project' found.</status>
+</test>
+<test id="s1-t2" name="Run Low Level Test Subscriber Creation">
+<kw type="for" name="${loopIdx} IN RANGE [ 0 | 10 ]">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="foritem" name="${loopIdx} = 0">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${currentImsi} = BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${TESTSUBCRIBERS IMSI RANGE START}+${loopIdx}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.502" level="INFO">${currentImsi} = 530052041010000</msg>
+<status status="PASS" endtime="20160204 15:25:22.501" starttime="20160204 15:25:22.487"></status>
+</kw>
+<kw type="kw" name="${currentMsisdn} = BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>${TESTSUBCRIBERS MSISDN RANGE START}+${loopIdx}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.512" level="INFO">${currentMsisdn} = 642041010000</msg>
+<status status="PASS" endtime="20160204 15:25:22.511" starttime="20160204 15:25:22.505"></status>
+</kw>
+<kw type="kw" name="${resultCode}, ${providerIdDummy}, ${msisdnDummy}, ${deletionSubscriberId}, ${stateDummy}, ${tariffIdDummy}, ${typeDummy} = subscriber-admin-support-resource.CRCE Get Subscriber Profile By Imsi">
+<doc>This is a delegator to the CRCE webservice operation getSubcriberProfileByImsi and returnes (not all but) the most interesting profile attributes</doc>
+<arguments>
+<arg>${CRCE01 HOST}</arg>
+<arg>${CRCE01 WEBSERVICES PORT}</arg>
+<arg>${CRCE01 WEBSERVICES BASE PATH}</arg>
+<arg>${currentImsi}</arg>
+</arguments>
+<kw type="kw" name="subscriber-admin-support-resource.CRCE Setup SoapUI Logs">
+<doc>This is a PRIVATE helper function to setup the SoapUI's basic log files since for unknown reasons SoapUI sometimes doesn't newly create them</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI GROOVY LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.559" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/global-groovy.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/global-groovy.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.560" starttime="20160204 15:25:22.555"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.562" starttime="20160204 15:25:22.552"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.569" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.570" starttime="20160204 15:25:22.566"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.572" starttime="20160204 15:25:22.563"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword And Ignore Error">
+<doc>Runs the given keyword with the given arguments and ignores possible error.</doc>
+<arguments>
+<arg>Create File</arg>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${SOAPUI ERROR LOG}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.578" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui-errors.log"&gt;/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo/soapui-errors.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20160204 15:25:22.580" starttime="20160204 15:25:22.575"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.581" starttime="20160204 15:25:22.573"></status>
+</kw>
+<status status="PASS" endtime="20160204 15:25:22.582" starttime="20160204 15:25:22.540"></status>
+</kw>
+<kw type="kw" name="SoapUI Project">
+<doc></doc>
+<arguments>
+<arg>${ROBOT WORKSPACE PATH}/${SOAPUI PROJECTS WORKSPACE RELATIVE PATH}</arg>
+</arguments>
+<msg timestamp="20160204 15:25:22.614" level="FAIL">No keyword with name 'SoapUI Project' found.</msg>
+<status status="FAIL" endtime="20160204 15:25:22.615" starttime="20160204 15:25:22.613"></status>
+</kw>
+<status status="FAIL" endtime="20160204 15:25:22.616" starttime="20160204 15:25:22.521"></status>
+</kw>
+<status status="FAIL" endtime="20160204 15:25:22.617" starttime="20160204 15:25:22.483"></status>
+</kw>
+<status status="FAIL" endtime="20160204 15:25:22.617" starttime="20160204 15:25:22.479"></status>
+</kw>
+<doc>Demonstrates the "Run Test Subscriber Creation" flow by using the subscriber admin lowlevel functions
+
+Author: walter.heincz
+=========================================================</doc>
+<tags>
+<tag>TNZ_supported walter.heincz experimental End2EndTest, inactive</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20160204 15:25:22.619" starttime="20160204 15:25:22.407">No keyword with name 'SoapUI Project' found.</status>
+</test>
+<doc>Demonstrates usage of the global keyword resource for subscriber administration support
+===============================================================================
+Run with arguments:
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+============================================================</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20160204 15:25:22.624" starttime="20160204 15:25:20.849"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="2">Critical Tests</stat>
+<stat pass="0" fail="2">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" info="" doc="" combined="" fail="2" links="">TNZ_supported walter.heincz experimental End2EndTest, inactive</stat>
+</tag>
+<suite>
+<stat pass="0" id="s1" fail="2" name="Subscriber-Admin Demo-Robot-Suite">Subscriber-Admin Demo-Robot-Suite</stat>
+</suite>
+</statistics>
+<errors>
+<msg timestamp="20160204 15:25:21.934" level="ERROR">Error in file '/opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt': Importing test library '/opt/robot/robotworkspace/libs/py/InewSoapUILibrary.py' failed: ImportError: No module named eviware
+Traceback (most recent call last):
+  File "/opt/robot/robotworkspace/libs/py/InewSoapUILibrary.py", line 19, in &lt;module&gt;
+    from com.eviware.soapui.tools import (SoapUITestCaseRunner)
+PYTHONPATH:
+  /opt/robot
+  /opt/Jython27rc1/Lib/site-packages/robot/libraries
+  /opt/Jython27rc1/Lib/site-packages
+  /opt/Jython27rc1/bin
+  /opt/Jython27rc1/Lib
+  __classpath__
+  __pyclasspath__/
+  .
+  /opt/robot/robotworkspace/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-demo
+CLASSPATH:
+  /opt/Jython27rc1/jython.jar</msg>
+</errors>
+</robot>

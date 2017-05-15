@@ -1,0 +1,129 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_BST_008 - Number Translation
+...               ATTENTION: The keywords of this suite are exact copies from IN_BST_002-MOC-NumberNormalisation-robot-suite.txt
+...                          and thus a candidates to be exported to suite-global-keyword-resource.txt 
+...               ---------------------------------------------------------------
+...               Run MOC Number Translation Format1
+...               Run MOC Number Translation Format2
+...               Run MOC Number Translation Format3
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+${CALL_DURATION_MILLIS}=              1000  #1 second
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+
+Run Voice Call   
+    [Documentation]  executes a voice call between 2 Phones 
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone that shall act as the calling phone
+    ...                cd_device_imsi         IMSI of the phone that should be called when dialMsisdn (see below) is dialed on the calling phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...
+    ...              Returns:                 Nothing - the function fails if the call did not succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_imsi}  ${dial_msisdn}  
+    ${resultCode}=  ARS Voice Call                        ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}    ${cd_device_imsi}    ${dial_msisdn}    ${CALL_DURATION_MILLIS}    released_by_cg=true
+                     Should Be Equal As Strings            ${resultCode}              OK
+    Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Voice Call Impact On Testbed
+
+
+
+Run Voice Call And Check Phone 1 Ticket
+    [Documentation]  Runs a call between the passed devices and checks if a CRM ticket was written for Phone 1
+    ...
+    ...              Arguments:               
+    ...                cg_device_imsi    
+    ...                cd_device_imsi    
+    ...                dial_msisdn       
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${cd_device_imsi}  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+                     ...             ELSE                      Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}=     CRM Get Latest Ticket    ${phone1_imsi}
+                     Run Voice Call                            ${cg_device_imsi}        ${cd_device_imsi}                        ${dial_msisdn}
+    ${virtual_msisdn}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable          ${FAKE_MOC_NUMBER_TRANSLATION_VNUMBER}   #On faked calls replace the${dial_msisdn} with the faked call virtual number
+                        ...             ELSE                      Set Variable          ${dial_msisdn}
+                     CRM New Ticket Should Exist               ${phone1_imsi}           ${marker_ticket_timestamp}               Voice     calling_called_number=${virtual_msisdn}
+  
+
+Fake Voice Call Impact On Testbed
+    [Documentation]  Runs a CG 1s MOC NumberTranslation  session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MOC Number Translation    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_MOC_NUMBER_TRANSLATION_VNUMBER}    ${FAKE_MOC_NUMBER_TRANSLATION_TNUMBER}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE} 
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+Run MOC Number Translation Format1
+    [Documentation]  Runs a call on phone 1 to the virtual number format 1 (that is expected to be translated to phone 2)
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Voice Call And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_ONNET_PHONE_2_IMSI}    ${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT1}
+    [Teardown]       Close Browser    
+
+Run MOC Number Translation Format2
+    [Documentation]  Runs a call on phone 1 to the virtual number format 2 (that is expected to be translated to phone 2)
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Voice Call And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_ONNET_PHONE_2_IMSI}    ${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT2}
+    [Teardown]       Close Browser    
+
+Run MOC Number Translation Format3
+    [Documentation]  Runs a call on phone 1 to the virtual number format 3 (that is expected to be translated to phone 2)
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Voice Call And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_ONNET_PHONE_2_IMSI}    ${MOC_NUMBER_TRANSLATION_VNUMBER_FORMAT3}
+    [Teardown]       Close Browser    
+

@@ -1,0 +1,67 @@
+*** Settings ***
+Documentation     Demonstrates usage of the global keyword resource for subscriber administration support
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+...               ============================================================
+Force Tags        MVNA_Supported Nagarro Team experimental End2EndTest, active
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/robot_testsuites/experimental/test_nagarro/ESB_CRCE_Currency/ESB_CRCE_Currency-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Library           OperatingSystem
+Library		  Collections
+Library           String
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+
+*** Variables ***
+@{QueryResult}
+${ProviderId}
+${CurrencyIdQuery}
+${CurrencyId}
+${crce_host}=     ${SOA01 HOST}	
+${crce_port}=     8280 	
+${crce_webservicesBasePath}=     /services/CurrencyService.CurrencyServiceHttpSoap12Endpoint
+
+
+*** Test Cases ***
+
+Run CRCE Get Currencies
+    [Documentation]  To get Currency id's for a given provider id
+    ...
+    ...              Author: Nagarro Team 
+    ...              =========================================================
+	Log				${crce_host}	console=yes
+	Log				${crce_port}	console=yes
+	Log    				${crce_webservicesBasePath}	console=yes
+	
+
+	#----------- DB Code -------------------------------------------------
+	Log	Robot workspace resource used is:${ROBOT_WORKSPACE_RESOURCE}	console=yes
+	Log	Sut file used is:${SUT_RESOURCE}	console=yes
+	Log	The CRCE used is:${CRCE DB HOST}	console=yes
+
+	DBLIB Connect to PostgresDB  ${CRCE DB HOST}	${CRCE DB PORT}	${CRCE DB NAME}	${CRCE DB USER}	${CRCE DB PWD}
+	@{QueryResult}=  DBLIB Query  Select provider_id from acc_currencies where provider_id is not null limit 1
+	Log	@{QueryResult}	console=yes
+	
+	${ProviderId}=	Get Line	@{QueryResult}	0
+	${ProviderId}=	Fetch From Left	${ProviderId}	|
+	Log	${ProviderId}	console=yes
+	
+	${CurrencyIdQuery}=	Catenate  Select distinct id as currency_id from acc_currencies where provider_id=  ${ProviderId}  order by currency_id asc
+	Log	${CurrencyIdQuery}	console=yes
+
+	@{CurrencyId}=  DBLIB Query  ${CurrencyIdQuery}
+	#-------------------------------------------------------------------
+
+	#----------- SOAP UI Code -------------------------------------------------
+    ${return_code}	${A_currencyId}=		CRCE Get Currencies    ${crce_host}    ${crce_port}    ${crce_webservicesBasePath}   ${ProviderId}
+
+	@{A_CurrencyIds}=	Split to lines	${A_currencyId}
+		     Log    			${return_code}	console=yes
+		     Should Be Equal As Strings      ${return_code}    OK
+                     Lists Should Be Equal	@{A_CurrencyIds}	@{CurrencyId}

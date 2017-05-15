@@ -1,0 +1,31 @@
+#############################################################################
+# This global arguments file for jybot contains constant parameters needed
+# for ALL tagging based robot executions - i.e.
+#
+#  - pythonpath definitions for the non-jar-mudules of low level testing tools 
+#     At the moment only RF files are necessary the path
+#
+#  - Reference to the robot workspace specific resource file needed by ALL
+#    test suites
+#
+#  - Placeholder reference to the SUT specific resource file
+#    This is an ugly necessity to ensure that the second argumentfile 
+#    passed to jybot is correctly parsed (otherwise strange error messages
+#    would occure) 
+#
+# Swapping these paremeters out of the (probably hundreds of) bulk execution 
+# scripts simplifies later changes without touching the scripts.
+#
+# Author: walter.heincz
+#############################################################################
+
+--exclude inactive
+--noncritical experimental
+--outputdir logs
+--timestampoutputs
+--pythonpath /opt/robot 
+--escape star:STAR
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:to_be_overwritten_by_sut-spcific-path
+
+

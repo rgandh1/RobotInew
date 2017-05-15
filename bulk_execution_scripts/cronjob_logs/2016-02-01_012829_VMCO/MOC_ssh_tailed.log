@@ -1,0 +1,34 @@
+[2016-02-01 00:33:34,629][INFO ][ActiveMQ Session Task-158][XDRConsumerImpl                                   ][ 194] ------ start consuming from queue://inew-cs.crce.cdr -------
+[2016-02-01 00:33:34,630][INFO ][ActiveMQ Session Task-158][HealthMonitor                                     ][ 115] it is time for next active db check.
+[2016-02-01 00:33:34,630][INFO ][ActiveMQ Session Task-158][XDRConsumerImpl                                   ][ 308] --------- start processing record ---------
+[2016-02-01 00:33:34,630][INFO ][ActiveMQ Session Task-158][XDRConsumerImpl                                   ][ 309] 1.4|101|TRUE|1|CRCE|CDR|crce01.xxxx|2015-02-23T08:12:55.770+0000|2015-02-22T08:12:52.000+0000|MOC123456XdrComponentTest|1|1|74456|573190001000|PREPAID|ACTIVE||1|NONE|OK||1.2|Charge|BasicSession|732123710001000|573190001000|FALSE|573190001001|COLOMBIA MOBILE VIRGIN - 57319|LOCAL (ON-NET)|Originating||0||Voice|FALSE|573190|COLOMBIA MOBILE VIRGIN - 57319|2015-02-22T08:12:54.000+0000|0|1000|31000|0|0|0001ABFF0E|FALSE|101001|15730641|0|0|Pesos|10000000|PREPAID|OK||
+[2016-02-01 00:33:34,630][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 167] performing db health check . . .
+[2016-02-01 00:33:34,632][INFO ][pool-1-thread-1][HealthMonitor                                     ][ 175] connection is valid.
+[2016-02-01 00:33:34,637][INFO ][ActiveMQ Session Task-158][XDRInserterImpl                                   ][  65] jdbc returns successful with result 0. (could be triggered insert)
+[2016-02-01 00:33:34,637][INFO ][ActiveMQ Session Task-158][CrceCdrRVMNotificationXDRHandlerImpl              ][  72] ---> sent to revmon: [trafficType=MOC, category=null, currency=[currencyId=1, relation=100, currencyName=Pesos, unitName=centavos], revenue=0, RvmEvent=[sessionCreationTimestamp=1424592772000, sessionId=MOC123456XdrComponentTest]]
+[2016-02-01 00:33:34,638][ERROR][ActiveMQ Session Task-158][AbstractNotificationHandler                       ][ 124] Notification skipped - maxWaitTime reached.
+[2016-02-01 00:33:34,638][INFO ][ActiveMQ Session Task-158][LcmVoiceTrafficNotificationXDRHandlerImpl         ][ 100] LCM Call Notification enabled but not applicable.
+[2016-02-01 00:33:34,638][INFO ][ActiveMQ Session Task-158][XDRConsumerImpl                                   ][ 313] -------- xdr processed successfully --------
+[2016-02-01 00:33:34,638][INFO ][ActiveMQ Session Task-158][XDRConsumerImpl                                   ][ 211] ------ finished consuming from queue://inew-cs.crce.cdr -------
+[2016-02-01 00:33:34,638][ERROR][pool-7-thread-3][RVMJBRPooledNotificationTransportHandlerImpl      ][  75] Error on JBR Transporter: 
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(ArrayList.java:635)
+	at java.util.ArrayList.get(ArrayList.java:411)
+	at com.inewcs.remoting.balancers.FairPlayBalancer.selectLocator(Unknown Source)
+	at com.inewcs.remoting.ClusteredTransporterClient.invoke(Unknown Source)
+	at com.sun.proxy.$Proxy10.send(Unknown Source)
+	at com.inewcs.mvno.xdr.handler.notification.rvm.RVMJBRPooledNotificationTransportHandlerImpl$RvmTask.run(RVMJBRPooledNotificationTransportHandlerImpl.java:65)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+	at java.lang.Thread.run(Thread.java:744)
+[2016-02-01 00:33:39,447][INFO ][Timer-46       ][XDRBackgroundFileWriter                           ][ 115] flushed 4 records to file CRCE_ACCOUNTCHANGE_20160131131239.csv.tmp
+[2016-02-01 00:33:39,523][WARN ][Timer-50       ][AbstractXDRFileHandler                            ][ 165] FILE CLOSED::CRCE_CDR_20160201003209.csv.tmp
+[2016-02-01 00:33:39,523][INFO ][Timer-50       ][AbstractXDRFileHandler                            ][ 210] deleted zero size file: CRCE_CDR_20160201003209.csv.tmp
+[2016-02-01 00:33:39,524][WARN ][Timer-50       ][AbstractXDRFileHandler                            ][ 178] File Writer closed!
+[2016-02-01 00:33:39,524][WARN ][Timer-50       ][AbstractXDRFileHandler                            ][  98] CREATING NEW FILE ...
+[2016-02-01 00:33:39,524][INFO ][Timer-50       ][AbstractXDRFileHandler                            ][ 110] creationTime: 2016-02-01 00:33:39
+[2016-02-01 00:33:39,524][WARN ][Timer-50       ][AbstractXDRFileHandler                            ][ 118] NEW FILE CREATED::/var/opt/inew/xdr/common/etl_export/crce_cdr/CRCE_CDR_20160201003339.csv.tmp
+[2016-02-01 00:33:39,524][INFO ][Timer-50       ][AbstractXDRFileHandler                            ][ 126] expirationTime: 2016-02-01 00:34:39
+[2016-02-01 00:33:39,525][INFO ][Timer-50       ][AbstractXDRFileHandler                            ][  78] --- started file handler ---
+[2016-02-01 00:33:39,525][INFO ][Timer-50       ][XDRBackgroundFileWriter                           ][ 115] flushed 1 records to file CRCE_CDR_20160201003339.csv.tmp
+[2016-02-01 00:33:42,451][INFO ][Timer-78       ][XDRBackgroundFileWriter                           ][ 115] flushed 11 records to file XAPP_20160131131242.csv.tmp

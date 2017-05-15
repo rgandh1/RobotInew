@@ -1,0 +1,168 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_BST_003 - SMS Number Normalisation TC
+...               ---------------------------------------------------------------
+...               Run SMS Number Normalisation OnNet OnNet Format1
+...               Run SMS Number Normalisation pseudoFixNet OnNet Forwarding OnNet Format1
+...               Run SMS Number Normalisation OnNet OffNet Format1
+...
+...               Run SMS Number Normalisation OnNet OnNet Format2
+...               Run SMS Number Normalisation pseudoFixNet OnNet Forwarding OnNet Format2
+...               Run SMS Number Normalisation OnNet OffNet Format2
+...
+...               Run SMS Number Normalisation OnNet OnNet Format3
+...               Run SMS Number Normalisation pseudoFixNet OnNet Forwarding OnNet Format3
+...               Run SMS Number Normalisation OnNet OffNet Format3
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+Send SMS   
+    [Documentation]  sends an SMS between 2 Phones 
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone that shall act as the originating phone
+    ...                cd_device_imsi         IMSI of the phone that should receive the SMS when dialMsisdn (see below) is used on the originating phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...
+    ...              Returns:                 Nothing - the function fails if the call did not succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_imsi}  ${dial_msisdn}
+    ${send_message}=               Set Variable    Hi!<br>This is a sample sms body
+    ${ensure_delivery}=            Set Variable    true  
+    ${send_timeout_seconds}=       Set Variable    20  
+    ${receive_timeout_seconds}=    Set Variable    10  
+  
+    ${resultCode}   ${received_message}                   ARS Sms                     ${ANDROID REMOTING HOST}                      ${ANDROID REMOTING PORT}    ${cg_device_imsi}    ${cd_device_imsi}    ${dial_msisdn}    ${send_message}    ${ensure_delivery}    ${send_timeout_seconds}    ${receive_timeout_seconds}    
+                     Should Be Equal As Strings            ${resultCode}              OK
+                     Should Be Equal As Strings            ${received_message}         ${send_message}
+    Run Keyword If   '${FAKE_CALLS}'=='true'               Fake SMS Impact On Testbed
+
+
+
+
+Send SMS And Check Phone 1 Ticket
+    [Documentation]  Sends an SMS between the passed devices and checks if a CRM ticket was written for Phone 1
+    ...
+    ...              Arguments:               
+    ...                cg_device_imsi         IMSI of the phone that shall act as the originating phone
+    ...                cd_device_imsi         IMSI of the phone that should receive the SMS when dialMsisdn (see below) is used on the originating phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${cd_device_imsi}  ${dial_msisdn}
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${ATTACHED_ONNET_PHONE_1_IMSI} with the faked call subscriber imsi
+                     ...             ELSE                      Set Variable             ${ATTACHED_ONNET_PHONE_1_IMSI}
+    ${marker_ticket_timestamp}       ${type_dummy}=            CRM Get Latest Ticket    ${phone1_imsi}
+                     Send SMS        ${cg_device_imsi}         ${cd_device_imsi}        ${dial_msisdn}
+                     CRM New Ticket Should Exist               ${phone1_imsi}           ${marker_ticket_timestamp}    ticket_type=SMS
+
+
+Fake SMS Impact On Testbed
+    [Documentation]  Runs a CG SMS session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android SMS' impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Send SMS    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${FAKE_DESTINATION_MSISDN}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG SMS REQ QUEUE}    ${AMQ-SIG SMS RES QUEUE}
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+*** Test Cases ***
+
+
+
+
+
+
+Run SMS Number Normalisation OnNet OnNet Format1
+    [Documentation]  Sends an on-net Phone 1 SMS to on-net Phone 2 by using Phone 2 MSISDN format 1
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_ONNET_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN_FORMAT1} 
+    [Teardown]       Close Browser    
+
+Run SMS Number Normalisation OnNet OffNet Format1
+    [Documentation]  Sends an on-net Phone 1 SMS to off-net Phone 12 by using Phone 12 MSISDN format 1
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_OFFNET_PHONE_12_IMSI}  ${ATTACHED_PHONE_12_MSISDN_FORMAT1} 
+    [Teardown]       Close Browser    
+
+
+
+Run SMS Number Normalisation OnNet OnNet Format2
+    [Documentation]  Sends an on-net Phone 1 SMS to on-net Phone 2 by using Phone 2 MSISDN format 2
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_ONNET_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN_FORMAT2} 
+    [Teardown]       Close Browser    
+
+Run SMS Number Normalisation OnNet OffNet Format2
+    [Documentation]  Sends an on-net Phone 1 SMS to off-net Phone 12 by using Phone 12 MSISDN format 2
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_OFFNET_PHONE_12_IMSI}  ${ATTACHED_PHONE_12_MSISDN_FORMAT2} 
+    [Teardown]       Close Browser    
+
+
+
+Run SMS Number Normalisation OnNet OnNet Format3
+    [Documentation]  Sends an on-net Phone 1 SMS to on-net Phone 2 by using Phone 2 MSISDN format 3
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_ONNET_PHONE_2_IMSI}    ${ATTACHED_PHONE_2_MSISDN_FORMAT3} 
+    [Teardown]       Close Browser    
+
+Run SMS Number Normalisation OnNet OffNet Format3
+    [Documentation]  Sends an on-net Phone 1 SMS to off-net Phone 12 by using Phone 12 MSISDN format 3
+    ...              Plus ticket existance check for Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Send SMS And Check Phone 1 Ticket    ${ATTACHED_ONNET_PHONE_1_IMSI}             ${ATTACHED_OFFNET_PHONE_12_IMSI}  ${ATTACHED_PHONE_12_MSISDN_FORMAT3} 
+    [Teardown]       Close Browser    
+
+
+

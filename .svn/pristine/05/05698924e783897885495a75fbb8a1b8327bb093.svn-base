@@ -1,0 +1,105 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           DatabaseLibrary
+
+*** Variables ***
+${SERVER}         10.0.20.17:1084
+${BROWSER}        firefox
+${DELAY}          0.6
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${LOGIN URL}      http://${SERVER}/evoweb/web/crm/257_EN.htm
+${TESTCASEPATH}    /opt/robot/robotframework-selenium2library-master/robotframework-selenium2library-master/demo/CRMRobot/
+${MSISDN}         56951125162
+${REF CODE}       56951125162
+${NEW USERNAME}    testuser123
+
+*** Keywords ***
+Login To CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+
+Create User
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}
+    Input Text    name=db_password    testuser
+    Input Text    name=db_passwordrepeat    testuser
+    Select from list    name=db_rolegroupid    CRM Manager
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Click Element    save
+    Page Should Contain    The user has been saved successfully.
+    Close All Browsers
+
+FalsePassword
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}
+    Input Text    name=db_password    b
+    Input Text    name=db_passwordrepeat    b
+    Select from list    name=db_rolegroupid    CRM Manager
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Click Element    save
+    Page Should Contain    "Password" cannot be shorter than
+    Close All Browsers
+
+Repetition
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    ${NEW USERNAME}
+    Input Text    name=db_password    testuser
+    Input Text    name=db_passwordrepeat    testuser123
+    Select from list    name=db_rolegroupid    CRM Manager
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Click Element    save
+    Page Should Contain    Both Password fields need to match and cannot be empty.
+    Close All Browsers
+
+FalseName
+    Click Button    User Management
+    Click Element    //input[@value='Create User']
+    Input Text    name=db_name    Test User
+    Input Text    name=db_username    te
+    Input Text    name=db_password    testuser
+    Input Text    name=db_passwordrepeat    testuser
+    Select from list    name=db_rolegroupid    CRM Manager
+    Select from list    name=db_enabled    Enabled
+    Input Text    name=db_zipcode    7000
+    Input Text    name=db_city    Eisenstadt
+    Input Text    name=db_address    Teststrasse 3
+    Input Text    name=db_email    test_user@test.at
+    Click Element    save
+    Page Should Contain    "Username" can only contain
+    Close All Browsers
+
+Delete User From Database
+    Connect to Database    psycopg2    crm_vmla    crm_vmla    crm_vmla    10.0.20.175    5436
+    table must exist    role
+    Check if Exists In Database    SELECT * FROM role WHERE username='${NEW USERNAME}';
+    Execute Sql String    DELETE FROM role WHERE username='${NEW USERNAME}';

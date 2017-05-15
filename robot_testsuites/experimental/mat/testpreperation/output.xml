@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generated="20130701 11:29:53.229" generator="Robot 2.7.6 (Python 2.6.6 on linux2)">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/mat/testpreperation/soaptest.txt" id="s1" name="Soaptest">
+<test id="s1-t1" timeout="" name="GetParameters">
+<kw type="kw" name="BuiltIn.Comment" timeout="">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Get System Time</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.627" starttime="20130701 11:29:53.627"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment" timeout="">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>Get Subscriber Information</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.628" starttime="20130701 11:29:53.628"></status>
+</kw>
+<kw type="kw" name="resource.Create Topup" timeout="">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SudsLibrary.Create Soap Client" timeout="">
+<doc>Loads a WSDL from the given URL/path and creates a Suds SOAP client.</doc>
+<arguments>
+<arg>${TOPUPWSDL}</arg>
+<arg>Topup</arg>
+</arguments>
+<msg timestamp="20130701 11:29:53.631" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<msg timestamp="20130701 11:29:53.727" level="INFO">Using WSDL at http://10.0.20.13:9090/icca/1.0/IccaPeer?wsdl
+Suds ( https://fedorahosted.org/suds/ )  version: 0.4 GA  build: R699-20100913
+
+Service ( IccaPeer ) tns="http://services.ws.gw.negret.tryge.com/"
+   Prefixes (3)
+      ns0 = "http://services.profiler.negret.tryge.com"
+      ns2 = "http://services.ws.gw.negret.tryge.com"
+      ns3 = "http://services.ws.gw.negret.tryge.com/"
+   Ports (1):
+      (IccaPeerPort)
+         Methods (3):
+            topup(ns2:TopupReq arg0, )
+            topupBonus(ns2:TopupBonusRequestType arg0, )
+            transferMoney(ns2:TransferMoneyReq arg0, )
+         Types (41):
+            ns2:Account
+            ns2:AccountExt
+            ns2:ArrayOfAccount
+            ns2:ArrayOfAccountExt
+            ns0:ArrayOfChargeExt
+            ns0:ArrayOfQuotaType
+            ns0:ArrayOfSelectableQuotaType
+            ns0:BaseQuotaType
+            ns0:Charge
+            ns0:ChargeExt
+            ns2:ExpiryUnit
+            ns2:PaymentMethodType
+            ns2:PosType
+            ns0:QuotaType
+            ns2:ResultCode
+            ns0:ResultCode
+            ns0:SelectableQuotaType
+            ns2:ServiceChannel
+            ns2:SubscriberIdentifier
+            ns0:TariffCalendarPeriod
+            ns0:TariffCategory
+            ns0:TariffCycle
+            ns0:TariffIntervalPeriod
+            ns0:TariffPeriod
+            ns0:TariffPeriodType
+            ns0:TariffPlanStatus
+            ns0:TariffPlanType
+            ns0:TariffTimeInterval
+            ns0:TariffType
+            ns2:TopupBonusRequestType
+            ns2:TopupReq
+            ns2:TopupRes
+            ns2:TransferMoneyReq
+            ns2:TransferMoneyRes
+            ns0:UserDefinablePlanType
+            topup
+            topupBonus
+            topupBonusResponse
+            topupResponse
+            transferMoney
+            transferMoneyResponse
+
+</msg>
+<msg timestamp="20130701 11:29:53.727" level="INFO">Argument types are:
+&lt;type 'bool'&gt;</msg>
+<status status="PASS" endtime="20130701 11:29:53.727" starttime="20130701 11:29:53.630"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Return Xml" timeout="">
+<doc>Sets whether to return XML in future requests.</doc>
+<arguments>
+<arg>true</arg>
+</arguments>
+<msg timestamp="20130701 11:29:53.729" level="INFO">Argument types are:
+&lt;type 'unicode'&gt;</msg>
+<status status="PASS" endtime="20130701 11:29:53.729" starttime="20130701 11:29:53.728"></status>
+</kw>
+<kw type="kw" name="${TOPUPINFO} = SudsLibrary.Create Wsdl Object" timeout="">
+<doc>Creates a WSDL object of the specified `type`.</doc>
+<arguments>
+<arg>arg0</arg>
+</arguments>
+<msg timestamp="20130701 11:29:53.736" level="INFO">${TOPUPINFO} = (TransferMoneyReq){
+   amount = None
+   crmUser = None
+   currency = None
+   destination = 
+      (SubscriberIdentifier){
+         address = None
+         natureOfAddress = None
+         numberingPlan...</msg>
+<status status="PASS" endtime="20130701 11:29:53.735" starttime="20130701 11:29:53.729"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Service" timeout="">
+<doc>Sets the `service` to use in future requests.</doc>
+<arguments>
+<arg>topup</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.737" starttime="20130701 11:29:53.736"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Wsdl Object Attribute" timeout="">
+<doc>Sets the attribute of a WSDL object.</doc>
+<arguments>
+<arg>${TOPUPINFO}</arg>
+<arg>amount</arg>
+<arg>10500</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.738" starttime="20130701 11:29:53.738"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Wsdl Object Attribute" timeout="">
+<doc>Sets the attribute of a WSDL object.</doc>
+<arguments>
+<arg>${TOPUPINFO}</arg>
+<arg>crmUser</arg>
+<arg>?</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.739" starttime="20130701 11:29:53.739"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Wsdl Object Attribute" timeout="">
+<doc>Sets the attribute of a WSDL object.</doc>
+<arguments>
+<arg>${TOPUPINFO}</arg>
+<arg>serviceType</arg>
+<arg>CRM</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.741" starttime="20130701 11:29:53.740"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Wsdl Object Attribute" timeout="">
+<doc>Sets the attribute of a WSDL object.</doc>
+<arguments>
+<arg>${TOPUPINFO}</arg>
+<arg>source</arg>
+<arg>test</arg>
+</arguments>
+<status status="PASS" endtime="20130701 11:29:53.742" starttime="20130701 11:29:53.741"></status>
+</kw>
+<kw type="kw" name="SudsLibrary.Set Wsdl Object Attribute" timeout="">
+<doc>Sets the attribute of a WSDL object.</doc>
+<arguments>
+<arg>${TOPUPINFO}</arg>
+<arg>address</arg>
+<arg>${MSISDN}</arg>
+</arguments>
+<msg timestamp="20130701 11:29:53.744" level="FAIL">AttributeError: TransferMoneyReq instance has no attribute 'address'</msg>
+<status status="FAIL" endtime="20130701 11:29:53.744" starttime="20130701 11:29:53.742"></status>
+</kw>
+<status status="FAIL" endtime="20130701 11:29:53.744" starttime="20130701 11:29:53.629"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20130701 11:29:53.745" critical="yes" starttime="20130701 11:29:53.625">AttributeError: TransferMoneyReq instance has no attribute 'address'</status>
+</test>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20130701 11:29:53.745" starttime="20130701 11:29:53.230"></status>
+</suite>
+<statistics>
+<total>
+<stat fail="1" pass="0">Critical Tests</stat>
+<stat fail="1" pass="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat fail="1" pass="0" id="s1" name="Soaptest">Soaptest</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

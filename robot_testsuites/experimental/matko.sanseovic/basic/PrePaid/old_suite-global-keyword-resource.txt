@@ -1,0 +1,167 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing functions to calls testing
+Library           SSHLibrary
+Library           OperatingSystem
+Library           String
+
+*** Variables ***
+
+*** Keywords ***
+
+Setup Suite
+	${date}=				Run		date
+	Log 					Date and time: ${date}		console=yes
+	Log						Target IN machine: ${IN-APP HOST}		console=yes
+	# I will use a 1111 for service port as a placeholder
+	${in_rc}  ${in_version}			Get IN Vitality State	${IN-APP HOST}  1111  ${IN-APP USER}  ${IN-APP PWD}  ${EMPTY}  ${IN-APP MOC SERVICE NAME}
+	${xdr_rc}  ${xdr_version}=		Get XDR Vitality State  ${XDR HOST}  1111  ${XDR USER}  ${XDR PWD}  ${EMPTY}  ${XDR SERVICE NAME}
+	${crce_rc}  ${crce_version}		Get CRCE Vitality State		${CRCE HOST}  1111  ${CRCE USER}  ${CRCE PWD}  ${EMPTY}  ${CRCE SERVICE NAME}
+	${ocs_rc}	${ocs_version}		Get OCS Vitality State		${OCS HOST}  1111  ${OCS USER}  ${OCS PWD}  ${EMPTY}  ${OCS SERVICE NAME}
+	Log						IN state= ${in_rc} version=${in_version}   console=yes
+	Log						XDR state= ${xdr_rc} version=${xdr_version}   console=yes
+	Log						CRCE state= ${crce_rc} version=${crce_version}   console=yes
+	Log						OCS state= ${ocs_rc} version=${ocs_version}   console=yes
+	Should Be Equal			${in_rc}  OK    msg=IN
+	Should Be Equal			${xdr_rc}  OK    msg=XDR
+	Should Be Equal			${crce_rc}  OK    msg=CRCE
+	Should Be Equal			${ocs_rc}  OK    msg=OCS
+	# set some variables depending on the target machine (all targets must pass through this junction)
+	${temp}  	Set Variable If
+	...						'${SUT PROJECT TAG PREFIX}'=='MTEL'		${ROBOT WORKSPACE PATH}/external_tests/experimental/matko.sanseovic/reroute_changes
+	...						'${SUT PROJECT TAG PREFIX}'!='' 	${CG UNIFIED WS PATH}
+	Set Global Variable  	${CG UNIFIED WS PATH}	${temp}
+	
+	
+Get XDR Vitality State
+   [Documentation]  Checks multiple vitality aspects of an XDR instance
+    ...
+    ...              Arguments:
+    ...                host             IP address of XDR 
+    ...               (service_port     service port)
+    ...                user             user name for SSH based login
+    ...                pswd             password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+	...                service_name		service name in a form that needs to be passed to a "service" command
+    ...              Returns:           
+    ...                resultCode       One of the following:
+    ...                                   OK 
+    ...                                   SERVICE_NOT_RUNNING
+    ...                                   LOGIN_FAILED
+	...                version          in case of resultCode=OK this will contain the components version number
+	...                                 otherwise it's ${Empty} 
+	...              Fails:             Never
+    [Arguments]         ${host}  ${service_port}  ${ssh_user}  ${ssh_pswd}  ${ssh_rsa_key_file}  ${service_name}
+    ${ssh_connection}=  SSH Login    ${ssh_user}    ${ssh_pswd}   ${ssh_rsa_key_file}  host=${host}  
+	${resultCode}		Run Keyword If  '${ssh_connection}'==''  Set Variable  LOGIN_FAILED
+	${output}=  		Execute Command    sudo service ${service_name} status
+	${status}  ${rc}	Run Keyword And Ignore Error	Should Contain		${output}  is running   msg=Service ${service_name} is not running!
+	${resultCode}		Run Keyword If  '${status}'=='PASS'  Set Variable	OK
+						...  ELSE  Set Variable  SERVICE_NOT_RUNNING
+	${version_r}=  		Fetch From Right  ${output}  Server 
+	${version}=  		Fetch From Left  ${version_r}   is running
+    Comment             ****** Log out ****** 
+                        SSH Logout          ${ssh_connection}	 
+    ${ver}=				Run Keyword If 		'${resultCode}'=='OK'  Set Variable  ${version}
+						...		ELSE 		Set Variable	${EMPTY} 
+	[Return]            ${resultCode}     	${ver}
+	
+	
+	
+Get IN Vitality State
+    [Documentation]    Checks the state of the IN service
+    ...
+    ...              Arguments:
+    ...                host             IP address of IN 
+    ...               (service_port     service port)
+    ...                user             user name for SSH based login
+    ...                pswd             password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+	...                service_name		service name in a form that needs to be passed to a "service" command
+    ...              Returns:           
+    ...                resultCode       One of the following:
+    ...                                   OK 
+    ...                                   SERVICE_NOT_RUNNING
+    ...                                   LOGIN_FAILED
+	...                version          in case of resultCode=OK this will contain the components version number
+	...                                 otherwise it's ${Empty} 
+	...              Fails:             Never
+    [Arguments]         ${host}  ${service_port}  ${ssh_user}  ${ssh_pswd}  ${ssh_rsa_key_file}  ${service_name}
+    ${ssh_connection}=  SSH Login    ${ssh_user}    ${ssh_pswd}   ${ssh_rsa_key_file}  host=${host}  
+	${resultCode}		Run Keyword If  '${ssh_connection}'==''  Set Variable  LOGIN_FAILED
+	${output}=  		Execute Command    sudo service ${service_name} status
+	${status}  ${rc}	Run Keyword And Ignore Error	Should Contain		${output}  is running   msg=Service ${service_name} is not running!
+	${resultCode}		Run Keyword If  '${status}'=='PASS'  Set Variable	OK
+						...  ELSE  Set Variable  SERVICE_NOT_RUNNING
+	${version_r}=  		Fetch From Right  ${output}  Service 
+	${version}=  		Fetch From Left  ${version_r}   is running
+    Comment             ****** Log out ****** 
+                        SSH Logout          ${ssh_connection}	  
+    ${ver}				Run Keyword If 		'${resultCode}'=='OK'  Set Variable  ${version}
+	Comment							...		ELSE 		Set Variable	${EMPTY} 
+	[Return]            ${resultCode}     	${ver} 
+	
+Get CRCE Vitality State	
+    [Documentation]    Checks the state of the CRCE service
+    ...
+    ...              Arguments:
+    ...                host             IP address of CRCE 
+    ...               (service_port     service port)
+    ...                user             user name for SSH based login
+    ...                pswd             password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+	...                service_name		service name in a form that needs to be passed to a "service" command
+    ...              Returns:           
+    ...                resultCode       One of the following:
+    ...                                   OK 
+    ...                                   SERVICE_NOT_RUNNING
+    ...                                   LOGIN_FAILED
+	...                version          in case of resultCode=OK this will contain the components version number
+	...                                 otherwise it's ${Empty} 
+	...              Fails:             Never
+    [Arguments]         ${host}  ${service_port}  ${ssh_user}  ${ssh_pswd}  ${ssh_rsa_key_file}  ${service_name}
+    ${ssh_connection}=  SSH Login    ${ssh_user}    ${ssh_pswd}   ${ssh_rsa_key_file}  host=${host}  
+	${resultCode}		Run Keyword If  '${ssh_connection}'==''  Set Variable  LOGIN_FAILED
+	${output}=  		Execute Command    sudo service ${service_name} status
+	${status}  ${rc}	Run Keyword And Ignore Error	Should Contain		${output}  is running   msg=Service ${service_name} is not running!
+	${resultCode}		Run Keyword If  '${status}'=='PASS'  Set Variable	OK
+						...  ELSE  Set Variable  SERVICE_NOT_RUNNING
+	${version_r}=  		Fetch From Right  ${output}  Engine 
+	${version}=  		Fetch From Left  ${version_r}   is running
+    Comment             ****** Log out ****** 
+                        SSH Logout          ${ssh_connection}	  
+    ${ver}				Run Keyword If 		'${resultCode}'=='OK'  Set Variable  ${version}
+	Comment							...		ELSE 		Set Variable	${EMPTY} 
+	[Return]            ${resultCode}     	${ver}
+
+Get OCS Vitality State	
+    [Documentation]    Checks the state of the OCS service
+    ...
+    ...              Arguments:
+    ...                host             IP address of OCS 
+    ...               (service_port     service port)
+    ...                user             user name for SSH based login
+    ...                pswd             password for password based authentication OR ${EMPTY}
+    ...                rsa_key_file     In case that ${pswd} is ${EMPTY} this argument has to provide the path to the private RSA key file for key file based authentication otherwise it is ignored
+	...                service_name		service name in a form that needs to be passed to a "service" command
+    ...              Returns:           
+    ...                resultCode       One of the following:
+    ...                                   OK 
+    ...                                   SERVICE_NOT_RUNNING
+    ...                                   LOGIN_FAILED
+	...                version          in case of resultCode=OK this will contain the components version number
+	...                                 otherwise it's ${Empty} 
+	...              Fails:             Never
+    [Arguments]         ${host}  ${service_port}  ${ssh_user}  ${ssh_pswd}  ${ssh_rsa_key_file}  ${service_name}
+    ${ssh_connection}=  SSH Login    ${ssh_user}    ${ssh_pswd}   ${ssh_rsa_key_file}  host=${host}  
+	${resultCode}		Run Keyword If  '${ssh_connection}'==''  Set Variable  LOGIN_FAILED
+	${output}=  		Execute Command    sudo service ${service_name} status
+	${status}  ${rc}	Run Keyword And Ignore Error	Should Contain		${output}  is running   msg=Service ${service_name} is not running!
+	${resultCode}		Run Keyword If  '${status}'=='PASS'  Set Variable	OK
+						...  ELSE  Set Variable  SERVICE_NOT_RUNNING
+	${version_r}=  		Fetch From Right  ${output}  Engine 
+	${version}=  		Fetch From Left  ${version_r}   is running
+    Comment             ****** Log out ****** 
+                        SSH Logout          ${ssh_connection}	  
+    ${ver}				Run Keyword If 		'${resultCode}'=='OK'  Set Variable  ${version}
+	Comment							...		ELSE 		Set Variable	${EMPTY} 
+	[Return]            ${resultCode}     	${ver}

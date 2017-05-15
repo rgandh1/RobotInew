@@ -1,0 +1,216 @@
+
+*** Keywords ***
+Documentation     This resource file contains reusable end-to-end testing specific keywords and
+...               is imported by all robot suite files of the current folder's subfolders.
+...               ---------------------------------------------------------------
+...               Setup Suite
+...               Teardown Suite
+...
+...               Reset All Phones
+...
+...               Enable Call Forwarding Phone1 to Phone2
+...               Disable Call Forwarding Phone 1
+...
+...               Run Voice Call And Return Duration
+...               ===============================================================================
+
+Setup Suite 
+    [Documentation]  This is the suite setup procedure that is called from "Suite Setup" keyword 
+    ...              in the settings table of all robot suite files
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        on any unexpected setup failure
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+    ${CRM_PORTAL_LOGIN_URL}                Set Variable           http://${CRM HOST}:${CRM PORTAL PORT}/${CRM PORTAL LOGIN PATH}
+                                           Set Suite Variable     ${CRM_PORTAL_LOGIN_URL}
+    ${CRM_PORTAL_SUBSCRIBER_INPUT_URL}     Set Variable           http://${CRM HOST}:${CRM PORTAL PORT}/${CRM PORTAL DASHBOARD PATH} 
+                                           Set Suite Variable     ${CRM_PORTAL_SUBSCRIBER_INPUT_URL}
+    Comment                                ****** Verify that CRM is up and running ******
+    Comment                                ****** Init Browser ******
+    Comment                                Open Browser             ${CRM_PORTAL_LOGIN_URL}    firefox
+    Comment       CRM Portal Screenshot    AfterBrowserInit
+    Comment                                ****** Reset Phones ****** 
+                                           Reset All Phones
+    Comment                                ****** Setup phone 1 and 2 subscriber accounts (On phone 1 ONLY MainAccount shall have a credit, phone 2 shall have a credit AT LEAST at the MainBalance) ****** 
+                                           Run Keyword If  '${FAKE_CALLS}'!='true'     CRCE Clear All Balances By Imsi    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${ATTACHED_ONNET_PHONE_1_IMSI}       
+                                           Run Keyword If  '${FAKE_CALLS}'!='true'     CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${ATTACHED_ONNET_PHONE_1_IMSI}   10000000   #10 milion should be enough to execute some MOCs even if the unit is millicents   
+                                           Run Keyword If  '${FAKE_CALLS}'!='true'     CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${ATTACHED_ONNET_PHONE_2_IMSI}   10000000   #10 milion should be enough to execute all testsuite MTCs and MFCs even if the unit is millicents   
+    Comment                                ****** Prepare 2 Testsubscribers for FAKING ******
+                                           Run Keyword If   '${FAKE_CALLS}'=='true'     Prepare Fake Subscribers
+          
+Teardown Suite  
+    [Documentation]  This is the suite teardown procedure that is called from "Suite Teardown" keyword 
+    ...              in the settings table of all robot suite files
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        on any unexpected cleanup failure
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+                     CRM Portal Logout
+    Comment          Close Browser
+                     Reset All Phones
+
+Reset All Phones
+    [Documentation]  This helper for the TCs and Suite Setup script ensures that 
+    ...              the voice state of all attached phones is IDLE and call forwarding is disabled
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        In case the request did not succeed 
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+                                     ARS Release                    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI}
+                                     ARS Release                    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_2_IMSI}
+                                     ARS Release                    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_OFFNET_PHONE_12_IMSI}
+                                     ARS Release                    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PSEUDO_FIXNET_PHONE_13_IMSI}
+    ${resultCode}  ${voice_state}=   ARS Get Current Voice State    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI} 
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Querying voice state of Phone 1 failed
+                                     Should Be Equal As Strings     ${voice_state}              IDLE                        msg=Unexpected voice state of Phone 1 
+    ${resultCode}  ${voice_state}=   ARS Get Current Voice State    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_2_IMSI} 
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Querying voice state of Phone 2 failed
+                                     Should Be Equal As Strings     ${voice_state}              IDLE                        msg=Unexpected voice state of Phone 2
+    ${resultCode}  ${voice_state}=   ARS Get Current Voice State    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_OFFNET_PHONE_12_IMSI}
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Querying voice state of Phone 12 failed
+                                     Should Be Equal As Strings     ${voice_state}              IDLE                        msg=Unexpected voice state of Phone 12
+    ${resultCode}  ${voice_state}=   ARS Get Current Voice State    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PSEUDO_FIXNET_PHONE_13_IMSI} 
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Querying voice state of Phone 13 failed
+                                     Should Be Equal As Strings     ${voice_state}              IDLE                        msg=Unexpected voice state of Phone 13
+    ${resultCode}=                   ARS Disable Call Forwarding    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_1_IMSI}           ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_ONNET_RESPONSE_DISABLE_FORWARDING}
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Disabling call forwarding of Phone 1 failed
+    ${resultCode}=                   ARS Disable Call Forwarding    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_ONNET_PHONE_2_IMSI}           ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_ONNET_RESPONSE_DISABLE_FORWARDING}
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Disabling call forwarding of Phone 2 failed
+    ${resultCode}=                   ARS Disable Call Forwarding    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_OFFNET_PHONE_12_IMSI}         ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_OFFNET_RESPONSE_DISABLE_FORWARDING}
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Disabling call forwarding of Phone 12 failed
+    ${resultCode}=                   ARS Disable Call Forwarding    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${ATTACHED_PSEUDO_FIXNET_PHONE_13_IMSI}  ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_PSEUDO_FIXNET_RESPONSE_DISABLE_FORWARDING}
+                                     Should Be Equal As Strings     ${resultCode}               OK                          msg=Disabling call forwarding of Phone 13 failed
+
+
+Enable Call Forwarding Phone1 to Phone2
+    [Documentation]  executes a USSD call forwarding request on Phone1 to Phone2
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        In case the USSD request did not succeed
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+    ${resultCode}=   ARS Enable Call Forwarding  ${ANDROID REMOTING HOST}  ${ANDROID REMOTING PORT}  ${ATTACHED_ONNET_PHONE_1_IMSI}   ${ATTACHED_PHONE_2_MSISDN_FORMAT1}     ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_ONNET_RESPONSE_ENABLE_FORWARDING}
+                     Should Be Equal As Strings  ${resultCode}            OK
+
+Disable Call Forwarding Phone 1
+    [Documentation]  executes a USSD disable call forwarding request on  Phone 1
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        In case the USSD request did not succeed
+    ...
+    ...              Author:       walter.heincz 
+    ...              =========================================================
+    ${resultCode}=   ARS Disable Call Forwarding  ${ANDROID REMOTING HOST}  ${ANDROID REMOTING PORT}  ${ATTACHED_ONNET_PHONE_1_IMSI}  ${USSD_TIMEOUT_SECONDS}    ${USSD_EXPECTED_ONNET_RESPONSE_DISABLE_FORWARDING}
+                     Should Be Equal As Strings   ${resultCode}            OK
+
+
+Run Voice Call And Return Duration
+    [Documentation]  executes a voice call between 2 Phones and monitors the duration of the ongoing call.
+    ...              If the call is not released autonomously the function actively releases the call after the passed max_duration_secs elapsed.
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone that shall act as the calling phone
+    ...                cd_device_imsi         IMSI of the phone that should be called when dialMsisdn (see below) is dialed on the calling phone
+    ...                dial_msisdn            MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...                max_duration_secs      Maximum duration the call shall be monitored            
+    ...
+    ...              Returns:                
+    ...                elapsed_secs           The timespan between call initiation and release in seconds
+    ...
+    ...              Fails:        
+    ...                1. In case the called device doesn't change to RINGING state within 20sec after dialing
+    ...                2. In case answering on called device doesn't lead to CONNECTED
+    ...                3. In case of any Android Remoting System error
+    ...                
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_imsi}  ${dial_msisdn}    ${max_duration_secs}  
+    Comment         ********************* Initiate Call ***********************************      
+    ${resultCode}=                   ARS Dial                      ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   ${dial_msisdn}
+                                     Should Be Equal As Strings    ${resultCode}              OK
+    ${voice_state}=                  Set Variable    unknown
+                                     : FOR    ${second}    IN RANGE    1    20     #wait max 20s for cd_device switch to RINGING state
+                                     \    Sleep                        1s
+                                     \    ${resultCode}               ${voice_state}                    ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cd_device_imsi}   
+                                     \    Should Be Equal As Strings   ${resultCode}                    OK    msg=Querying called device (IMSI=${cd_device_imsi}) state failed with resultCode=${resultCode}
+                                     \    Run Keyword If               '${voice_state}' == 'RINGING'    Exit For Loop
+                                     Should Be Equal As Strings    ${voice_state}              RINGING    msg=Called device (IMSI=${cd_device_imsi}) doesn't change to RINGING state 
+    ${resultCode}=                   ARS Answer                    ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cd_device_imsi}  
+                                     Should Be Equal As Strings    ${resultCode}              OK    msg=Answering on called device (IMSI=${cd_device_imsi}) failed with resultCode=${resultCode}
+    ${resultCode}  ${voice_state}=   ARS Get Current Voice State   ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi} 
+                                     Should Be Equal As Strings            ${resultCode}              OK           msg=Querying calling device (IMSI=${cg_device_imsi}) state failed with resultCode=${resultCode}
+                                     Should Be Equal As Strings            ${voice_state}             CONNECTED    msg=Calling device (IMSI=${cd_device_imsi}) doesn't change to CONNECTED state 
+    Comment         ********************* Observe Call until released or max time elapsed ****************
+    ${elapsed_secs}=     Set Variable    0 
+                         : FOR    ${second}    IN RANGE    0    ${max_duration_secs}   #ATTENTION: FOR ... IN RANGE loops from the range start to range end minus 1 - therefore we have start at 0 to get the full amount 
+                         \    Sleep                        1s
+                         \    ${elapsed_secs}    Evaluate  ${elapsed_secs}+1
+                         \    ${resultCode}                ${voice_state}                ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}    
+                         \    Should Be Equal As Strings    ${resultCode}                OK      msg=Querying calling device (IMSI=${cg_device_imsi}) state failed with resultCode=${resultCode}
+                         \    Run Keyword If               '${voice_state}' == 'IDLE'    Exit For Loop
+    Comment         ********************* Release Call if it isn't yet ***********************************      
+    ${resultCode}=      Run Keyword If   '${voice_state}'=='CONNECTED'    ARS Release       ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}
+    ...                 ELSE                                              Set Variable      OK 
+                        Should Be Equal As Strings                        ${resultCode}     OK   msg=Releasing the call failed with resultCode=${resultCode}
+    [return]            ${elapsed_secs}   
+
+
+
+
+
+
+
+
+
+
+################################### PRIVATE Keywords ##################################################
+
+
+Prepare Fake Subscribers 
+    [Documentation]  cretes 2 test subscribers for faking calls (in development mode) 
+    ...              and exposes them as suite global variables:
+    ...                FAKE_ATTACHED_ONNET_PHONE_1_IMSI
+    ...                FAKE_ATTACHED_ONNET_PHONE_1_MSISDN
+    ...                FAKE_DESTINATION_MSISDN              As MOC B-Party (or MFC C-Party) used for faking calls if it's not a special number (e.g. in case charge free TC FAKE_TOLL_FREE_NUMBER is used instead)
+    ...                FAKE_ORIGINATION_MSISDN              As MFC A-Party (or MTC A-Party) used for faking calls
+    ...
+    ...              Arguments:    None
+    ...              Returns:      Nothing 
+    ...              Fails:        when subcriber creation did not succeed
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    Comment                ******* Create 2 test subscribers *******
+    ${INITIAL_BALANCE}=    Set Variable    10000000    #10 million should be enough for some calls even if it's in millicent units
+    ${return_code}=        CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+                           Should Be Equal As Strings      ${return_code}    OK
+                           ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    Set Variable    ${TESTSUBCRIBERS IMSI RANGE START}  
+                           ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}  Set Variable    ${TESTSUBCRIBERS MSISDN RANGE START}
+                           ${FAKE_DESTINATION_IMSI}               Evaluate        ${TESTSUBCRIBERS IMSI RANGE START}+1
+                           ${FAKE_DESTINATION_MSISDN}             Evaluate        ${TESTSUBCRIBERS MSISDN RANGE START}+1
+                           ${FAKE_ORIGINATION_MSISDN}             Set Variable    ${FAKE_DESTINATION_MSISDN}
+    Comment                ******* Setup their acounts (only MainAccount shall have a credit) *******
+                           CRCE Clear All Balances By Imsi    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}  
+                           CRCE Clear All Balances By Imsi    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_DESTINATION_IMSI}  
+                           CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}  10000000   #10 milion should be enough to execute some calls even if the units are milli cents
+                           CRCE Set Main Balance By Imsi      ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${FAKE_DESTINATION_IMSI}             10000000   
+    Comment                ******* Expose corresponding suite global variables *******
+                           Set Suite Variable     ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}
+                           Set Suite Variable     ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}
+                           Set Suite Variable     ${FAKE_DESTINATION_IMSI}          
+                           Set Suite Variable     ${FAKE_DESTINATION_MSISDN}          
+                           Set Suite Variable     ${FAKE_ORIGINATION_MSISDN}           
+
+

@@ -1,0 +1,592 @@
+*** Settings ***
+Documentation     This suite tests the set of "standard" calls: MOC, MTC, MFC and SMS.
+...				  It uses standardised library keywords encapsulating Call Generator's functionality. Tests try to
+...				  check other components (at the moment IN, CRCE and XDR) for evidences of calls - in log files and in DB.
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite
+Force Tags        FALABELLA_CHILE_supported  MOC_involved  MTC_involved  MFC_involved  SMS_involved  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+${IN_LOG_FILE_NAME}			inew-in.log
+${XDR_LOG_FILE_PATH}    	/var/log/inew/xdr/5.2.2/inew-mvno-xdr.log
+${ETL_LOG_FILE_PATH}    	/var/log/inew/etl/5.2.11/inew-mvno-etl.log
+${CRCE_LOG_FILE_PATH}		/var/log/inew/crce/5.2.13/negret-0.log
+${IN_MOC_LOG_FILE_PATH}    	/var/log/inew/core-in/1.0.0/moc/partition/current
+${IN_MTC_LOG_FILE_PATH}    	/var/log/inew/core-in/1.0.0/mtc/partition/current
+${IN_MFC_LOG_FILE_PATH}    	/var/log/inew/core-in/1.0.0/mfc/partition/current
+${IN_SMS_S_LOG_FILE_PATH}   /var/log/inew/core-in/1.0.0/smsc-submit/partition/current
+${IN_SMS_D_LOG_FILE_PATH}   /var/log/inew/core-in/1.0.0/smsc-deliver/partition/current
+${TAILED_XDR_LOG_FILE}    	ssh_tail_log-xdr.log
+${TAILED_ETL_LOG_FILE}    	ssh_tail_log-etl.log
+${TAILED_IN_LOG_FILE}    	ssh_tail_log-in.log
+${TAILED_CRCE_LOG_FILE}    	ssh_tail_log-crce.log
+${FINAL_DESTINATION_MFC}	56955691975
+${EXPECTED_BALANCE_1S_MOC}	9999800
+${EXPECTED_BALANCE_SMS}		9996000
+${EXPECTED_BALANCE_36S_MTC}  	10000000
+${EXPECTED_BALANCE_136S_MOC}	9928000
+
+*** Keywords ***
+Check MOC XDR log
+    [Documentation]    Checks the tailed log file of MOC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    Onnet|Originating
+
+Check Long MOC XDR log
+    [Documentation]    Checks the tailed log file of MOC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    136000|136000
+	Should Contain    ${temp}    Onnet|Originating
+	
+Check MTC XDR log
+    [Documentation]    Checks the tailed log file created on XDR during MTC call. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Comment		Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    CRCE|CDR
+	Should Contain    ${temp}    Onnet|Terminating	
+
+Check MFC XDR log
+    [Documentation]    Checks the tailed log file of MFC call created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written  
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	Should Contain    ${temp}    ${FINAL_DESTINATION_MFC}
+    Should Contain    ${temp}    CRCE|CDR
+    Should Contain    ${temp}    Onnet|Forwarding 
+
+Check SMS XDR log
+    [Documentation]    Checks the tailed log file of SMS created on XDR during MTC. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+	
+Check MOC IN log
+    [Documentation]    Checks the tailed log file of MOC call created on IN. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MOC IN log
+    Should Contain    	${temp}    TrafficType: Originating
+	Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 1000
+	Should Not Contain	${temp}    Exception
+	
+Check Long MOC IN log	
+    [Documentation]    Checks the tailed log file of multi-slice (long) MOC call created on IN. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MOC IN log
+    Should Contain    	${temp}    TrafficType: Originating
+	Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 136000
+	Should Not Contain	${temp}    Exception
+	
+Check MTC IN log
+    [Documentation]    Checks the tailed IN log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MTC IN log
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 36000
+	Should Contain    	${temp}    TrafficType: Terminating
+	Should Not Contain	${temp}    Exception	
+	
+Check MFC IN log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code	
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}  ${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check MFC IN log	
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    UsedTime: 1000
+	Should Contain    	${temp}    TrafficType: Forwarding
+	Should Not Contain  ${temp}    Exception	
+	
+Check SMS IN log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...				rel_c - CG release code		
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    		${log_file}		${rel_c}
+    ${temp}=    		OperatingSystem.Get File    ${log_file}
+    Should be equal as Integers  ${rel_c}  0   msg=CG session failed - check SMS IN log		
+    Should Contain    	${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    	${temp}    ErrorCode: OK
+	Should Contain    	${temp}    TrafficType: ShortMessage	
+	Should Not Contain  ${temp}    Exception
+	
+Check MOC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    finalCommit=true, usedTime=1000
+	Should Contain    ${temp}    Voice|FALSE|${MSC ADDRESS}
+    Should Contain    ${temp}    1000|1000	
+	
+Check Long MOC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    finalCommit=true, usedTime=136000
+	Should Contain    ${temp}    Voice|FALSE|${MSC ADDRESS}
+    Should Contain    ${temp}    136000|136000	
+
+Check MTC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+	Should Contain    ${temp}    Onnet|Terminating
+    Should Contain    ${temp}    finalCommit=true, usedTime=36000
+	Should Contain    ${temp}    Voice|FALSE|${MSC ADDRESS}
+    Should Contain    ${temp}    36000|36000	
+
+Check MFC CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+	Should Contain    ${temp}    Onnet|Forwarding
+    Should Contain    ${temp}    finalCommit=true, usedTime=1000
+	Should Contain    ${temp}    Voice|FALSE|${MSC ADDRESS}
+    Should Contain    ${temp}    1000|1000	
+
+Check SMS CRCE log
+    [Documentation]    Checks the tailed log file created on CRCE. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+	Comment		Should Not Contain    ${temp}    Exception
+    Should Contain    ${temp}    Successfully charged
+    Should Contain    ${temp}    4000|4000	
+	
+AnalyseDBTable
+    [Documentation]    	Look into the ${db} ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				db - db selector
+	...				table - DB table to look for
+	...             called_party - B party in the call
+	...             call_length
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+    [Arguments]    ${db}    ${table}   ${called_party}   ${call_length}
+	Run Keyword If		'${db}' == 'xdr'  AnalyseXdrDB  ${table}   ${called_party}   ${call_length}
+
+AnalyseXdrDB
+    [Documentation]    	Look into the ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             called_party - B party in the call
+	...             call_length
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+	[Arguments]    ${table}   ${called_party}   ${call_length}
+	@{queryRows}=      	DBLIB Query  select calledmsisdn, callduration from ${table} where id in (select max(id) from ${table});
+	@{fields}=       	Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+    ${b_party}=			Set Variable	@{fields}[0]       #log 1st field
+	${duration}=		Set Variable	@{fields}[1]       #log 2nd field	
+	Should be Equal		${b_party}		${called_party}		msg=XDR DB ${table} values are wrong
+	Should be Equal 	${duration}		${call_length}		msg=XDR DB ${table} values are wrong
+
+Check Subscriber Balance
+    [Documentation]    	Check the CRCE DB entry for test subscriber's monetary account balance.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...				expected balance
+	...         Returns:
+	...         Fails:
+	...				if expected balance is different than the one found in DB
+    ...    =========================================================
+	[Arguments]    		${subscriber}  ${expected_bal}
+	DBLIB Connect to PostgresDB    ${CRCE DB HOST}   ${CRCE DB PORT}   ${CRCE DB NAME}    ${CRCE DB USER}   ${CRCE DB PWD}
+	@{queryRows}=      	DBLIB Query  select balance from acc_subscriber_accounts where category=1 and subscriber_id in (select id from profiler_subscriber_profiles where msisdn='${subscriber}');
+	@{fields}=       	Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+    ${balance}=			Set Variable	@{fields}[0]       #log 1st field
+	Disconnect From Database
+	Should Be Equal		${balance}   ${expected_bal}   msg=Balance ${balance} NOT OK!
+	Log					Balance= ${balance} OK!   console=yes
+	
+Reset Subscriber Balance
+    [Documentation]    	Reset the test subscriber's monetary account balance to initial value.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...				
+    ...    =========================================================
+	[Arguments]    		${subscriber}
+	DBLIB Connect to PostgresDB    ${CRCE DB HOST}   ${CRCE DB PORT}   ${CRCE DB NAME}    ${CRCE DB USER}   ${CRCE DB PWD}
+	Execute SQL  update acc_subscriber_accounts set balance=10000000 where category=1 and subscriber_id in (select id from profiler_subscriber_profiles where msisdn='${subscriber}');
+	Disconnect From Database
+
+	
+Setup Suite
+	${date}=				Run		date
+	Log 				   	Date and time: ${date}		console=yes
+	${INITIAL_BALANCE}=    	Set Variable    10000000    #10 million should be enough for some calls even if it's in millicent units
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+	# find out week of the year and year needed for CRCE DB table name
+	${week}=			   	Run		date +%V
+	${year}=			   	Run		date +%Y
+	Set Suite Variable 	   	${YYYYwWW}  ${year}w${week}
+	
+Teardown Suite
+    Comment				   	Disconnect From Database
+	Log  				   	Cleaning up    console=yes
+	Run					   	mv *ssh_tail*.log log/
+	
+*** Test Cases ***
+
+Run MOC Call
+    [Documentation]    	Test will make a MOC call, duration 1s. 
+    ...					Logs from XDR, IN and CRCE are collected and analysed as well as XDR DB. Before the call subscriber's 
+	...					balance is set, and after the call balance is checked for correct charging.
+	...
+    ...    		Arguments:
+	...				none
+	...         Returns:
+	...				none
+	...         Fails:
+	...	
+    ...         =================================================================================
+	Comment				   ******* Connect with XDR and start the log monitoring
+	${ssh_connection_xdr}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_in}=     SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MOC_LOG_FILE_PATH}${IN_LOG_FILE_NAME}    host=${IN-APP HOST}						   
+	${ssh_connection_crce}=   SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE_LOG_FILE_PATH}    host=${CRCE HOST}	
+    Comment                ******* Run Auto-MOC *******
+    Log					   Running the MOC call...  console=yes
+    ${rc}=                 CG Run MOC 1s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Sleep				   5s
+	Log					   ...do the checks...   console=yes
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MOC_${TAILED_IN_LOG_FILE}						
+	Check MOC IN log       MOC_${TAILED_IN_LOG_FILE}  ${rc}
+	Log					   IN OK...  console=yes
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    MOC_${TAILED_XDR_LOG_FILE}
+	Check MOC XDR log      MOC_${TAILED_XDR_LOG_FILE}
+	Log					   XDR OK...  console=yes
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_crce}    MOC_${TAILED_CRCE_LOG_FILE}
+	Check MOC CRCE log     MOC_${TAILED_CRCE_LOG_FILE}
+	Log					   CRCE OK...  console=yes
+	Comment                ******* Check XDR DB *******
+    DBLIB Connect to PostgresDB    ${XDR DB HOST}   ${XDR DB PORT}   ${XDR DB NAME}    ${XDR DB USER}   ${XDR DB PWD}
+	AnalyseDBTable  	   xdr   crce_cdr_${YYYYwWW}  ${TESTSUBCRIBERS MSISDN RANGE START}  1000
+	Disconnect From Database
+	Log					   XDR DB OK...  console=yes
+	Comment				   ******* Checking Subscriber's Account Balance *******
+    Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_1S_MOC}
+	Close All Connections
+	
+Run Long MOC Call
+    [Documentation]  Longer MOC call; duration is 136s. The goal is to have call duration longer than 1 slice (60secs)
+    ...				 Logs from XDR, IN and CRCE are collected and analysed as well as XDR DB 
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...
+    ...              ==
+	Comment				   ******* Connect with XDR, IN, CRCE and start the log monitoring
+	${ssh_connection_xdr}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_in}=     SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MOC_LOG_FILE_PATH}${IN_LOG_FILE_NAME}    host=${IN-APP HOST}						   
+	${ssh_connection_crce}=   SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE_LOG_FILE_PATH}    host=${CRCE HOST}	
+	Reset Subscriber Balance  ${TESTSUBCRIBERS MSISDN RANGE START}    
+	Comment                ******* Run Auto-MOC *******
+    Log					   Running the Long MOC call...  console=yes
+    ${rc}=                 CG Run MOC 136s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+	Sleep				   5s
+	Log					   ...do the checks...   console=yes
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    LongMOC_${TAILED_IN_LOG_FILE}						
+	Check Long MOC IN log  LongMOC_${TAILED_IN_LOG_FILE}  ${rc}
+	Log					   IN OK...  console=yes
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    LongMOC_${TAILED_XDR_LOG_FILE}
+	Check Long MOC XDR log      LongMOC_${TAILED_XDR_LOG_FILE}
+	Log					   XDR OK...  console=yes
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_crce}    LongMOC_${TAILED_CRCE_LOG_FILE}
+	Check Long MOC CRCE log     LongMOC_${TAILED_CRCE_LOG_FILE}
+	Log					   CRCE OK...  console=yes
+	Comment                ******* Check XDR DB *******
+    DBLIB Connect to PostgresDB    ${XDR DB HOST}   ${XDR DB PORT}   ${XDR DB NAME}    ${XDR DB USER}   ${XDR DB PWD}
+	Comment			AnalyseDBTable  	   xdr   crce_cdr_${YYYYwWW}  ${TESTSUBCRIBERS MSISDN RANGE START}  1000
+	Disconnect From Database
+	Log					   XDR DB OK...  console=yes
+	Comment				   ******* Checking Subscriber's Account Balance *******
+	Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_136S_MOC}
+	Close All Connections	
+
+Run MTC Call
+    [Documentation]    	Reset the test subscriber's monetary account balance to initial value.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...
+    ...              ==
+	${ssh_connection_xdr}=  SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_in}=  SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MTC_LOG_FILE_PATH}${IN_LOG_FILE_NAME}    host=${IN-APP HOST}
+	${ssh_connection_crce}=   SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE_LOG_FILE_PATH}    host=${CRCE HOST}					   
+	Reset Subscriber Balance	${TESTSUBCRIBERS MSISDN RANGE START}
+	Log					   Running the MTC call...   console=yes
+	Comment                ******* Run Auto-MTC *******
+	${rc}=                 CG Run MTC 1s    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MTC REQ QUEUE}    ${AMQ-SIG MTC RES QUEUE}                      
+	Sleep				   5s
+	Log					   ...do the checks...   console=yes
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MTC_${TAILED_IN_LOG_FILE}						
+	Check MTC IN log       MTC_${TAILED_IN_LOG_FILE}  ${rc}
+	Log					   IN OK...  console=yes
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    MTC_${TAILED_XDR_LOG_FILE}
+	Check MTC XDR log      MTC_${TAILED_XDR_LOG_FILE}
+	Log					   XDR OK...  console=yes	
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_crce}    MTC_${TAILED_CRCE_LOG_FILE}
+	Check MTC CRCE log     MTC_${TAILED_CRCE_LOG_FILE}
+	Log					   CRCE OK...  console=yes
+	Comment                ******* Check XDR DB *******
+    DBLIB Connect to PostgresDB    ${XDR DB HOST}   ${XDR DB PORT}   ${XDR DB NAME}    ${XDR DB USER}   ${XDR DB PWD}
+	AnalyseDBTable  	   xdr   crce_cdr_${YYYYwWW}  ${TESTSUBCRIBERS MSISDN RANGE START}  36000
+	Disconnect From Database
+	Log					   XDR DB OK...  console=yes
+	Comment				   ******* Checking Subscriber's Account Balance *******
+    Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_36S_MTC}	
+	Close All Connections
+
+Run MFC Call
+    [Documentation]    	Reset the test subscriber's monetary account balance to initial value.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...
+    ...              ==
+	${ssh_connection_xdr}=  SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_in}=  	SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MFC_LOG_FILE_PATH}${IN_LOG_FILE_NAME}    host=${IN-APP HOST}						   
+	${ssh_connection_crce}=   SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE_LOG_FILE_PATH}    host=${CRCE HOST}		
+	Reset Subscriber Balance  ${TESTSUBCRIBERS MSISDN RANGE START}
+	Log					   Running the MFC call...   console=yes	
+    Comment                ******* Run Auto-MFC *******
+	${rc}=                 CG Run MFC 1s    ${TESTSUBCRIBERS MSISDN RANGE START}   ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${FINAL_DESTINATION_MFC}   ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MFC REQ QUEUE}    ${AMQ-SIG MFC RES QUEUE}                      
+	Sleep				   5s
+	Log					   ...do the checks...   console=yes
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MFC_${TAILED_IN_LOG_FILE}						
+	Check MFC IN log       MFC_${TAILED_IN_LOG_FILE}  ${rc}
+	Log					   IN OK...  console=yes
+    Should be equal as Integers  ${rc}  0   msg=CG session failed
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    MFC_${TAILED_XDR_LOG_FILE}
+	Check MFC XDR log      MFC_${TAILED_XDR_LOG_FILE}
+	Log					   XDR OK...  console=yes	
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_crce}    MFC_${TAILED_CRCE_LOG_FILE}
+	Check MFC CRCE log     MFC_${TAILED_CRCE_LOG_FILE}
+	Log					   CRCE OK...  console=yes
+	Comment                ******* Check XDR DB *******
+    DBLIB Connect to PostgresDB    ${XDR DB HOST}   ${XDR DB PORT}   ${XDR DB NAME}    ${XDR DB USER}   ${XDR DB PWD}
+	AnalyseDBTable  	   xdr   crce_cdr_${YYYYwWW}  ${FINAL_DESTINATION_MFC}  1000
+	Disconnect From Database
+	Log					   XDR DB OK...  console=yes
+	Comment				   ******* Checking Subscriber's Account Balance *******
+    Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_1S_MOC}
+	Close All Connections
+
+	
+Run SMS
+    [Documentation]    	Reset the test subscriber's monetary account balance to initial value.
+    ...
+    ...    		Arguments:
+	...				subscriber
+	...         Returns:
+	...         Fails:
+	...
+    ...              =========================================================
+	${ssh_connection_xdr}=  SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_in}=  SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_SMS_S_LOG_FILE_PATH}${IN_LOG_FILE_NAME}    host=${IN-APP HOST}
+	${ssh_connection_crce}=  SSH Login And Start File Monitor    ${CRCE USER}    ${CRCE PWD}    ${EMPTY}    ${CRCE_LOG_FILE_PATH}    host=${CRCE HOST}		
+	Reset Subscriber Balance	${TESTSUBCRIBERS MSISDN RANGE START}
+	Log					   Sending the SMS...   console=yes
+    Comment                ******* Send SMS *******
+	${rc}=				   CG Send SMS    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG SMS REQ QUEUE}    ${AMQ-SIG SMS RES QUEUE}
+	Sleep 				   5s
+	Log					   ...do the checks...   console=yes	
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    SMS_${TAILED_IN_LOG_FILE}						
+	Check SMS IN log       SMS_${TAILED_IN_LOG_FILE}  ${rc}
+	Log					   IN OK...  console=yes
+  	Should be equal as Integers  ${rc}  0   msg=CG session failed
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    SMS_${TAILED_XDR_LOG_FILE}
+	Check SMS XDR log      SMS_${TAILED_XDR_LOG_FILE}
+	Log					   XDR OK...  console=yes	
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_crce}    SMS_${TAILED_CRCE_LOG_FILE}
+	Check SMS CRCE log     SMS_${TAILED_CRCE_LOG_FILE}
+	Log					   CRCE OK...  console=yes
+	Comment                ******* Check XDR DB *******
+    DBLIB Connect to PostgresDB    ${XDR DB HOST}   ${XDR DB PORT}   ${XDR DB NAME}    ${XDR DB USER}   ${XDR DB PWD}
+	AnalyseDBTable  	   xdr   crce_cdr_${YYYYwWW}  ${TESTSUBCRIBERS MSISDN RANGE START}  0
+	Disconnect From Database
+	Log					   XDR DB OK...  console=yes	
+	Comment				   ******* Checking Subscriber's Account Balance *******
+    Check Subscriber Balance   ${TESTSUBCRIBERS MSISDN RANGE START}  ${EXPECTED_BALANCE_SMS}
+	Close All Connections

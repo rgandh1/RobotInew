@@ -1,0 +1,129 @@
+*** Settings ***
+Documentation     This robot resource file provides standard variables that describe
+...               the environment of the mTel Postpaid Light testbed (TB25).
+...               Testsuites should never hardcode these infos but instead should
+...               include this resourcefile. In case that the testbed configuration
+...               changes this central resource file enables simplest adaptation of
+...               all related test suites.
+
+*** Variables ***
+${SUT IS AVAILABLE}    FALSE    #TRUE if the testbed is ready for testing otherwise FALSE (indicating that the testbed is for whatever reason unusable at the moment)
+${SUT PROJECT TAG PREFIX}    MTEL   # PPLIGHT # This indicates the testbeds project dedication - see also project short-cut list in ../tagging-rules.txt for available prefixes
+${SUT RELEASE TAG PREFIX}    R6.2    #This indicates the testbeds core version - see also the ReleaseIntroduction/Extroduction group in ../tagging-rules.txt for available prefixes
+
+${TESTSUBCRIBERS IMSI RANGE START}    232201667725900
+${TESTSUBCRIBERS MSISDN RANGE START}    43667725900
+${TESTSUBCRIBERS DEFAULT LANGUAGEID}    1    #1=English
+${TESTSUBCRIBERS DEFAULT TARIFFID}    101001
+${TESTSUBCRIBERS DEFAULT SLICE SIZE SECS}    60
+${TESTSUBCRIBERS DEFAULT SLICE COSTS}    90000    #90000 microcents = 9 cents = 0,09 EUR
+${TESTSUBCRIBERS PP DEFAULT TARIFFID}    101004
+${TESTSUBCRIBERS PP IMSI RANGE START}    232201667725500	#232201000004000 postpaid subscriber
+${TESTSUBCRIBERS PP MSISDN RANGE START}    43667725500		#436677704000   postpaid subscriber
+${TESTSUBCRIBERS PP DEFAULT SLICE COSTS}    75000    #75000 microcents = 7,5 cents = 0,075 EUR
+
+${TESTSUBCRIBERS DATA TARIFFID} 	101003		#added by matko.sanseovic on 20151116 - represents tarrif which uses also data account
+${DATA ACCOUNT CURRENCYID}		101006		#added by matko.sanseovic on 20151116 - id of the currency used in charging data sessions, usually named 'MB Data'
+${DATA TRAFFIC RATING GROUP}	100				# added by matko.sanseovic on 2016-01-26  
+
+${MSC ADDRESS}     43667725
+
+${ANDROID REMOTING HOST}    10.189.11.57  #10.189.11.129    #10.189.11.226    #10.2.1.40
+${ANDROID REMOTING PORT}    8080
+
+${AMQ-SIG HOST}    10.105.125.123
+${AMQ-SIG USER}    qa_automation
+${AMQ-SIG PWD}    qa_only!  
+${AMQ-SIG RSA FILE}    /home/qa_automation/.ssh/id_rsa    #private key file for public key authentication instead of password based authentication - requires setting up the AMQ host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${AMQ-SIG USER}@${AMQ-SIG HOST}"
+${AMQ-SIG PORT}    61616
+${AMQ-SIG MOC REQ QUEUE}    ISOLAT_MOC_REQ
+${AMQ-SIG MOC RES QUEUE}    ISOLAT_CAP_RES
+${AMQ-SIG MFC REQ QUEUE}    ISOLAT_MFC_REQ
+${AMQ-SIG MFC RES QUEUE}    ISOLAT_CAP_RES
+${AMQ-SIG MTC REQ QUEUE}    ISOLAT_MTC_REQ
+${AMQ-SIG MTC RES QUEUE}    ISOLAT_CAP_RES
+${AMQ-SIG SMS REQ QUEUE}    ISOLAT_MOSMPROXY_REQ
+${AMQ-SIG SMS RES QUEUE}    ISOLAT_USSDSMS_RES
+${AMQ-XDR HOST}    10.105.125.123		# added by matko.sanseovic on 20150226
+${AMQ-XDR PORT}    61626
+${AMQ-XDR SERVICE SCRIPT NAME}    amq-xdr			# added by matko.sanseovic on 20150320
+${AMQ-XDR CRCE CDR QUEUE}    inew-cs.crce.cdr		# added by matko.sanseovic on 20150327
+${AMQ-XDR CRCE CONF QUEUE}	 inew-cs.crce.conf		# added by matko.sanseovic on 20150327
+
+${CRCE01 HOST}    10.105.125.159
+${CRCE01 USER}    qa_automation
+#${CRCE SUBSCRIBERPEER ENDPOINT}    #http://${CRCE01 HOST}:8080/profiler/subscriber
+${CRCE01 WEBSERVICES PORT}    		8080
+${CRCE01 WEBSERVICES BASE PATH}    	/inew-mvno-crce-webservices/ 
+${CRCE01 PWD}			qa_only!    #${EMPTY}
+${CRCE01 RSA FILE}      /home/qa_automation/.ssh/id_rsa  #private key file for public key authentification instead of password based authentification - requires setting up the CRCE01 host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${CRCE01 USER}@${CRCE01 HOST}" 
+${CRCE02 HOST}          ${EMPTY}
+${CRCE HOST}            ${CRCE01 HOST}
+${CRCE USER}			${CRCE01 USER}
+${CRCE PWD}			  	${CRCE01 PWD}
+${CRCE DB HOST}	10.105.125.129		# added by matko.sanseovic on 20150630
+${CRCE DB PORT}	5442				# added by matko.sanseovic on 20150630
+${CRCE DB NAME}	crce				# added by matko.sanseovic on 20150630
+${CRCE DB USER}	crce				# added by matko.sanseovic on 20150630
+${CRCE DB PWD}	crce				# added by matko.sanseovic on 20150630
+${CRCE LOG FILE PATH}		/var/log/inew/crce/6.2.1/negret-0.log   # added by matko.sanseovic on 20150709
+${CRCE SERVICE NAME}		inew-mvno-crce   # added by matko.sanseovic on 20150716
+
+${IN-APP HOST}    10.105.125.135
+${IN-APP USER}    qa_automation
+${IN-APP PWD}     qa_only!    #${EMPTY} 
+${IN-APP RSA FILE}    /home/qa_automation/.ssh/id_rsa    #private key file for public key authentification instead of password based authentification - requires setting up the IN host via "ssh-copy-id -i ~/.ssh/id_rsa.pub ${IN-APP USER}@${IN-APP HOST}"
+${IN-APP MOC LOG FILE PATH}    	/var/log/inew/core-in/1.0.0/moc/partition/00/inew-in.log
+${IN-APP MOC SERVICE NAME}		inew-mvna-corein-service-moc-partition-00-1.0.0   # added by matko.sanseovic on 20150716
+
+${CRM HOST}       10.105.125.127
+${CRM USER}       qa_automation
+${CRM PWD}        qa_only!        
+${CRM PORTAL PORT}    1084
+${CRM PORTAL LOGIN PATH}    evoweb/web/crm/257_EN
+${CRM PORTAL USER}    crmmanager
+${CRM PORTAL PSWD}    crmmanager   #walter.heincz: recommended to be renamed to CRM PORTAL PWD for consistency reasons
+${CRM PORTAL DASHBOARD PATH}    evoweb/web/crm/393_EN.htm
+
+${XDR HOST}     10.105.125.171       # added by matko.sanseovic on 20150215
+${XDR USER}     qa_automation	  # added by matko.sanseovic on 20150215
+${XDR PWD}      qa_only!		  # added by matko.sanseovic on 20150215  
+${XDR DB HOST}  10.105.125.129       # added by walter.heincz on 20150312
+${XDR DB PORT}  5447                 # added by walter.heincz on 20150312
+${XDR DB NAME}  xdr                  # added by walter.heincz on 20150312
+${XDR DB USER}  xdr                  # added by walter.heincz on 20150312
+${XDR DB PWD}   xdr                  # added by walter.heincz on 20150312
+${XDR LOG FILE PATH}    /var/log/inew/xdr/6.2.0/inew-mvno-xdr.log   # added by matko.sanseovic on 20150624
+${XDR SERVICE NAME}		inew-mvno-xdr   # added by matko.sanseovic on 20150716
+
+${DWH DB HOST}	10.105.125.129		# added by matko.sanseovic on 20150519
+${DWH DB PORT}	5438				# added by matko.sanseovic on 20150519
+${DWH DB NAME}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB USER}	dwh					# added by matko.sanseovic on 20150519
+${DWH DB PWD}	dwh					# added by matko.sanseovic on 20150519
+
+${SOA01 HOST}    10.105.125.165      # added by walter.heincz on 20150401
+${SOA02 HOST}    10.105.125.165      # added by walter.heincz on 20150401
+
+${CUSTOMERSERVICE MONGODB HOST}     ${SOA02 HOST}    # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB PORT}     27020            # added by walter.heincz on 20150401
+${CUSTOMERSERVICE MONGODB DB NAME}  customerservice  # added by walter.heincz on 20150401
+
+${USSD HOST}		10.105.125.143				# block added by matko.sanseovic on 20151027
+${USSD USER}   		qa_automation
+${USSD PWD}	 		qa_only!
+${USSD CODE}		100
+${USSD LOCATION}	43667770
+${USSD HOME}		/home/qa_automation/
+
+${DIAM GW HOST}			10.105.125.159			# block added by matko.sanseovic on 20151113
+${DIAM GW PORT}			3868
+${DIAM GW REALM}		ocs01.mtel.at
+${DIAM GGSN FQDN}		ggsn01.mtel.at
+${DIAM GGSN REALM}		ocs01.mtel.at
+${DIAM GGSN VENDORID}	10415
+${DIAM HPLMN LOCATION}  23201
+${OCS HOST}				${DIAM GW HOST}
+${OCS USER}     		qa_automation
+${OCS PWD}      		qa_only!
+${OCS SERVICE NAME}	   	inew-mvno-ocs

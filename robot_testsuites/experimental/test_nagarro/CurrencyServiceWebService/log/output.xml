@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20160205 13:41:33.334">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/test_nagarro/CurrencyServiceWebService/CurrencyServiceSOAP.txt" id="s1" name="CurrencyServiceSOAP">
+<test id="s1-t1" name="Test the Currency Web Service">
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Robot workspace resource used is:${ROBOT_WORKSPACE_RESOURCE}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.526" level="INFO">Robot workspace resource used is:/opt/robot/robotworkspace/robotworkspace-resource.txt</msg>
+<status status="PASS" endtime="20160205 13:41:34.528" starttime="20160205 13:41:34.521"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Sut file used is:${SUT_RESOURCE}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.533" level="INFO">Sut file used is:/opt/robot/robotworkspace/suts/MVNA-MEX-resource.txt</msg>
+<status status="PASS" endtime="20160205 13:41:34.535" starttime="20160205 13:41:34.530"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>The CRCE used is:${CRCE DB HOST}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.540" level="INFO">The CRCE used is:10.105.119.129</msg>
+<status status="PASS" endtime="20160205 13:41:34.542" starttime="20160205 13:41:34.537"></status>
+</kw>
+<kw type="kw" name="dblib_support-resource.DBLIB Connect to PostgresDB">
+<doc>this helper shields testsuite developers from the necessity to know driver and connection string details.</doc>
+<arguments>
+<arg>${CRCE DB HOST}</arg>
+<arg>${CRCE DB PORT}</arg>
+<arg>${CRCE DB NAME}</arg>
+<arg>${CRCE DB USER}</arg>
+<arg>${CRCE DB PWD}</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${host}:${port}/${dbName}</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.645" starttime="20160205 13:41:34.570"></status>
+</kw>
+<status status="PASS" endtime="20160205 13:41:34.650" starttime="20160205 13:41:34.546"></status>
+</kw>
+<kw type="kw" name="@{QueryResult} = dblib_support-resource.DBLIB Query">
+<doc>this helper executes the passed select statement and returns the result as a list.</doc>
+<arguments>
+<arg>Select provider_id from acc_currencies where provider_id is not null limit 1</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Execute Query *****</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.691" starttime="20160205 13:41:34.687"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Store Query Result To File">
+<doc></doc>
+<arguments>
+<arg>${selectStatement}</arg>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.736" starttime="20160205 13:41:34.694"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Load Result from file</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.743" starttime="20160205 13:41:34.739"></status>
+</kw>
+<kw type="kw" name="${queryResultSetLines} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.752" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/test_nagarro/CurrencyServiceWebService/tmp_query_result.txt"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/test_nagarro/CurrencyServiceWebService/tmp_query_result.txt&lt;/a&gt;'</msg>
+<msg timestamp="20160205 13:41:34.756" level="INFO">${queryResultSetLines} = 99|
+</msg>
+<status status="PASS" endtime="20160205 13:41:34.754" starttime="20160205 13:41:34.747"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Transform single string result into list of lines *****</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.763" starttime="20160205 13:41:34.759"></status>
+</kw>
+<kw type="kw" name="@{queryResultSet} = String.Split To Lines">
+<doc>Converts the `string` into a list of lines.</doc>
+<arguments>
+<arg>${queryResultSetLines}</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.771" level="INFO">1 lines returned</msg>
+<msg timestamp="20160205 13:41:34.775" level="INFO">@{queryResultSet} = [ 99| ]</msg>
+<status status="PASS" endtime="20160205 13:41:34.773" starttime="20160205 13:41:34.766"></status>
+</kw>
+<msg timestamp="20160205 13:41:34.780" level="INFO">@{QueryResult} = [ 99| ]</msg>
+<status status="PASS" endtime="20160205 13:41:34.778" starttime="20160205 13:41:34.658"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>@{QueryResult}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.788" level="INFO">99|</msg>
+<status status="PASS" endtime="20160205 13:41:34.790" starttime="20160205 13:41:34.784"></status>
+</kw>
+<kw type="kw" name="${ProviderId} = String.Get Line">
+<doc>Returns the specified line from the given `string`.</doc>
+<arguments>
+<arg>@{QueryResult}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.800" level="INFO">${ProviderId} = 99|</msg>
+<status status="PASS" endtime="20160205 13:41:34.799" starttime="20160205 13:41:34.794"></status>
+</kw>
+<kw type="kw" name="${ProviderId} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${ProviderId}</arg>
+<arg>|</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.811" level="INFO">${ProviderId} = 99</msg>
+<status status="PASS" endtime="20160205 13:41:34.809" starttime="20160205 13:41:34.804"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${ProviderId}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.819" level="INFO">99</msg>
+<status status="PASS" endtime="20160205 13:41:34.821" starttime="20160205 13:41:34.814"></status>
+</kw>
+<kw type="kw" name="${CurrencyIdQuery} = BuiltIn.Catenate">
+<doc>Catenates the given items together and returns the resulted string.</doc>
+<arguments>
+<arg>Select distinct id as currency_id from acc_currencies where provider_id=</arg>
+<arg>${ProviderId}</arg>
+<arg>order by currency_id asc limit 1</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.833" level="INFO">${CurrencyIdQuery} = Select distinct id as currency_id from acc_currencies where provider_id= 99 order by currency_id asc limit 1</msg>
+<status status="PASS" endtime="20160205 13:41:34.832" starttime="20160205 13:41:34.825"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${CurrencyIdQuery}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.842" level="INFO">Select distinct id as currency_id from acc_currencies where provider_id= 99 order by currency_id asc limit 1</msg>
+<status status="PASS" endtime="20160205 13:41:34.844" starttime="20160205 13:41:34.837"></status>
+</kw>
+<kw type="kw" name="@{QueryResult} = dblib_support-resource.DBLIB Query">
+<doc>this helper executes the passed select statement and returns the result as a list.</doc>
+<arguments>
+<arg>${CurrencyIdQuery}</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Execute Query *****</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.879" starttime="20160205 13:41:34.875"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Store Query Result To File">
+<doc></doc>
+<arguments>
+<arg>${selectStatement}</arg>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.891" starttime="20160205 13:41:34.883"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Load Result from file</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.898" starttime="20160205 13:41:34.895"></status>
+</kw>
+<kw type="kw" name="${queryResultSetLines} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${TMP_QUERY_RESULT_FILE}</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.905" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/test_nagarro/CurrencyServiceWebService/tmp_query_result.txt"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/test_nagarro/CurrencyServiceWebService/tmp_query_result.txt&lt;/a&gt;'</msg>
+<msg timestamp="20160205 13:41:34.909" level="INFO">${queryResultSetLines} = 199000|
+</msg>
+<status status="PASS" endtime="20160205 13:41:34.908" starttime="20160205 13:41:34.901"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>***** Transform single string result into list of lines *****</arg>
+</arguments>
+<status status="PASS" endtime="20160205 13:41:34.915" starttime="20160205 13:41:34.912"></status>
+</kw>
+<kw type="kw" name="@{queryResultSet} = String.Split To Lines">
+<doc>Converts the `string` into a list of lines.</doc>
+<arguments>
+<arg>${queryResultSetLines}</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.922" level="INFO">1 lines returned</msg>
+<msg timestamp="20160205 13:41:34.925" level="INFO">@{queryResultSet} = [ 199000| ]</msg>
+<status status="PASS" endtime="20160205 13:41:34.924" starttime="20160205 13:41:34.918"></status>
+</kw>
+<msg timestamp="20160205 13:41:34.929" level="INFO">@{QueryResult} = [ 199000| ]</msg>
+<status status="PASS" endtime="20160205 13:41:34.928" starttime="20160205 13:41:34.849"></status>
+</kw>
+<kw type="kw" name="${CurrencyId} = String.Get Line">
+<doc>Returns the specified line from the given `string`.</doc>
+<arguments>
+<arg>@{QueryResult}</arg>
+<arg>0</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.939" level="INFO">${CurrencyId} = 199000|</msg>
+<status status="PASS" endtime="20160205 13:41:34.937" starttime="20160205 13:41:34.933"></status>
+</kw>
+<kw type="kw" name="${CurrencyId} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${CurrencyId}</arg>
+<arg>|</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.947" level="INFO">${CurrencyId} = 199000</msg>
+<status status="PASS" endtime="20160205 13:41:34.946" starttime="20160205 13:41:34.942"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${CurrencyId}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20160205 13:41:34.955" level="INFO">199000</msg>
+<status status="PASS" endtime="20160205 13:41:34.957" starttime="20160205 13:41:34.951"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="PASS" critical="yes" endtime="20160205 13:41:34.959" starttime="20160205 13:41:34.500"></status>
+</test>
+<doc>Test the Currency Web Service - GetCurrencies through SOAP UI
+===============================================================================
+Run with arguments:
+--variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt
+--variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/
+============================================================</doc>
+<metadata>
+</metadata>
+<status status="PASS" endtime="20160205 13:41:34.968" starttime="20160205 13:41:33.355"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0">Critical Tests</stat>
+<stat pass="1" fail="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" id="s1" fail="0" name="CurrencyServiceSOAP">CurrencyServiceSOAP</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

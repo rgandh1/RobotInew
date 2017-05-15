@@ -1,0 +1,51 @@
+*** Settings ***
+
+Documentation  A test suite with test cases for creation of NOTIFICATION_BASED campaign.
+...            This test has a workflow that is created using keywords from the resource file.
+Resource       resource.txt
+Metadata       Version    0.1
+
+
+*** Test Cases ***
+
+TC_LcmUI_ReferralUsageCampaign
+    [Documentation]  A test case for creation of NOTIFICATION_BASED campaign with On Referral Usage trigger.
+    Open Browser To Login Page
+    InputUserAndPassword    lcmmanager    lcmmanager
+    Create Campaign		Test ReferralUsage Campaign
+    Open Triggerwindow    
+    Create ReferralUsageTrigger	
+    Open Rewardwindow
+    Create Reward
+    Logout
+    Close Browser
+	
+TC_LcmUI_PlanActivationCampaign
+    [Documentation]  A test case for creation of NOTIFICATION_BASED campaign with On Plan Activation trigger.
+    Open Browser To Login Page
+    InputUserAndPassword    lcmmanager    lcmmanager
+    Create Campaign		Test Subscription Campaign
+    Open Triggerwindow
+    Create PlanActivationTrigger
+    Open Rewardwindow
+    Create Reward
+    Logout
+    Close Browser
+
+TC_LcmUI_SaveCampaignFailed
+    [Documentation]	 A test case for error messages when missing some parameters
+    Open Browser To Login Page
+    InputUserAndPassword    lcmmanager    lcmmanager
+    SaveCampaignNoValues
+    SaveCampaignOnlyCampaignType
+    SaveCampaignEndDateInPast
+    Open Subscriberswindow
+    ClickChangeRangeWithoutSubscribers
+    Open Triggerwindow
+    SaveTriggerWithoutName
+    Open Rewardwindow
+    SaveRewardWithoutName
+    Open Notificationswindow
+    SaveNotificationWithoutName
+    Logout
+    Close Browser

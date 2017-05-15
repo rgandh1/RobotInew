@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20150615 14:06:52.882">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/XDR_Test-robot-suite.txt" id="s1" name="XDR Test-robot-suite">
+<kw type="setup" name="Setup Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${time} = OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>date</arg>
+</arguments>
+<msg timestamp="20150615 14:06:53.901" level="INFO">Running command 'date 2&gt;&amp;1'</msg>
+<msg timestamp="20150615 14:06:53.960" level="INFO">${time} = Mon Jun 15 14:06:53 CEST 2015</msg>
+<status status="PASS" endtime="20150615 14:06:53.955" starttime="20150615 14:06:53.887"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Date and time: ${time}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150615 14:06:53.975" level="INFO">Date and time: Mon Jun 15 14:06:53 CEST 2015</msg>
+<status status="PASS" endtime="20150615 14:06:53.981" starttime="20150615 14:06:53.965"></status>
+</kw>
+<kw type="kw" name="Log The XDR Version">
+<doc>Called at suite setup procedure to check if XDR is running and to see which version is there.</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:54.217" starttime="20150615 14:06:54.000"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20150615 14:06:54.233" level="INFO">Logging into '10.105.113.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20150615 14:06:55.489" level="INFO">Read output: Last login: Mon Jun 15 11:47:55 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m</msg>
+<msg timestamp="20150615 14:06:55.497" level="INFO">${output_login} = Last login: Mon Jun 15 11:47:55 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150615 14:06:55.493" starttime="20150615 14:06:54.224"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20150615 14:06:55.513" level="INFO">Last login: Mon Jun 15 11:47:55 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150615 14:06:55.516" starttime="20150615 14:06:55.505"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-xdr status</arg>
+</arguments>
+<msg timestamp="20150615 14:06:55.527" level="INFO">Executing command 'sudo service inew-mvno-xdr status'.</msg>
+<msg timestamp="20150615 14:06:55.982" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:06:55.988" level="INFO">${output} = I-New UMS MVNO - XDR - Server 5.3.0.22932 is running PID: 5666 </msg>
+<status status="PASS" endtime="20150615 14:06:55.985" starttime="20150615 14:06:55.522"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR Version and pid: ${output}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150615 14:06:56.001" level="INFO">XDR Version and pid: I-New UMS MVNO - XDR - Server 5.3.0.22932 is running PID: 5666 </msg>
+<status status="PASS" endtime="20150615 14:06:56.005" starttime="20150615 14:06:55.993"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>I-New UMS MVNO - XDR</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:56.018" starttime="20150615 14:06:56.011"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>SSHLibrary.Close Connection</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:56.028" starttime="20150615 14:06:56.023"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:06:56.032" starttime="20150615 14:06:53.986"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>SUT:${SUT_RESOURCE}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150615 14:06:56.045" level="INFO">SUT:/opt/robot/robotworkspace/suts/TNZ-resource.txt</msg>
+<status status="PASS" endtime="20150615 14:06:56.048" starttime="20150615 14:06:56.038"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR IP address:${XDR HOST}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150615 14:06:56.060" level="INFO">XDR IP address:10.105.113.171</msg>
+<status status="PASS" endtime="20150615 14:06:56.063" starttime="20150615 14:06:56.053"></status>
+</kw>
+<kw type="kw" name="Check AMQ Availability">
+<doc>Called at suite setup procedure to check if AMQ is UP</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${AMQ-XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:56.168" starttime="20150615 14:06:56.103"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20150615 14:06:56.182" level="INFO">Logging into '10.105.113.124:22' as 'qa_automation'.</msg>
+<msg timestamp="20150615 14:06:57.450" level="INFO">Read output: Last login: Mon Jun 15 12:04:45 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@amq02.tb13 ~]$[m</msg>
+<msg timestamp="20150615 14:06:57.458" level="INFO">${output_login} = Last login: Mon Jun 15 12:04:45 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@amq02.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150615 14:06:57.454" starttime="20150615 14:06:56.174"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>netstat -an | grep ${AMQ-SIG PORT}</arg>
+</arguments>
+<msg timestamp="20150615 14:06:57.471" level="INFO">Executing command 'netstat -an | grep 61616'.</msg>
+<msg timestamp="20150615 14:06:57.566" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:06:57.572" level="INFO">${output} = tcp        0      0 :::61616                    :::*                        LISTEN      
+tcp        0      0 ::ffff:10.105.113.124:61616 ::ffff:10.105.113.143:51950 ESTABLISHED 
+tcp        0      0 ::...</msg>
+<status status="PASS" endtime="20150615 14:06:57.570" starttime="20150615 14:06:57.464"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>LISTEN</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:57.585" starttime="20150615 14:06:57.578"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo /etc/init.d/${AMQ-XDR SERVICE SCRIPT NAME} query -QQueue=${AMQ-XDR CRCE CDR QUEUE} | grep ConsumerCount</arg>
+</arguments>
+<msg timestamp="20150615 14:06:57.599" level="INFO">Executing command 'sudo /etc/init.d/amq-xdr-tb13 query -QQueue=inew-cs.crce.cdr | grep ConsumerCount'.</msg>
+<msg timestamp="20150615 14:06:59.184" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:06:59.190" level="INFO">${output} = ConsumerCount = 10</msg>
+<status status="PASS" endtime="20150615 14:06:59.188" starttime="20150615 14:06:57.590"></status>
+</kw>
+<kw type="kw" name="${count} = String.Get Substring">
+<doc>Returns a substring from `start` index to `end` index.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>16</arg>
+</arguments>
+<msg timestamp="20150615 14:06:59.204" level="INFO">${count} = 10</msg>
+<status status="PASS" endtime="20150615 14:06:59.203" starttime="20150615 14:06:59.196"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>0 &lt; ${count}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.232" starttime="20150615 14:06:59.209"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.240" starttime="20150615 14:06:59.236"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.252" starttime="20150615 14:06:59.246"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:06:59.263" starttime="20150615 14:06:56.071"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>AMQ and consumers are UP</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150615 14:06:59.274" level="INFO">AMQ and consumers are UP</msg>
+<status status="PASS" endtime="20150615 14:06:59.277" starttime="20150615 14:06:59.268"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}</arg>
+<arg>${XDR DB USER}</arg>
+<arg>${XDR DB PWD}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.384" starttime="20150615 14:06:59.281"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>rm -f ssh_tail_log-xdr.log</arg>
+</arguments>
+<msg timestamp="20150615 14:06:59.408" level="INFO">Running command 'rm -f ssh_tail_log-xdr.log 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150615 14:06:59.412" starttime="20150615 14:06:59.389"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>crce_cdr_2015w08</arg>
+<arg>sessionid</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.484" starttime="20150615 14:06:59.463"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:06:59.488" starttime="20150615 14:06:59.451"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>crce_cdr</arg>
+<arg>sessionid</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.709" starttime="20150615 14:06:59.556"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:06:59.711" starttime="20150615 14:06:59.530"></status>
+</kw>
+<kw type="kw" name="${JNDI_PROVIDER_URL} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>tcp://${AMQ-XDR HOST}:${AMQ-SIG PORT}?jms.useAsyncSend=false</arg>
+</arguments>
+<msg timestamp="20150615 14:06:59.718" level="INFO">${JNDI_PROVIDER_URL} = tcp://10.105.113.124:61616?jms.useAsyncSend=false</msg>
+<status status="PASS" endtime="20150615 14:06:59.718" starttime="20150615 14:06:59.713"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Init Provider">
+<doc></doc>
+<arguments>
+<arg>${INITIAL_CONTEXT_FACTORY}</arg>
+<arg>${JNDI_PROVIDER_URL}</arg>
+<arg>connect=true</arg>
+<arg>start=true</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:06:59.996" starttime="20150615 14:06:59.720"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:06:59.998" starttime="20150615 14:06:53.875"></status>
+</kw>
+<test id="s1-t1" name="Test Customer PROV SDR ticket processing">
+<kw type="kw" name="Send Ticket And Analyse">
+<doc>General test case skeleton to be executed. Contains all steps for single test case</doc>
+<arguments>
+<arg>PROV_SDR</arg>
+<arg>prov_sdr</arg>
+<arg>sessionid</arg>
+<arg>OK</arg>
+</arguments>
+<kw type="kw" name="${ssh_connection} = ssh-support-resource.SSH Login And Start File Monitor">
+<doc>Combines 'SSH Login' and 'SSH Start File Monitor' for compacter coding style</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+<arg>${EMPTY}</arg>
+<arg>${XDR_LOG_FILE_PATH}</arg>
+<arg>host=${XDR HOST}</arg>
+</arguments>
+<kw type="kw" name="${ssh_connection} = ssh-support-resource.SSH Login">
+<doc>Does a password or RSA key file based login at the passed SSH connection depending whether or not the passed password is .</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+<arg>${rsa_key_file}</arg>
+<arg>ssh_connection=${ssh_connection}</arg>
+<arg>host=${host}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Set Default Configuration">
+<doc>Update the default `configuration`.</doc>
+<arguments>
+<arg>loglevel=INFO</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.084" starttime="20150615 14:07:00.081"></status>
+</kw>
+<kw type="kw" name="${ssh_connection} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${ssh_connection}'=='${EMPTY}'</arg>
+<arg>Open Connection</arg>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.148" starttime="20150615 14:07:00.093"></status>
+</kw>
+<msg timestamp="20150615 14:07:00.153" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150615 14:07:00.151" starttime="20150615 14:07:00.086"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${pswd}'=='${EMPTY}'</arg>
+<arg>Login With Public Key</arg>
+<arg>${user}</arg>
+<arg>${rsa_key_file}</arg>
+<arg>ELSE</arg>
+<arg>Login</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.181" level="INFO">Logging into '10.105.113.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20150615 14:07:00.597" level="INFO">Read output: Last login: Mon Jun 15 12:06:54 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$</msg>
+<status status="PASS" endtime="20150615 14:07:00.598" starttime="20150615 14:07:00.174"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:00.599" starttime="20150615 14:07:00.158"></status>
+</kw>
+<msg timestamp="20150615 14:07:00.602" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150615 14:07:00.601" starttime="20150615 14:07:00.065"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Start File Monitor">
+<doc>Executes a 'tail -f' for the passed file on the passed SSH connection</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+<arg>${monitored_file_path}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.617" starttime="20150615 14:07:00.614"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Start Command">
+<doc>Starts execution of the `command` on the remote machine and returns immediately.</doc>
+<arguments>
+<arg>tail -f ${monitored_file_path} &gt; tmpfilemonitor${ssh_connection}.log</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.621" level="INFO">Starting command 'tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log'.</msg>
+<status status="PASS" endtime="20150615 14:07:00.625" starttime="20150615 14:07:00.618"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:00.626" starttime="20150615 14:07:00.605"></status>
+</kw>
+<msg timestamp="20150615 14:07:00.629" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150615 14:07:00.628" starttime="20150615 14:07:00.045"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>${affectedDbTable}</arg>
+<arg>${affectedDbTableKeyColumnName}</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.666" starttime="20150615 14:07:00.653"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:00.670" starttime="20150615 14:07:00.644"></status>
+</kw>
+<kw type="kw" name="Send Ticket To Queue">
+<doc>Keyword using JMSLibrary to send text from ticket file to JMS queue</doc>
+<arguments>
+<arg>${ticketSignature}</arg>
+</arguments>
+<kw type="kw" name="${TICKET} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/tickets/${ticket_type}.txt</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.694" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/tickets/PROV_SDR.txt"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/tickets/PROV_SDR.txt&lt;/a&gt;'</msg>
+<msg timestamp="20150615 14:07:00.698" level="INFO">${TICKET} = 5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||0116010...</msg>
+<status status="PASS" endtime="20150615 14:07:00.697" starttime="20150615 14:07:00.688"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${TICKET}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.704" level="INFO">5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+</msg>
+<status status="PASS" endtime="20150615 14:07:00.705" starttime="20150615 14:07:00.700"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Create Text Message">
+<doc></doc>
+<arguments>
+<arg>${TICKET}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.726" starttime="20150615 14:07:00.707"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Send To Queue">
+<doc></doc>
+<arguments>
+<arg>${AMQ-XDR CRCE CDR QUEUE}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.743" starttime="20150615 14:07:00.729"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:00.746" starttime="20150615 14:07:00.674"></status>
+</kw>
+<kw type="kw" name="${tailed_text} = ssh-support-resource.SSH Close File Monitor And Logout">
+<doc>Combines 'SSH Close File Monitor' and 'SSH Logout' for compacter coding style</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+<arg>${ticketSignature}_${TAILED_XDR_LOG_FILE}</arg>
+</arguments>
+<kw type="kw" name="${tailed_text} = ssh-support-resource.SSH Close File Monitor">
+<doc>Closes a file monitor created via 'SSH Start File Monitor' and returns all grabbed text</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.797" starttime="20150615 14:07:00.792"></status>
+</kw>
+<kw type="kw" name="${CTRL_C} = BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>chr(int(3))</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.810" level="INFO">${CTRL_C} = </msg>
+<status status="PASS" endtime="20150615 14:07:00.808" starttime="20150615 14:07:00.800"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${CTRL_C}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.821" level="INFO">[m ^C</msg>
+<status status="PASS" endtime="20150615 14:07:00.823" starttime="20150615 14:07:00.813"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+<arg>tail</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:00.849" starttime="20150615 14:07:00.844"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.855" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20150615 14:07:00.906" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:07:00.910" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20150615 14:07:00.908" starttime="20150615 14:07:00.852"></status>
+</kw>
+<kw type="kw" name="${processes_string} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>ps U ${user} --no-heading | grep ${command_name}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:00.918" level="INFO">Executing command 'ps U qa_automation --no-heading | grep tail'.</msg>
+<msg timestamp="20150615 14:07:01.010" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:07:01.016" level="INFO">${processes_string} = 23510 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log
+23525 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log
+23544 ?        S...</msg>
+<status status="PASS" endtime="20150615 14:07:01.013" starttime="20150615 14:07:00.913"></status>
+</kw>
+<kw type="kw" name="@{processes_list} = String.Split String">
+<doc>Splits the `string` using `separator` as a delimiter string.</doc>
+<arguments>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.028" level="INFO">@{processes_list} = [ 23510 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log | 23525 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log | 23544 ?   ...</msg>
+<status status="PASS" endtime="20150615 14:07:01.026" starttime="20150615 14:07:01.020"></status>
+</kw>
+<kw type="for" name="${process} IN [ @{processes_list} ]">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="foritem" name="${process} = 23510 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.043" level="INFO">${pid} = 23510</msg>
+<status status="PASS" endtime="20150615 14:07:01.042" starttime="20150615 14:07:01.036"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.051" level="INFO">Executing command 'kill -9 23510'.</msg>
+<msg timestamp="20150615 14:07:01.098" level="INFO">Command exited with return code 0.</msg>
+<status status="PASS" endtime="20150615 14:07:01.101" starttime="20150615 14:07:01.046"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.103" starttime="20150615 14:07:01.033"></status>
+</kw>
+<kw type="foritem" name="${process} = 23525 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.114" level="INFO">${pid} = 23525</msg>
+<status status="PASS" endtime="20150615 14:07:01.113" starttime="20150615 14:07:01.107"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.122" level="INFO">Executing command 'kill -9 23525'.</msg>
+<msg timestamp="20150615 14:07:01.189" level="INFO">Command exited with return code 0.</msg>
+<status status="PASS" endtime="20150615 14:07:01.192" starttime="20150615 14:07:01.117"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.194" starttime="20150615 14:07:01.104"></status>
+</kw>
+<kw type="foritem" name="${process} = 23544 ?        Ss     0:00 bash -c ps U qa_automation --no-heading | grep tail">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.206" level="INFO">${pid} = 23544</msg>
+<status status="PASS" endtime="20150615 14:07:01.205" starttime="20150615 14:07:01.199"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.214" level="INFO">Executing command 'kill -9 23544'.</msg>
+<msg timestamp="20150615 14:07:01.276" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150615 14:07:01.279" starttime="20150615 14:07:01.210"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.281" starttime="20150615 14:07:01.196"></status>
+</kw>
+<kw type="foritem" name="${process} = 23560 ?        S      0:00 grep tail">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.292" level="INFO">${pid} = 23560</msg>
+<status status="PASS" endtime="20150615 14:07:01.291" starttime="20150615 14:07:01.284"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.300" level="INFO">Executing command 'kill -9 23560'.</msg>
+<msg timestamp="20150615 14:07:01.352" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150615 14:07:01.354" starttime="20150615 14:07:01.296"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.356" starttime="20150615 14:07:01.282"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.358" starttime="20150615 14:07:01.030"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.360" starttime="20150615 14:07:00.826"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Start Command">
+<doc>Starts execution of the `command` on the remote machine and returns immediately.</doc>
+<arguments>
+<arg>cat tmpfilemonitor${ssh_connection}.log</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.370" level="INFO">Starting command 'cat tmpfilemonitor3.log'.</msg>
+<status status="PASS" endtime="20150615 14:07:01.397" starttime="20150615 14:07:01.365"></status>
+</kw>
+<kw type="kw" name="${stdout_string} = SSHLibrary.Read Command Output">
+<doc>Returns outputs of the most recent started command.</doc>
+<arguments>
+</arguments>
+<msg timestamp="20150615 14:07:01.405" level="INFO">Reading output of command 'cat tmpfilemonitor3.log'.</msg>
+<msg timestamp="20150615 14:07:01.454" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150615 14:07:01.459" level="INFO">${stdout_string} = 	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerCo...</msg>
+<status status="PASS" endtime="20150615 14:07:01.457" starttime="20150615 14:07:01.401"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>rm tmpfilemonitor${ssh_connection}.log</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.470" level="INFO">Executing command 'rm tmpfilemonitor3.log'.</msg>
+<msg timestamp="20150615 14:07:01.539" level="INFO">Command exited with return code 0.</msg>
+<status status="PASS" endtime="20150615 14:07:01.541" starttime="20150615 14:07:01.463"></status>
+</kw>
+<msg timestamp="20150615 14:07:01.547" level="INFO">${tailed_text} = 	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerCo...</msg>
+<status status="PASS" endtime="20150615 14:07:01.545" starttime="20150615 14:07:00.774"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword Unless">
+<doc>Runs the given keyword with the given arguments, if `condition` is false.</doc>
+<arguments>
+<arg>'${store_to_file_path}'=='${EMPTY}'</arg>
+<arg>Create File</arg>
+<arg>${store_to_file_path}</arg>
+<arg>${tailed_text}</arg>
+</arguments>
+<kw type="kw" name="OperatingSystem.Create File">
+<doc>Creates a file with the given content and encoding.</doc>
+<arguments>
+<arg>${store_to_file_path}</arg>
+<arg>${tailed_text}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.572" html="yes" level="INFO">Created file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/PROV_SDR_ssh_tail_log-xdr.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/PROV_SDR_ssh_tail_log-xdr.log&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20150615 14:07:01.574" starttime="20150615 14:07:01.563"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.576" starttime="20150615 14:07:01.551"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Logout">
+<doc>Closes the passed SSH connection</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:01.603" starttime="20150615 14:07:01.597"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:01.611" starttime="20150615 14:07:01.606"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:01.614" starttime="20150615 14:07:01.580"></status>
+</kw>
+<msg timestamp="20150615 14:07:01.620" level="INFO">${tailed_text} = 	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerCo...</msg>
+<status status="PASS" endtime="20150615 14:07:01.617" starttime="20150615 14:07:00.752"></status>
+</kw>
+<kw type="kw" name="Check log">
+<doc>Checks the tailed log file created on XDR.</doc>
+<arguments>
+<arg>${ticketSignature}_${TAILED_XDR_LOG_FILE}</arg>
+<arg>${test_case_type}</arg>
+</arguments>
+<kw type="kw" name="${temp} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>${log_file}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.651" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/PROV_SDR_ssh_tail_log-xdr.log"&gt;/opt/robot/robotworkspace/robot_testsuites/experimental/matko.sanseovic/xdr_testsuite/PROV_SDR_ssh_tail_log-xdr.log&lt;/a&gt;'</msg>
+<msg timestamp="20150615 14:07:01.655" level="INFO">${temp} = 	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerCo...</msg>
+<status status="PASS" endtime="20150615 14:07:01.653" starttime="20150615 14:07:01.646"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${temp}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.662" level="INFO">	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+
+[2015-06-15 12:07:00,740][INFO ][Camel (ticket-router) thread #47 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][  96] Received ticket [ticket=5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+]
+[2015-06-15 12:07:00,797][ERROR][Camel (ticket-router) thread #47 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][ 145] An unknown exception occurred:
+org.postgresql.util.PSQLException: ERROR: could not extend file "base/36957/44692": No space left on device
+  Hint: Check free disk space.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2161)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1890)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:255)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:559)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeWithFlags(AbstractJdbc2Statement.java:403)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:395)
+	at com.mchange.v2.c3p0.impl.NewProxyStatement.execute(NewProxyStatement.java:1006)
+	at org.apache.camel.component.jdbc.JdbcProducer.doCreateAndExecuteSqlStatement(JdbcProducer.java:217)
+	at org.apache.camel.component.jdbc.JdbcProducer.createAndExecuteSqlStatement(JdbcProducer.java:123)
+	at org.apache.camel.component.jdbc.JdbcProducer.processingSqlBySettingAutoCommit(JdbcProducer.java:84)
+	at org.apache.camel.component.jdbc.JdbcProducer.process(JdbcProducer.java:65)
+	at org.apache.camel.util.AsyncProcessorConverterHelper$ProcessorToAsyncProcessorBridge.process(AsyncProcessorConverterHelper.java:61)
+	at org.apache.camel.processor.SendProcessor.process(SendProcessor.java:120)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.FilterProcessor.process(FilterProcessor.java:58)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.component.direct.DirectProducer.process(DirectProducer.java:51)
+	at org.apache.camel.processor.SendProcessor.process(SendProcessor.java:120)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:589)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:517)
+	at org.apache.camel.processor.MulticastProcessor.process(MulticastProcessor.java:226)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.util.AsyncProcessorHelper.process(AsyncProcessorHelper.java:105)
+	at org.apache.camel.processor.DelegateAsyncProcessor.process(DelegateAsyncProcessor.java:87)
+	at org.apache.camel.component.jms.EndpointMessageListener.onMessage(EndpointMessageListener.java:103)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doInvokeListener(AbstractMessageListenerContainer.java:685)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:623)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)</msg>
+<status status="PASS" endtime="20150615 14:07:01.666" starttime="20150615 14:07:01.658"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${test_type}' == 'OK'</arg>
+<arg>Should Not Contain</arg>
+<arg>${temp}</arg>
+<arg>Exception</arg>
+</arguments>
+<kw type="kw" name="BuiltIn.Should Not Contain">
+<doc>Fails if `item1` contains `item2` one or more times.</doc>
+<arguments>
+<arg>${temp}</arg>
+<arg>Exception</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.712" level="FAIL">'	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+
+[2015-06-15 12:07:00,740][INFO ][Camel (ticket-router) thread #47 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][  96] Received ticket [ticket=5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+]
+[2015-06-15 12:07:00,797][ERROR][Camel (ticket-router) thread #47 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][ 145] An unknown exception occurred:
+org.postgresql.util.PSQLException: ERROR: could not extend file "base/36957/44692": No space left on device
+  Hint: Check free disk space.
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2161)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:1890)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:255)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:559)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.executeWithFlags(AbstractJdbc2Statement.java:403)
+	at org.postgresql.jdbc2.AbstractJdbc2Statement.execute(AbstractJdbc2Statement.java:395)
+	at com.mchange.v2.c3p0.impl.NewProxyStatement.execute(NewProxyStatement.java:1006)
+	at org.apache.camel.component.jdbc.JdbcProducer.doCreateAndExecuteSqlStatement(JdbcProducer.java:217)
+	at org.apache.camel.component.jdbc.JdbcProducer.createAndExecuteSqlStatement(JdbcProducer.java:123)
+	at org.apache.camel.component.jdbc.JdbcProducer.processingSqlBySettingAutoCommit(JdbcProducer.java:84)
+	at org.apache.camel.component.jdbc.JdbcProducer.process(JdbcProducer.java:65)
+	at org.apache.camel.util.AsyncProcessorConverterHelper$ProcessorToAsyncProcessorBridge.process(AsyncProcessorConverterHelper.java:61)
+	at org.apache.camel.processor.SendProcessor.process(SendProcessor.java:120)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.FilterProcessor.process(FilterProcessor.java:58)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.component.direct.DirectProducer.process(DirectProducer.java:51)
+	at org.apache.camel.processor.SendProcessor.process(SendProcessor.java:120)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:589)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:517)
+	at org.apache.camel.processor.MulticastProcessor.process(MulticastProcessor.java:226)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.util.AsyncProcessorHelper.process(AsyncProcessorHelper.java:105)
+	at org.apache.camel.processor.DelegateAsyncProcessor.process(DelegateAsyncProcessor.java:87)
+	at org.apache.camel.component.jms.EndpointMessageListener.onMessage(EndpointMessageListener.java:103)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doInvokeListener(AbstractMessageListenerContainer.java:685)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:623)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)' contains 'Exception'</msg>
+<status status="FAIL" endtime="20150615 14:07:01.714" starttime="20150615 14:07:01.680"></status>
+</kw>
+<status status="FAIL" endtime="20150615 14:07:01.715" starttime="20150615 14:07:01.669"></status>
+</kw>
+<status status="FAIL" endtime="20150615 14:07:01.717" starttime="20150615 14:07:01.626"></status>
+</kw>
+<status status="FAIL" endtime="20150615 14:07:01.719" starttime="20150615 14:07:00.016"></status>
+</kw>
+<doc>Send the PROV SDR ticket and analyse results
+TICKET: 5.3|321|2015-02-23T16:52:19.006+0000|prov01|1|2015-02-23T16:52:18.253+0000|32010XdrComponentTest|NewImei|serviceType|customerCareUser|||||0|573192552404|732123900052404|8957123100900052404|||||011601007053517|||||||||2015-02-23T16:52:19.005+0000|OK|otaInternetResultCode=0|
+=========================================================</doc>
+<tags>
+<tag>ComponentTest</tag>
+<tag>matko.sanseovic</tag>
+<tag>TNZ_supported</tag>
+<tag>XDR_only</tag>
+</tags>
+<status status="FAIL" critical="yes" endtime="20150615 14:07:01.722" starttime="20150615 14:07:00.000">'	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
+
+[2015-06-15 12:07:00,740][INFO ][Camel (ticket-router) thread #47 - JmsCons...
+    [ Message content over the limit has been removed. ]
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:623)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)' contains 'Exception'</status>
+</test>
+<kw type="teardown" name="Teardown Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Disconnect From Database">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20150615 14:07:01.740" level="INFO">SQL Warnings on this connection: null</msg>
+<status status="PASS" endtime="20150615 14:07:01.741" starttime="20150615 14:07:01.738"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>rm -f tmp*.txt</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.752" level="INFO">Running command 'rm -f tmp*.txt 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150615 14:07:01.756" starttime="20150615 14:07:01.742"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>rm -f *_tail_log-xdr.log</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.768" level="INFO">Running command 'rm -f *_tail_log-xdr.log 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150615 14:07:01.773" starttime="20150615 14:07:01.759"></status>
+</kw>
+<kw type="kw" name="${ssh_connection} = ssh-support-resource.SSH Login">
+<doc>Does a password or RSA key file based login at the passed SSH connection depending whether or not the passed password is .</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+<arg>${EMPTY}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Set Default Configuration">
+<doc>Update the default `configuration`.</doc>
+<arguments>
+<arg>loglevel=INFO</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:01.829" starttime="20150615 14:07:01.825"></status>
+</kw>
+<kw type="kw" name="${ssh_connection} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${ssh_connection}'=='${EMPTY}'</arg>
+<arg>Open Connection</arg>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:01.912" starttime="20150615 14:07:01.845"></status>
+</kw>
+<msg timestamp="20150615 14:07:01.916" level="INFO">${ssh_connection} = 4</msg>
+<status status="PASS" endtime="20150615 14:07:01.914" starttime="20150615 14:07:01.832"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${pswd}'=='${EMPTY}'</arg>
+<arg>Login With Public Key</arg>
+<arg>${user}</arg>
+<arg>${rsa_key_file}</arg>
+<arg>ELSE</arg>
+<arg>Login</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<msg timestamp="20150615 14:07:01.939" level="INFO">Logging into ':22' as 'qa_automation'.</msg>
+<msg timestamp="20150615 14:07:03.071" level="INFO">Read output: Last login: Mon Jun 15 14:06:16 2015 from localhost
+id: cannot find name for group ID 20007
+[1m[qa_automation@testautomation ~]$</msg>
+<status status="PASS" endtime="20150615 14:07:03.072" starttime="20150615 14:07:01.933"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:03.074" starttime="20150615 14:07:01.919"></status>
+</kw>
+<msg timestamp="20150615 14:07:03.077" level="INFO">${ssh_connection} = 4</msg>
+<status status="PASS" endtime="20150615 14:07:03.076" starttime="20150615 14:07:01.804"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo pkill tail</arg>
+</arguments>
+<msg timestamp="20150615 14:07:03.080" level="INFO">Executing command 'sudo pkill tail'.</msg>
+<msg timestamp="20150615 14:07:03.139" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150615 14:07:03.141" starttime="20150615 14:07:03.079"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close All Connections">
+<doc>Closes all open connections.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150615 14:07:03.152" starttime="20150615 14:07:03.144"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>sudo python -m robot.testdoc XDR_Test-robot-suite.txt /var/www/html/XDR_TestSpec.html</arg>
+</arguments>
+<msg timestamp="20150615 14:07:03.166" level="INFO">Running command 'sudo python -m robot.testdoc XDR_Test-robot-suite.txt /var/www/html/XDR_TestSpec.html 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150615 14:07:03.238" starttime="20150615 14:07:03.154"></status>
+</kw>
+<status status="PASS" endtime="20150615 14:07:03.241" starttime="20150615 14:07:01.731"></status>
+</kw>
+<doc>Main goal of the test suite is to check behaviour of XDR in several basic positive cases and a few negative (NOK) cases.
+It uses Robot Framework's JMSLibrary to send tickets of different types (MOC, SMS, DATA,...) to AMQ where XDR consumers should process them.
+After that XDR's log will be analysed and finally DB should be checked if ticket has landed also there.
+Negative tests (NOK) test different (but not all) mandatory fields (empty field, different values than predefined) according to
+XDR Specification v5.3.2. Each NOK test has modified different fields - which exactly is specified in test description of the test itself</doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20150615 14:07:03.244" starttime="20150615 14:06:52.889"></status>
+</suite>
+<statistics>
+<total>
+<stat pass="0" fail="1">Critical Tests</stat>
+<stat pass="0" fail="1">All Tests</stat>
+</total>
+<tag>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">ComponentTest</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">matko.sanseovic</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">TNZ_supported</stat>
+<stat pass="0" info="" doc="" combined="" fail="1" links="">XDR_only</stat>
+</tag>
+<suite>
+<stat pass="0" id="s1" fail="1" name="XDR Test-robot-suite">XDR Test-robot-suite</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

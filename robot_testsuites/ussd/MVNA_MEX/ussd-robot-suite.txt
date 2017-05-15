@@ -1,0 +1,99 @@
+*** Settings ***
+Documentation     This suite uses USSDtest.py class to test the USSD interface. Various test cases (scenarios) will be checked for truu operator on 
+...					MVNA_MEX platform
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        USSD_only  MVNA_MEX_specific  matko.sanseovic 
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+
+*** Keywords ***
+Setup Suite
+    ${time}=    		Run    date
+    Log    				Date and time: ${time}    console=yes
+	# copy the tool class to the target test machine
+	${conn_id}			Open Connection    ${USSD HOST}
+	Set Suite Variable	${conn_id} 
+    ${output_login}=    Login    ${USSD USER}    ${USSD PWD}
+	Log  				${output_login}
+	Put File 			${ROBOT WORKSPACE PATH}/robot_testsuites/ussd/tool/USSDtest.py 	${USSD HOME}/ussd/
+	SSHLibrary.File Should Exist	${USSD HOME}ussd/USSDtest.py	
+	Set Suite Variable	${ussd_tool}	${USSD HOME}ussd/USSDtest.py
+	# we will create subscriber first, we need MSISDN to check over USSD
+	Create Subscriber	
+
+Teardown Suite
+	Close All Connections
+
+Create Subscriber
+    [Documentation]    
+    ...
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+	Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+
+USSD Start
+    [Documentation]    
+    ...
+    Write    		${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}
+	Sleep			2s
+    ${output}=  	Read Until    User input:	
+	Log    			USSD Start: ${output}
+	[Return]		${output}
+	
+	
+*** Test Cases ***
+Test USSD Start
+    [Documentation]    
+    ...
+	${output}		USSD Start	
+	Sleep			2s	
+	Should Contain	${output}	Hola weexer!
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test USSD Check Balance	
+	${output}		USSD Start		
+	Log    			Checking the balance    console=yes
+	Sleep			2s
+	Should Contain	${output}	Tu saldo es: 10 Pesos
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test USSD Check My Number	
+	${output}		USSD Start		
+	Log    			Checking My Number    console=yes
+	Sleep			2s	
+	${msisdn}		Get Substring 	${TESTSUBCRIBERS MSISDN RANGE START} 	2
+	Should Contain	${output}	Tu numero es ${msisdn}
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test USSD Switch Data On-Off
+    [Documentation]    
+    ...
+	${output}		USSD Start		
+	Sleep			2s
+	Log    			Pressing 1 for data switch change    console=yes
+	Write			1
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Estado actual: On
+	Log    			Pressing 2 for confirmation    console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Tu servicio de datos fue apagado.	
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+		

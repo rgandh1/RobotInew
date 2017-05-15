@@ -1,0 +1,169 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+Library           SudsLibrary
+Library           XML
+Library           Collections
+Library           DatabaseLibrary
+
+*** Variables ***
+${USERNAME}       tmaikis
+${PASSWORD}       hvJ66mAm
+${AMQ1_IP}        10.105.110.123
+${CRCE_IP}        10.105.110.125
+${CRM_IP}         10.105.110.127
+${DB_IP}          10.105.110.129
+${INAPP_IP}       10.105.110.135
+${CRCE_DB_USERNAME}    crce
+${CRCE_DB_PASSWORD}    crce
+${CRCE_DB_PORT}    5442
+${CRCE_DB_DBNAME}    crce
+${SUBSC_MSISDN}    56952999900
+${CG_PATH}        /opt/callsGenerator/
+${CG_VERSION}     4.0.0
+${CG_CGS}         test.cgs
+${CG_WORKSPACE}    MBG_TB_Falabella
+${CRM_GUI}        http://10.105.110.127:1087/evoweb/cms/crm/257_EN
+${CRM_USER}       crmmanager
+${CRM_PASSWORD}    crmmanager
+${ACCOUNTSWSDL}    http://10.105.110.125:8080/accounting/accounts?wsdl
+${SUBSCRIBERWSDL}    http://10.105.110.125:8080/profiler/subscriber?wsdl
+${TESTPATH}       /opt/robot/robotworkspace/robot_testsuites/experimental/mat/MOC_Call_Verification/
+${TOPUPWSDL}      http://10.105.110.125:8080/icca/1.0/?wsdl
+
+*** Keywords ***
+Verify AMQ
+    Open Connection    ${AMQ1_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    service amq-sig-tb01 status
+    ${AMQSTATUS}    read until prompt
+    Should Contain    ${AMQSTATUS}    ActiveMQ is running
+    Close all Connections
+
+Verify CRCE
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    read
+    write    sudo su -c 'service inew-mvno-crce status'
+    ${CRCESTATUS}    read until prompt
+    Should Contain    ${CRCESTATUS}    CRCE is running
+    Close All Connections
+
+Verify CRM
+    Open Connection    ${CRM_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    Close All Connections
+
+Verify DB
+    Open Connection    ${DB_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    Close All Connections
+
+Verify IN-APP
+    Open Connection    ${INAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    Close All Connections
+
+Verify Subscribers
+    Connect to Database    psycopg2    ${CRCE_DB_DBNAME}    ${CRCE_DB_USERNAME}    ${CRCE_DB_PASSWORD}    ${DB_IP}    ${CRCE_DB_PORT}
+    Table must exist    profiler_subscriber_profiles
+    Check if Exists in Database    SELECT COUNT(*) \ FROM profiler_subscriber_profiles WHERE msisdn='${SUBSC_MSISDN}'
+
+Start Call
+    ${rc}=    Run And Return Rc    java -jar ${CG_PATH}callsgen-${CG_VERSION}.jar ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS} ${CG_PATH}workspaces/${CG_WORKSPACE}
+    Should be equal as Integers    ${rc}    0
+
+Verify in CRM
+    Open Browser    ${CRM_GUI}    firefox
+    Maximize Browser Window
+    Set Selenium Speed    0.5
+    Input Text    id=username    ${CRM_USER}
+    Input Text    id=password    ${CRM_PASSWORD}
+    Click Element    name=login_submit
+    Input Text    name=filter_msisdn    ${SUBSC_MSISDN}
+    Click Element    //input[@value='Submit']
+    Click Element    link=History
+    Select Frame    contentiframe
+    Click Element    //input[@value='Search']
+
+Check Balance
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Create Soap Client    ${SUBSCRIBERWSDL}    Subscribers
+    Set Return Xml    true
+    ${RESP}    Call Soap Method    getSubscriberProfile    ${SUBSC_MSISDN}
+    ${RESPID}    Get Element Text    ${RESP}    .//getSubscriberProfileResponse/return/id
+    Switch Soap Client    Accounting
+    Set Return Xml    true
+    ${ACCRESP}    Call Soap Method    getAccounts    ${RESPID}
+    ${BALANCE1}    Get Elements Texts    ${ACCRESP}    .//getAccountsResponse/return/accounts/AccountType/balance
+    Set Suite Variable    ${BALANCE1}
+    Set Suite Variable    ${RESPID}
+
+Compare Balances
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Set Return Xml    true
+    ${ACCRESP2}    Call Soap Method    getAccounts    ${RESPID}
+    ${BALANCE2}    Get Elements Texts    ${ACCRESP2}    .//getAccountsResponse/return/accounts/AccountType/balance
+    ${BALLIST1}=    Convert to List    ${BALANCE1}
+    ${BALLIST2}=    Convert to List    ${BALANCE2}
+    Comment    Run Keyword and Expect Error    *    Lists should be equal    ${BALLIST1}    ${BALLIST2}
+    Set Suite Variable    ${BALLIST2}
+    Set Suite Variable    ${BALANCE2}
+
+Get CRCE Log
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    tail -f /var/log/inew/crce/4.2.17/negret-0.log > test.log
+
+Verify CRCE Log
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    Get File    test.log    ${TESTPATH}
+    ${EXCEPTIONS}    Grep File    test.log    Exception
+    ${TICKETBALLANCE}    Grep File    test.log    [${BALANCECLP}]
+    Should be empty    ${EXCEPTIONS}
+    Should not be empty    ${TICKETBALLANCE}
+
+Create Topup
+    Create Soap Client    ${TOPUPWSDL}    Topup
+    Set Return Xml    true
+    ${TOPUPINFO}    Create Wsdl Object    arg0
+    Set Service    topup
+    Set WSDL object Attribute    ${TOPUPINFO}    amount    1000
+    Set WSDL object Attribute    ${TOPUPINFO}    crmUser    ?
+    Set WSDL object Attribute    ${TOPUPINFO}    serviceType    CRM
+    Set WSDL object Attribute    ${TOPUPINFO}    source    test
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    address    ${SUBSC_MSISDN}
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    amountUnitRelation    100
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    paymentMethod    NONE
+    Call Soap Method    topup    ${TOPUPINFO}
+
+Get CPL Balance
+    Create Soap Client    ${ACCOUNTSWSDL}    Accounting
+    Set Return Xml    true
+    ${ACCRESP3}    Call Soap Method    getAccountSummary    ${RESPID}    CLP
+    ${BALANCECLP}    Get Elements Texts    ${ACCRESP3}    .//getAccountSummaryResponse/return/balance
+    Set Suite Variable    ${BALANCECLP}
+
+Create Topup2
+    Create Soap Client    ${TOPUPWSDL}    Topup
+    Set Return Xml    true
+    Set Service    TopupReq
+    ${TOPUPINFO}    Create Wsdl Object    arg0    address    ${SUBSC_MSISDN}    amount    1000
+    ...    crmUser    ?    serviceType    CRM    source    test
+    ...    amountUnitRelation    100    paymentMethod    NONE
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    amount    1000
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    crmUser    ?
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    serviceType    CRM
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    source    test
+    Comment    Set WSDL object Attribute    ${TOPUPINFO}    address    ${SUBSC_MSISDN}
+    Comment    Comment    Set WSDL object Attribute    ${TOPUPINFO}    amountUnitRelation    100
+    Comment    Comment    Set WSDL object Attribute    ${TOPUPINFO}    paymentMethod    NONE
+    Call Soap Method    topup
+
+Select the MTC Call
+    Run     sed -i '/mtc/s/false/true/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}
+    Run     sed -i '/moc/s/true/false/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}
+    Run     sed -i '/mfc/s/true/false/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}

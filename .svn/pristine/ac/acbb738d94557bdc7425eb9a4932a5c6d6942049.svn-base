@@ -1,0 +1,416 @@
+ command_id = enquire_link_resp (0x80000015)
+ command_status = No Error (0x00000000)
+ sequence_number = 278 (0x00000116)
+
+2013-07-22 11:41:03,375 (1762:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: encoded SMPP PDU (16 octets): 00000010800000150000000000000116.
+2013-07-22 11:41:03,375 (1767:                smpp_session.cpp) [140296870250240]  INFO  - NGW:0: message (sequence_number=278) send successfully to remote peer.
+2013-07-22 11:41:06,146 ( 287:               worker_thread.cpp) [140297258374912] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: no message in last 180 seconds received.
+2013-07-22 11:41:06,146 ( 148:               worker_thread.cpp) [140297258374912] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: waiting for a new message.
+2013-07-22 11:41:06,342 ( 287:               worker_thread.cpp) [140297111516928] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_2_0 worker thread: no message in last 180 seconds received.
+2013-07-22 11:41:06,343 ( 148:               worker_thread.cpp) [140297111516928] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_2_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,727 ( 663:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: retrieved SMPP Message Header (size=16), continue retrieving SMPP Message Body (size=56): 00000048000000040000000000000117
+2013-07-22 11:41:27,728 ( 713:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: received new SMPP Message (72 octets): 00000048000000040000000000000117000001313233343500010135373331393030303330363100000000000000000000165468697320697320612074657374206d657373616765
+2013-07-22 11:41:27,730 (1016:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: decoding the 'submit_sm'.
+2013-07-22 11:41:27,731 (1021:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: decoding of 'submit_sm' was successful.
+2013-07-22 11:41:27,731 ( 718:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: decoding of the received message was successful:
+[submit_sm]
+ command_length = 72
+ command_id = submit_sm (0x00000004)
+ command_status = No Error (0x00000000)
+ sequence_number = 279 (0x00000117)
+ service_type = 
+ source_addr_ton = Unknown (0x00)
+ source_addr_npi = ISDN (E163/E164) (0x01)
+ source_addr = 12345
+ dest_addr_ton = International (0x01)
+ dest_addr_npi = ISDN (E163/E164) (0x01)
+ destination_addr = 573190003061
+ esm_class:
+  Hex value = 0x00
+  Messaging Mode (bits 1-0) = Default SMSC Mode
+  Message Type (bits 5-2) = Default message Type (i.e. normal message)
+  GSM Network Specific Features (bits 7-6) = No specific features selected
+ protocol_id = 0x00
+ priority_flag = 0x00
+ schedule_delivery_time = 
+ validity_period = 
+ registered_delivery:
+  Hex value = 0x00
+  SMSC Delivery Receipt (bits 0 and 1) = No SMSC Delivery Receipt requested
+  SME originated Acknowledgment (bits 3 and 2) = No recipient SME acknowledgment requested
+  Intermediate Notification (bit 5) = No Intermediate notification requested
+ replace_if_present_flag = 0x00
+ data_coding:
+  Hex value = 0x00
+  Data Coding Group = General Data Coding
+  Data Coding = SMSC Default Alphabet
+ sm_default_msg_id = 0x00
+ sm_length = 22 (0x16)
+ short_message = 5468697320697320612074657374206d657373616765
+
+2013-07-22 11:41:27,731 (2143:                smpp_session.cpp) [140296870250240] DEBUG  - NGW:0: received 'submit_sm' with sequence_number=279.
+2013-07-22 11:41:27,731 ( 152:            smpp_session_ext.cpp) [140296870250240] DEBUG  - new SMPP message is request, creating new context.
+2013-07-22 11:41:27,731 (  82:             context_storage.cpp) [140296870250240] DEBUG  - Creating new context
+2013-07-22 11:41:27,731 (  91:             context_storage.cpp) [140296870250240] DEBUG  - New context created and stored successfully, new SessionId: 32771
+2013-07-22 11:41:27,731 ( 167:            smpp_session_ext.cpp) [140296870250240] DEBUG  - context filled with parameters:
+[SMPP_Context]
+iSig Message Type = ISIG_MSG_TYPE_NONE
+SMPP CommandId = 00000004
+Application SessionId = 
+Gateway SessionId = NGW_00000
+JMS ReplyToQueue = 
+SMPP Connection Name = NGW
+SMPP SessionId = 0
+SMPP Sequence Number = 117
+2013-07-22 11:41:27,731 ( 174:            smpp_session_ext.cpp) [140296870250240] DEBUG  - creating new MSG_DATA_DECODE_FROM_SMPP message.
+2013-07-22 11:41:27,731 ( 176:            smpp_session_ext.cpp) [140296870250240] DEBUG  - sending message to one of the SMPP to iMAP converter worker threads.
+2013-07-22 11:41:27,731 ( 178:            smpp_session_ext.cpp) [140296870250240] DEBUG  - message sent to SMPP to iMAP Converter for further processing.
+2013-07-22 11:41:27,731 ( 150:               worker_thread.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,731 ( 153:               worker_thread.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: new message received: MSG_DATA_DECODE_FROM_SMPP
+2013-07-22 11:41:27,732 (  86:  smpp2imap_converter_worker.cpp) [140296922699520]  INFO  - Smpp2iMapConverter_0 worker thread: new SMPP message received, started conversion to iMAP.
+2013-07-22 11:41:27,732 ( 656:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: setting iSig SMS-SUBMIT User Data.
+2013-07-22 11:41:27,732 ( 671:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: Performing conversion from 8bit to 7bit.
+2013-07-22 11:41:27,732 ( 727:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: no UDH available, so make just simple conversion.
+2013-07-22 11:41:27,732 ( 735:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: the length of the SMPP message is: 22, no cutting required.
+2013-07-22 11:41:27,732 ( 252:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: message converted from SMPP to iMAP and put into the OperationsSet:
+[MoForwardSM_Req]
+ SessionId = 32771
+ GwSessionId = NGW_00000
+ NetworkProtocolId = SMPPv3_4
+ Version = MAPv3
+ InvokeId = 0
+ RP-OA:
+  Address type =  MSISDN
+  NatureOfAddress = natureOfAddressUnknown
+  NumberingPlan = e164
+  AddressSignal = 12345
+ TP-Message-Type-Indicator = SMS-SUBMIT
+ TP-Reject-Duplicates = 1 (SC should reject duplicates)
+ TP-Status-Report-Request = 0 (A status report is not requested)
+ TP-User-Data-Header-Indicator = 0 (header not present)
+ TP-Reply-Path = 0 (reply path is not set)
+ TP-Message-Reference = 0
+ TP-Destination-Address:
+  Type-of-number: International
+  Numbering-plan-identification: E164
+  Address-Value: 573190003061
+ TP-Protocol-Identifier:
+  Protocol identifier type = 0 0
+  Telematic interworking = false
+ TP-Data-Coding-Scheme:
+  Coding group = General Data Coding
+  Compressed text = false
+  Alphabet = Default alphabet
+  Message class = none
+ TP-Validity-Period:
+  TP-Validity-Period-Format = not present
+ TP-User-Data-Length = 22
+ TP-User-Data:
+  hex = 54747a0e4acf416110bd3ca783dae5f93c7c2e03
+  Concatenated message = false
+  Decoded = false
+ ServiceType = Default
+ ESM Class:
+  MessagingMode = Standard
+  MessageType = Standard
+2013-07-22 11:41:27,732 ( 255:  smpp2imap_converter_worker.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: 32771: internal ThreadMsg send to iSigEncoder worker thread.
+2013-07-22 11:41:27,732 ( 150:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,732 ( 153:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: new message received: MSG_DATA_ENCODE_TO_ISIG
+2013-07-22 11:41:27,732 (  83:         isig_encoder_worker.cpp) [140296943679232]  INFO  - iSigEncoder_0 worker thread: encoding iMap to iSig started.
+2013-07-22 11:41:27,732 ( 268:  smpp2imap_converter_worker.cpp) [140296922699520]  INFO  - Smpp2iMapConverter_0 worker thread: 32771: conversion to iMAP was successful.
+2013-07-22 11:41:27,733 ( 148:               worker_thread.cpp) [140296922699520] DEBUG  - Smpp2iMapConverter_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,733 ( 110:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: iSig encoding was successful.
+2013-07-22 11:41:27,733 ( 113:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32771: getting the pointer to the corresponding JMS Producer Queue.
+2013-07-22 11:41:27,733 ( 124:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32771: pointer to the JMS Producer queue retrieved successfully.
+2013-07-22 11:41:27,733 ( 133:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32771: internal ThreadMsg send to JMS Producer worker thread.
+2013-07-22 11:41:27,733 ( 148:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,733 ( 150:               worker_thread.cpp) [140297258374912] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,733 ( 153:               worker_thread.cpp) [140297258374912] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: new message received: MSG_DATA_SEND_TO_JMS
+2013-07-22 11:41:27,733 ( 169:                jms_producer.cpp) [140297258374912]  INFO  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: sending message to DEMO_SMSC_SMPP_SUBMIT_REQ_1 queue.
+2013-07-22 11:41:27,733 ( 176:                jms_producer.cpp) [140297258374912] DEBUG  - Sending XML BytesMessage:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/smsMessages.xsd">
+    <version>1</version>
+    <sessionId>32771</sessionId>
+    <gatewaySessionId>NGW_00000</gatewaySessionId>
+    <networkProtocolId>SMPPv3_4</networkProtocolId>
+    <trafficType>ShortMessage</trafficType>
+    <messages>
+        <messageSubmissionReq>
+            <invokeId>0</invokeId>
+            <originatingAddress>
+                <address>12345</address>
+                <natureOfAddress>Unknown</natureOfAddress>
+                <numberingPlan>E164</numberingPlan>
+            </originatingAddress>
+            <segmentationUsed>false</segmentationUsed>
+            <messageTag>false</messageTag>
+            <smsSubmit>
+                <rejectDuplicates>true</rejectDuplicates>
+                <headerPresentInUserData>false</headerPresentInUserData>
+                <replyPath>false</replyPath>
+                <statusReportRequested>false</statusReportRequested>
+                <destinationAddress>
+                    <address>573190003061</address>
+                    <natureOfAddress>International</natureOfAddress>
+                    <numberingPlan>E164</numberingPlan>
+                </destinationAddress>
+                <protocolId>0</protocolId>
+                <dataCodingScheme>0</dataCodingScheme>
+                <serviceType>standard</serviceType>
+                <esmClass>
+                    <messagingMode>standard</messagingMode>
+                    <messageType>standard</messageType>
+                </esmClass>
+                <userDataLength>22</userDataLength>
+                <userData>
+                    <messagePart>54747a0e4acf416110bd3ca783dae5f93c7c2e03</messagePart>
+                </userData>
+                <userDataDecoded>false</userDataDecoded>
+                <totalSegments>1</totalSegments>
+            </smsSubmit>
+        </messageSubmissionReq>
+    </messages>
+</iSig>
+2013-07-22 11:41:27,733 ( 200:                jms_producer.cpp) [140297258374912]  INFO  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: message sent successfully to JMS Broker queue DEMO_SMSC_SMPP_SUBMIT_REQ_1.
+2013-07-22 11:41:27,734 ( 148:               worker_thread.cpp) [140297258374912] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_SUBMIT_REQ_1_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,873 ( 297:                jms_consumer.cpp) [140298430695168]  INFO  - ThreadConsumer_DEMO_SMSC_SMPP_SUBMIT_RES_1, DEMO_SMSC_SMPP_SUBMIT_RES_2_0 worker thread: new JMS Bytes message received (size=545):
+<?xml version="1.0"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>32771</sessionId>
+  <gatewaySessionId>NGW_00000</gatewaySessionId>
+  <networkProtocolId>SMPPv3_4</networkProtocolId>
+  <trafficType>ShortMessage</trafficType>
+  <messages>
+    <messageSubmissionRes>
+      <invokeId>0</invokeId>
+      <messageId>1070</messageId>
+      <tagged>false</tagged>
+    </messageSubmissionRes>
+  </messages>
+</iSig>
+2013-07-22 11:41:27,873 ( 344:                jms_consumer.cpp) [140298430695168] DEBUG  - ThreadConsumer_DEMO_SMSC_SMPP_SUBMIT_RES_1, DEMO_SMSC_SMPP_SUBMIT_RES_2_0 worker thread: creating new ThreadMsg - MSG_DATA_DECODE_FROM_ISIG
+2013-07-22 11:41:27,873 ( 351:                jms_consumer.cpp) [140298430695168] DEBUG  - ThreadConsumer_DEMO_SMSC_SMPP_SUBMIT_RES_1, DEMO_SMSC_SMPP_SUBMIT_RES_2_0 worker thread: internal ThreadMsg send to iSigDecoder worker thread.
+2013-07-22 11:41:27,873 ( 150:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,873 ( 153:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: new message received: MSG_DATA_DECODE_FROM_ISIG
+2013-07-22 11:41:27,873 (  90:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoding new iSig message (length=545).
+2013-07-22 11:41:27,874 (  97:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoding of new iSig message was successful
+2013-07-22 11:41:27,874 ( 104:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoded message is allowed, continue processing:
+[MoForwardSM_Res]
+ SessionId = 32771
+ GwSessionId = NGW_00000
+ NetworkProtocolId = SMPPv3_4
+ Version = MAPv3
+ InvokeId = 0
+ MessageId = 1070
+2013-07-22 11:41:27,874 (  44:             context_storage.cpp) [140296954169088] DEBUG  - Searching context with SessionId: 32771
+2013-07-22 11:41:27,874 (  47:             context_storage.cpp) [140296954169088] DEBUG  - Context specified with SessionId: 32771 was found.
+2013-07-22 11:41:27,874 ( 156:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: 32771: context retrieved successfully, sending OperationsSet to iMap2SmppConverter.
+2013-07-22 11:41:27,874 ( 164:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: 32771: internal ThreadMsg send to iMap2SmppConverter worker thread.
+2013-07-22 11:41:27,874 ( 148:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,874 ( 150:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,875 ( 153:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: new message received: MSG_DATA_ENCODE_TO_SMPP
+2013-07-22 11:41:27,875 ( 352:  imap2smpp_converter_worker.cpp) [140296933189376]  INFO  - iMap2SmppConverter_0 worker thread: new iMAP message received, started conversion to SMPP.
+2013-07-22 11:41:27,875 ( 388:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: one iMAP message received, converting to SMPP.
+2013-07-22 11:41:27,875 ( 421:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: SMPP Connection name (NGW) is stored in context, searching connection by name.
+2013-07-22 11:41:27,875 (1223:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - searching pointer to SMPP Connection - index: 0.
+2013-07-22 11:41:27,875 (1223:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - searching pointer to SMPP Connection - index: 1.
+2013-07-22 11:41:27,875 (1223:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - searching pointer to SMPP Connection - index: 2.
+2013-07-22 11:41:27,875 (1223:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - searching pointer to SMPP Connection - index: 3.
+2013-07-22 11:41:27,875 ( 426:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: the destination SMPP Connection was found: NGW.
+2013-07-22 11:41:27,875 ( 442:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: the iMAP operation is allowed, continue with the conversion to SMPP.
+2013-07-22 11:41:27,875 ( 569:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: converting MoForwardSmRes to SMPP submit_sm_res.
+2013-07-22 11:41:27,875 ( 581:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: conversion of MoForwardSmRes to SMPP submit_sm_res was successful.
+2013-07-22 11:41:27,876 ( 486:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: conversion finished, checking the result.
+2013-07-22 11:41:27,876 ( 343:             smpp_connection.cpp) [140296933189376] DEBUG  - SMPP Session with SMPP SessionId: 0 found, message will be send to this SMPP Session's queue.
+2013-07-22 11:41:27,876 ( 354:             smpp_connection.cpp) [140296933189376] DEBUG  - The message was successfully dispatched to the corresponding SMPP Session.
+2013-07-22 11:41:27,876 ( 503:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32771: the ThreadMsg was send successfully to corresponding SMPP Session.
+2013-07-22 11:41:27,876 ( 521:  imap2smpp_converter_worker.cpp) [140296933189376]  INFO  - iMap2SmppConverter_0 worker thread: 32771: conversion to SMPP was successful.
+2013-07-22 11:41:27,876 ( 148:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,876 ( 150:               worker_thread.cpp) [140296880740096] DEBUG  - SMPP_SessionWorker worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,876 ( 153:               worker_thread.cpp) [140296880740096] DEBUG  - SMPP_SessionWorker worker thread: new message received: MSG_DATA_SEND_TO_SMPP
+2013-07-22 11:41:27,876 (1759:                smpp_session.cpp) [140296880740096] DEBUG  - NGW:0: sending SMPP PDU (21 octets):
+[submit_sm_resp]
+ command_length = 21
+ command_id = submit_sm_resp (0x80000004)
+ command_status = No Error (0x00000000)
+ sequence_number = 279 (0x00000117)
+ message_id = 1070
+
+2013-07-22 11:41:27,876 (1762:                smpp_session.cpp) [140296880740096] DEBUG  - NGW:0: encoded SMPP PDU (21 octets): 000000158000000400000000000001173130373000.
+2013-07-22 11:41:27,876 (1767:                smpp_session.cpp) [140296880740096]  INFO  - NGW:0: message (sequence_number=279) send successfully to remote peer.
+2013-07-22 11:41:27,876 ( 148:               worker_thread.cpp) [140296880740096] DEBUG  - SMPP_SessionWorker worker thread: waiting for a new message.
+2013-07-22 11:41:27,912 ( 297:                jms_consumer.cpp) [140297816225536]  INFO  - ThreadConsumer_DEMO_SMSC_SMPP_DELIVER_REQ_0 worker thread: new JMS Bytes message received (size=1537):
+<?xml version="1.0"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>0</sessionId>
+  <applSessionId>3335-messagestoreInbound:0:0</applSessionId>
+  <networkProtocolId>SMPPv3_4</networkProtocolId>
+  <trafficType>ShortMessage</trafficType>
+  <messages>
+    <messageDeliveryReq>
+      <destinationAddress>
+        <address>573190003061</address>
+        <natureOfAddress>International</natureOfAddress>
+        <numberingPlan>E164</numberingPlan>
+      </destinationAddress>
+      <smsDeliver>
+        <moreMessages>false</moreMessages>
+        <headerPresentInUserData>false</headerPresentInUserData>
+        <replyPath>false</replyPath>
+        <statusReport>false</statusReport>
+        <originatingAddress>
+          <address>12345</address>
+          <natureOfAddress>Unknown</natureOfAddress>
+          <numberingPlan>E164</numberingPlan>
+        </originatingAddress>
+        <protocolId>0</protocolId>
+        <dataCodingScheme>0</dataCodingScheme>
+        <serviceCentreTimeStamp>2013-07-22T11:41:27.801+00:00</serviceCentreTimeStamp>
+        <userDataLength>22</userDataLength>
+        <userData>
+          <messagePart>54747a0e4acf416110bd3ca783dae5f93c7c2e03</messagePart>
+        </userData>
+        <userDataDecoded>false</userDataDecoded>
+        <sequenceNumber>1</sequenceNumber>
+        <totalSegments>1</totalSegments>
+      </smsDeliver>
+    </messageDeliveryReq>
+  </messages>
+</iSig>
+2013-07-22 11:41:27,912 ( 344:                jms_consumer.cpp) [140297816225536] DEBUG  - ThreadConsumer_DEMO_SMSC_SMPP_DELIVER_REQ_0 worker thread: creating new ThreadMsg - MSG_DATA_DECODE_FROM_ISIG
+2013-07-22 11:41:27,912 ( 351:                jms_consumer.cpp) [140297816225536] DEBUG  - ThreadConsumer_DEMO_SMSC_SMPP_DELIVER_REQ_0 worker thread: internal ThreadMsg send to iSigDecoder worker thread.
+2013-07-22 11:41:27,912 ( 150:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,912 ( 153:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: new message received: MSG_DATA_DECODE_FROM_ISIG
+2013-07-22 11:41:27,912 (  90:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoding new iSig message (length=1537).
+2013-07-22 11:41:27,913 (  97:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoding of new iSig message was successful
+2013-07-22 11:41:27,914 ( 104:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: decoded message is allowed, continue processing:
+[MtForwardSM_Req]
+ SessionId = 0
+ AppSessionId = 3335-messagestoreInbound:0:0
+ NetworkProtocolId = SMPPv3_4
+ Version = MAPv3
+ InvokeId = 0
+ Destination Address:
+  NatureOfAddress = natureOfAddressInternationalNumber
+  NumberingPlan = e164
+  AddressSignal = 573190003061
+ TP-Message-Type-Indicator = SMS-DELIVER
+ TP-More-Messages-To-Send = 1 (No more messages are waiting for the MS in this SC)
+ TP-Status-Report-Indication = 0 (A status report is not requested)
+ TP-User-Data-Header-Indicator = 0 (header not present)
+ TP-Reply-Path = 0 (reply path is not set)
+ TP-Originating-Address:
+  Type-of-number: Unknown
+  Numbering-plan-identification: E164
+  Address-Value: 12345
+ TP-Protocol-Identifier:
+  Protocol identifier type = 0 0
+  Telematic interworking = false
+ TP-Data-Coding-Scheme:
+  Coding group = General Data Coding
+  Compressed text = false
+  Alphabet = Default alphabet
+  Message class = none
+ TP-Service-Centre-Time-Stamp = 2013-07-22T11:41:27.000+00:00
+ TP-User-Data-Length = 22
+ TP-User-Data:
+  hex = 54747a0e4acf416110bd3ca783dae5f93c7c2e03
+  Concatenated message = false
+  Decoded = false
+ MoreMessagesToSend = false
+2013-07-22 11:41:27,914 ( 109:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: new message is a request, so new context needs the be created.
+2013-07-22 11:41:27,914 (  82:             context_storage.cpp) [140296954169088] DEBUG  - Creating new context
+2013-07-22 11:41:27,914 (  91:             context_storage.cpp) [140296954169088] DEBUG  - New context created and stored successfully, new SessionId: 32772
+2013-07-22 11:41:27,914 ( 116:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: 32772: new context created successfully, sending OperationsSet to iMap2SmppConverter.
+2013-07-22 11:41:27,914 ( 129:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: 32772: context filled with parameters: [SMPP_Context]
+iSig Message Type = ISIG_MSG_TYPE_DELIVER
+SMPP CommandId = 00000000
+Application SessionId = 3335-messagestoreInbound:0:0
+Gateway SessionId = 
+JMS ReplyToQueue = DEMO_SMSC_SMPP_DELIVER_RES_1
+SMPP Connection Name = 
+SMPP SessionId = 70
+SMPP Sequence Number = 0
+2013-07-22 11:41:27,914 ( 138:         isig_decoder_worker.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: 32772: internal ThreadMsg send to iMap2SmppConverter worker thread.
+2013-07-22 11:41:27,914 ( 148:               worker_thread.cpp) [140296954169088] DEBUG  - iSigDecoder_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,914 ( 150:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,914 ( 153:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: new message received: MSG_DATA_ENCODE_TO_SMPP
+2013-07-22 11:41:27,914 ( 352:  imap2smpp_converter_worker.cpp) [140296933189376]  INFO  - iMap2SmppConverter_0 worker thread: new iMAP message received, started conversion to SMPP.
+2013-07-22 11:41:27,914 ( 388:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: one iMAP message received, converting to SMPP.
+2013-07-22 11:41:27,914 ( 406:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: SMPP Connection name not stored in context, searching using destination address.
+2013-07-22 11:41:27,914 (1239:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - Searching SMPP Connection DestAddress=573190003061, DestTon=International.
+2013-07-22 11:41:27,914 (1275:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - DestTON is NOT UNKNOWN, handling the DestAddress like a normal Destination Address.
+2013-07-22 11:41:27,914 (1277:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - checking address match in SMPP Connection: VoiceMailTRX.
+2013-07-22 11:41:27,914 (1281:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match, regex rule='56*'.
+2013-07-22 11:41:27,914 (1283:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - connection: VoiceMailTRX regex match found.
+2013-07-22 11:41:27,914 (1277:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - checking address match in SMPP Connection: VoiceMailRX.
+2013-07-22 11:41:27,915 (1281:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match, regex rule='56*'.
+2013-07-22 11:41:27,915 (1287:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match failed, checking default destination ...
+2013-07-22 11:41:27,915 (1277:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - checking address match in SMPP Connection: VoiceMailTX.
+2013-07-22 11:41:27,915 (1281:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match, regex rule='56*'.
+2013-07-22 11:41:27,915 (1287:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match failed, checking default destination ...
+2013-07-22 11:41:27,915 (1277:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - checking address match in SMPP Connection: NGW.
+2013-07-22 11:41:27,915 (1281:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match, regex rule='56*'.
+2013-07-22 11:41:27,915 (1287:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - regex match failed, checking default destination ...
+2013-07-22 11:41:27,915 (1311:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - connection VoiceMailTRX (index=0) was found as a best match destination for DestAddress=573190003061, DestTon=International.
+2013-07-22 11:41:27,915 (1223:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - searching pointer to SMPP Connection - index: 0.
+2013-07-22 11:41:27,915 ( 426:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: the destination SMPP Connection was found: VoiceMailTRX.
+2013-07-22 11:41:27,915 ( 442:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: the iMAP operation is allowed, continue with the conversion to SMPP.
+2013-07-22 11:41:27,915 ( 605:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: converting MtForwardSmReq to SMPP deliver_sm.
+2013-07-22 11:41:27,915 ( 612:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - setting command_status and sequence_number.
+2013-07-22 11:41:27,915 ( 617:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - setting service_type
+2013-07-22 11:41:27,915 ( 650:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: the MtForwardSmReq contains SMS-DELIVER, continue conversion.
+2013-07-22 11:41:27,915 ( 696:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - SMS-DELIVER - converting 7bit compressed to 7bit de-compressed (num_septets=22, num_octets=20).
+2013-07-22 11:41:27,916 ( 737:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - final result after conversion, length is: 22, Buffer is: 5468697320697320612074657374206d657373616765
+2013-07-22 11:41:27,916 ( 918:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: conversion of MtForwardSmReq to SMPP deliver_sm was successful.
+2013-07-22 11:41:27,916 ( 486:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: conversion finished, checking the result.
+2013-07-22 11:41:27,916 ( 346:             smpp_connection.cpp) [140296933189376] ERROR  - No available SMPP Session where the message can be dispatched was found.
+2013-07-22 11:41:27,916 ( 494:  imap2smpp_converter_worker.cpp) [140296933189376] ERROR  - iMap2SmppConverter_0 worker thread: 32772: failed to send the SMPP message to corresponding SMPP Session.
+2013-07-22 11:41:27,916 (1344:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - error handling - creating UserError iSig message.
+2013-07-22 11:41:27,916 (1368:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - prepared UserError message:
+[UserError]
+ SessionId = 32772
+ AppSessionId = 3335-messagestoreInbound:0:0
+ NetworkProtocolId = SMPPv3_4
+ Version = MAPv3
+ InvokeId = 0
+ UserErrorReason = EsmeNotBound
+ SegmentsDelivered = 0
+ Tagged = false
+2013-07-22 11:41:27,916 (1369:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - retrieving iSigEncoder message queue.
+2013-07-22 11:41:27,916 (1372:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iSigEncoder message queue retreived successfully, creating ThreadMsg.
+2013-07-22 11:41:27,916 (1378:  imap2smpp_converter_worker.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: 32772: internal ThreadMsg send to iSigEncoder worker thread.
+2013-07-22 11:41:27,916 ( 150:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,916 ( 153:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: new message received: MSG_DATA_ENCODE_TO_ISIG
+2013-07-22 11:41:27,917 (  83:         isig_encoder_worker.cpp) [140296943679232]  INFO  - iSigEncoder_0 worker thread: encoding iMap to iSig started.
+2013-07-22 11:41:27,917 ( 110:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: iSig encoding was successful.
+2013-07-22 11:41:27,917 ( 113:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32772: getting the pointer to the corresponding JMS Producer Queue.
+2013-07-22 11:41:27,917 ( 124:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32772: pointer to the JMS Producer queue retrieved successfully.
+2013-07-22 11:41:27,917 ( 150:               worker_thread.cpp) [140297184945920] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_1_0 worker thread: new message in the queue, retrieve and process it.
+2013-07-22 11:41:27,917 ( 153:               worker_thread.cpp) [140297184945920] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_1_0 worker thread: new message received: MSG_DATA_SEND_TO_JMS
+2013-07-22 11:41:27,917 ( 169:                jms_producer.cpp) [140297184945920]  INFO  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_1_0 worker thread: sending message to DEMO_SMSC_SMPP_DELIVER_RES_1 queue.
+2013-07-22 11:41:27,917 ( 176:                jms_producer.cpp) [140297184945920] DEBUG  - Sending XML BytesMessage:
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/smsMessages.xsd">
+    <version>1</version>
+    <sessionId>32772</sessionId>
+    <applSessionId>3335-messagestoreInbound:0:0</applSessionId>
+    <networkProtocolId>SMPPv3_4</networkProtocolId>
+    <trafficType>ShortMessage</trafficType>
+    <messages>
+       <messageDeliveryErr>
+            <invokeId>0</invokeId>
+            <error>esmeNotBound</error>
+            <segmentsDelivered>0</segmentsDelivered>
+       </messageDeliveryErr>
+    </messages>
+</iSig>
+2013-07-22 11:41:27,917 ( 499:  imap2smpp_converter_worker.cpp) [140296933189376] ERROR  - iMap2SmppConverter_0 worker thread: 32772: conversion to SMPP was NOT successful.
+2013-07-22 11:41:27,917 ( 133:         isig_encoder_worker.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: 32772: internal ThreadMsg send to JMS Producer worker thread.
+2013-07-22 11:41:27,917 ( 200:                jms_producer.cpp) [140297184945920]  INFO  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_1_0 worker thread: message sent successfully to JMS Broker queue DEMO_SMSC_SMPP_DELIVER_RES_1.
+2013-07-22 11:41:27,917 ( 148:               worker_thread.cpp) [140297184945920] DEBUG  - ThreadProducer_DEMO_SMSC_SMPP_DELIVER_RES_1_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,917 ( 148:               worker_thread.cpp) [140296943679232] DEBUG  - iSigEncoder_0 worker thread: waiting for a new message.
+2013-07-22 11:41:27,918 ( 148:               worker_thread.cpp) [140296933189376] DEBUG  - iMap2SmppConverter_0 worker thread: waiting for a new message.

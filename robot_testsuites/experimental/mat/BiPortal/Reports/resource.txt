@@ -1,0 +1,77 @@
+*** Settings ***
+
+Documentation  A resource file containing the application specific keywords
+...            that create our own domain specific language. This resource
+...            implements keywords for testing HTML version of the test
+...            application.
+Library        Selenium2Library
+
+
+*** Variables ***
+
+${SERVER}        10.208.80.127:8080/
+${BROWSER}       firefox
+${DELAY}         1.2
+${VALID USER}    idwh
+${VALID PASSWD}  idwh
+${LOGIN URL}     http://${SERVER}
+${REPORTYEAR}    2013
+${REPORTMONTH}   Mar
+
+
+
+*** Keywords ***
+
+Open Browser To Login Page
+    Open Browser  ${LOGIN URL}  ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed  ${DELAY}
+
+
+Go To Login Page
+    Go To  ${LOGIN URL}
+
+
+Input Username  [Arguments]  ${username}
+    Input Text  name=username  ${username}
+
+Input Password  [Arguments]  ${password}
+    Input Text  name=password  ${password}
+
+Submit Credentials
+    Click Button  name=login_submit
+
+Logout
+    Click Button  //div[@id='header']/span/input
+
+Go To User Menu
+    Click Element  xpath=//a[span/text()='User Management']
+
+Create User
+    Click Element  //div/div/input[@value='Create User']
+    Input Text  name=username  aaaaatest
+    Input Text  name=password1  robottest
+    Input Text  name=password2  robottest
+    Input Text  name=firstName  Robot
+    Input Text  name=lastName  Test
+    Input Text  name=email  selenium.robot@test.at
+    Select from List  name=rolesAssignments:roleAssignForm:availableItems  USER
+    Click Element  name=rolesAssignments:roleAssignForm:addButton
+    Click Element  name=saveButton
+
+Delete User
+   Click Element  //input[@value='Delete']
+   Click Element  //a[normalize-space(button/text())='Yes']
+
+Go to Report Page
+   Click Element  //a[span/text()='Browse reports']
+
+Select CRMReport
+   Click Element  //a[span/text()='CRM']
+   Click Element  //a[span/text()='Add balance summary - monthly']
+   Click Element  //button[span/text()='Run']
+   Select from List  name=paramsPanel:groups:0:group:components:0:component:param-field  ${REPORTYEAR}
+   Select from List  name=paramsPanel:groups:0:group:components:1:component:param-field  ${REPORTMONTH}
+   Click Element  //button[span/text()='Display']
+   Page Should Contain  CRM - Add balance summary - monthly
+   

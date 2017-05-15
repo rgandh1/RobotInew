@@ -1,0 +1,749 @@
+*** Settings ***
+Documentation     This is a global keywords resource providing callsGenerator test cases
+...               ============================================================
+...                 CG Get RC Description                   
+...
+...                 CG Run MOC 1s                   
+...                 CG Run MOC 30s                 
+...                 CG Run MOC 136s
+...                 CG Run MOC Final Rerouting     
+...                 CG Run MOC Number Translation  
+...                 CG Run MOC Abandon              
+...                 CG Run MOC Busy                 
+...                 CG Run MOC NoAnswer               
+...
+...                 CG Run MFC 1s                   
+...                 CG Run MFC 30s                  
+...
+...                 CG Run MTC 1s                   
+...                 CG Run MTC Abandon              
+...                 CG Run MTC Busy                 
+...                 CG Run MTC NoAnswer               
+...
+...                 CG Send SMS                     
+...                 CG Send SMS Forbidden Number   
+...               ============================================================
+Library           OperatingSystem
+Library           String
+
+
+*** Variables ***
+${WORKSPACE_INI_DEFAULTS}=    [OPTIONS] \nExtensiveLoadTestThreshold=3500 \njmsTimestampCompensationMs=0 \ntimeSyncHost=10.0.0.101 \ntimeSyncDesired=false \nloadLoggingOff=true \ntimeSyncPort=123 \ntimeDesyncMsWarnLevel=0 \nLogRotationAtMB=30 \nLogRotationMaxBackups=100 \nappIdPrefix=50 \nensureUniqueIds=true \ninAMQJmxQueryDesired=false \nuseTestcaseControlledIsigAdaptation=true \nuseTestcaseControlledIsigValidation=true
+
+   
+
+
+*** Keywords ***
+
+CG Get RC Description 
+    [Documentation]  This convenience function translates CG's numeric return codes into a more descriptive string 
+    ...
+    ...              Arguments:              
+    ...                cg_return_code         a numeric CallsGenerator return code 
+    ... 
+    ...              Returns:                
+    ...                rc_description         a descriptive string for the passed return code
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]           ${cg_return_code}    
+    ${rc_description}=    Run Keyword If       '${cg_return_code}'=='0'           Set Variable        OK   
+                          ...    ELSE IF       '${cg_return_code}'=='1'           Set Variable        SESSION_FAILED  
+                          ...    ELSE IF       '${cg_return_code}'=='2'           Set Variable        SESSION_INIT_FAILED  
+                          ...    ELSE IF       '${cg_return_code}'=='3'           Set Variable        INVALID_FILE_CONTENT  
+                          ...    ELSE IF       '${cg_return_code}'=='4'           Set Variable        INVALID_CMDLN  
+                          ...    ELSE IF       '${cg_return_code}'=='5'           Set Variable        APPINSTANCE_ALREADYRUNNING  
+                          ...    ELSE IF       '${cg_return_code}'=='6'           Set Variable        JRE_VERSION_REQUIREMENTS_VIOLATION  
+                          ...    ELSE                                             Set Variable        Unknown_RC         
+    [Return]              ${rc_description}
+
+
+CG Run MOC 1s
+    [Documentation]  Runs a standard MOC 1s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc         the CallsGenerator return code
+    ... 
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                         ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    ${rc}=          CG Run Standard MOC CGS    moc1s    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]        ${rc}
+
+
+CG Run MOC 30s
+    [Documentation]  Runs a standard MOC 30s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ... 
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                           ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    ${rc}=           CG Run Standard MOC CGS    moc30s    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]         ${rc}
+
+CG Run MOC 136s
+    [Documentation]  Runs a standard MOC 136s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc         the CallsGenerator return code
+    ... 
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: matko.sanseovic 
+    ...              =========================================================
+    [Arguments]                                         ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    ${rc}=          CG Run Standard MOC CGS    moc136s    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]        ${rc}
+	
+CG Run MOC Final Rerouting
+    [Documentation]  Initiates a MOC session that is expected to do a final reroute to another number 
+    ...              e.g. - charge-free number
+    ...                   - IVR rerouting in case of forbidden number, unsufficient funds, ...
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ... 
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res} 
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/moc-final-rerouting-subscribers.csv       
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/moc-final-rerouting-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/moc-final-rerouting-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/moc-final-rerouting.cgs        
+    Comment          ****** create subscribers.csv ****** 
+                     Create File       ${subscribers_csv_absolute_path}    ${cg_imsi};${cg_msisdn}\n 
+    Comment          ****** create fleXml ****** 
+                     Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;mocBPartyMsisdn\n                                         
+                     Append To File    ${flexml_csv_absolute_path}         Mocfinal-rerouting parameters;${msc_address};${cd_msisdn}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MOC;${queue_moc_req};${queue_moc_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+
+
+CG Run MOC Number Translation
+    [Documentation]  Runs a 1s MOC session to a virtual number
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn              The virtual number (shortcut)
+    ...                cd_msisdn_translated   The real B-Party MSISDN that should reult from virtual number translation
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${cd_msisdn_translated}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}  
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/moc-numbertranslation-subscribers.csv     
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/moc-numbertranslation-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/moc-numbertranslation-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/moc-numbertranslation.cgs        
+    Comment          ****** create subscribers.csv ****** 
+                     Create File       ${subscribers_csv_absolute_path}    ${cg_imsi};${cg_msisdn}\n 
+    Comment          ****** create fleXml ****** 
+                     Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;mocBPartyMsisdn;mocBPartyMsisdnTranslated\n                                         
+                     Append To File    ${flexml_csv_absolute_path}         MocNumberTranslation parameters;${msc_address};${cd_msisdn};${cd_msisdn_translated}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MOC;${queue_moc_req};${queue_moc_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+CG Run MOC Abandon
+    [Documentation]  Runs an abandoned MOC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn              
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}  
+    ${rc}=          CG Run Standard MOC CGS    moc-abandon    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]        ${rc}
+
+CG Run MOC Busy
+    [Documentation]  Runs an busy MOC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn              
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}  
+    ${rc}=          CG Run Standard MOC CGS    moc-busy    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]        ${rc}
+
+CG Run MOC NoAnswer
+    [Documentation]  Runs an NoAnswer MOC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn              
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}  
+    ${rc}=          CG Run Standard MOC CGS    moc-noanswer    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    [Return]        ${rc}
+
+
+CG Run MFC 1s
+    [Documentation]  Runs a standard MFC 1s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-party MSISDN
+    ...                rd_imsi         B-party IMSI  
+    ...                rd_msisdn       B-party MSISDN
+    ...                cd_msisdn       C-party MSISDN
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mfc_req
+    ...                queue_mfc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                          ${cg_msisdn}    ${rd_imsi}    ${rd_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mfc_req}    ${queue_mfc_res} 
+    ${rc}=           CG Run Standard MFC CGS    mfc1s    ${cg_msisdn}    ${rd_imsi}    ${rd_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mfc_req}    ${queue_mfc_res} 
+    [Return]         ${rc}
+
+CG Run MFC 30s
+    [Documentation]  Runs a standard MFC 30s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-party MSISDN
+    ...                rd_imsi         B-party IMSI  
+    ...                rd_msisdn       B-party MSISDN
+    ...                cd_msisdn       C-party MSISDN
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mfc_req
+    ...                queue_mfc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                           ${cg_msisdn}    ${rd_imsi}    ${rd_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mfc_req}    ${queue_mfc_res} 
+    ${rc}=           CG Run Standard MFC CGS    mfc30s    ${cg_msisdn}    ${rd_imsi}    ${rd_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mfc_req}    ${queue_mfc_res} 
+    [Return]         ${rc}
+
+
+
+
+CG Run MTC 1s
+    [Documentation]  Runs a standard (i.e. non-roaming) MTC 1s session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-Party
+    ...                cd_imsi         B-Party (MTC subscriber)
+    ...                cd_msisdn       B-Party
+    ...                msc_address     
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mtc_req
+    ...                queue_mtc_res
+    ... 
+    ...              Returns:                
+    ...                rc         the CallsGenerator return code
+    ... 
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                         ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    ${rc}=          CG Run Standard MTC CGS    mtc1s    ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    [Return]        ${rc}
+
+
+CG Run MTC Abandon
+    [Documentation]  Runs an abandoned non-roaming MTC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-Party
+    ...                cd_imsi         B-Party (MTC subscriber)
+    ...                cd_msisdn       B-Party
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mtc_req
+    ...                queue_mtc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                               ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    ${rc}=          CG Run Standard MTC CGS    mtc-abandon    ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    [Return]        ${rc}
+
+CG Run MTC Busy
+    [Documentation]  Runs a busy non-roaming MTC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-Party
+    ...                cd_imsi         B-Party (MTC subscriber)
+    ...                cd_msisdn       B-Party
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mtc_req
+    ...                queue_mtc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                               ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    ${rc}=          CG Run Standard MTC CGS    mtc-busy       ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    [Return]        ${rc}
+
+
+CG Run MTC NoAnswer
+    [Documentation]  Runs a noAnswer non-roaming MTC session 
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cg_msisdn       A-Party
+    ...                cd_imsi         B-Party (MTC subscriber)
+    ...                cd_msisdn       B-Party
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mtc_req
+    ...                queue_mtc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]                                                ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    ${rc}=          CG Run Standard MTC CGS    mtc-noanswer    ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    [Return]        ${rc}
+
+
+
+CG Send SMS
+    [Documentation]  Runs a single segment SMS session 
+    ...              If none of the optional parameters are passed the function uses a constant message text
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ... 
+    ...              Arguments:              
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_sms_req
+    ...                queue_sms_res
+    ...                smsc_address                        OPTIONAL - Default: msc_address
+    ...                sms_user_data_message_part          OPTIONAL - Default: d232bd2e7783dae5f93c7c2e8300    
+    ...                sms_user_data_length                OPTIONAL - Default: 15
+    ...                sms_header_present_in_user_data     OPTIONAL - Default: false
+    ...                sms_data_coding_scheme              OPTIONAL - Default: 0
+    ...                sms_user_data_decoded               OPTIONAL - Default: false
+   ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}     ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}        ${amq_host}    ${amq_port}    ${queue_sms_req}    ${queue_sms_res}     ${smsc_address}=None    ${sms_user_data_message_part}=d232bd2e7783dae5f93c7c2e8300    ${sms_user_data_length}=15    ${sms_header_present_in_user_data}=false    ${sms_data_coding_scheme}=0    ${sms_user_data_decoded}=false  
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/sms-subscribers.csv     
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/sms-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/sms-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/sms.cgs        
+    Comment           ****** create subscribers.csv ****** 
+                      Create File       ${subscribers_csv_absolute_path}    ${cg_imsi};${cg_msisdn}\n 
+    Comment           ****** create fleXml ****** 
+    ${smsc_address}=  Run Keyword If    '${smsc_address}'=='None'    Set Variable    ${msc_address}
+                      ...               ELSE                         Set Variable    ${smsc_address}     #auto-assignment necessary here since otherwise  ${EMPTY} will be assigned
+                      Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;smscAddress;smsDestinationMsisdn;smsUserDataMessagePart;smsUserDataLength;smsHeaderPresentInUserData;smsDataCodingScheme;smsUserDataDecoded\n                                         
+                      Append To File    ${flexml_csv_absolute_path}         SMS parameters;${msc_address};${smsc_address};${cd_msisdn};${sms_user_data_message_part};${sms_user_data_length};${sms_header_present_in_user_data};${sms_data_coding_scheme};${sms_user_data_decoded}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;MAP3_SMS;${queue_sms_req};${queue_sms_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+
+CG Send SMS Forbidden Number
+    [Documentation]  Runs a single segment SMS session towards a forbidden number
+    ...              This is exactly the same as the standard CG Send SMS keyword except that it runs
+    ...              the 02_1segment_forbiddennumber CallsGen testcase that expects IN to reply with messageSubmissionErr
+    ... 
+    ...              Arguments:           same as CG Send SMS     
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}     ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_sms_req}    ${queue_sms_res}    ${smsc_address}=None    ${sms_user_data_message_part}=d232bd2e7783dae5f93c7c2e8300    ${sms_user_data_length}=15    ${sms_header_present_in_user_data}=false    ${sms_data_coding_scheme}=0    ${sms_user_data_decoded}=false  
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/sms-forbiddennumber-subscribers.csv     
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/sms-forbiddennumber-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/sms-forbiddennumber-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/sms-forbiddennumber.cgs        
+    Comment           ****** create subscribers.csv ****** 
+                      Create File       ${subscribers_csv_absolute_path}    ${cg_imsi};${cg_msisdn}\n 
+    Comment           ****** create fleXml ****** 
+    ${smsc_address}=  Run Keyword If    '${smsc_address}'=='None'    Set Variable    ${msc_address}
+                      ...               ELSE                         Set Variable    ${smsc_address}     #auto-assignment necessary here since otherwise  ${EMPTY} will be assigned
+                      Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;smscAddress;smsDestinationMsisdn;smsUserDataMessagePart;smsUserDataLength;smsHeaderPresentInUserData;smsDataCodingScheme;smsUserDataDecoded\n                                         
+                      Append To File    ${flexml_csv_absolute_path}         SMS parameters;${msc_address};${smsc_address};${cd_msisdn};${sms_user_data_message_part};${sms_user_data_length};${sms_header_present_in_user_data};${sms_data_coding_scheme};${sms_user_data_decoded}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;MAP3_SMS;${queue_sms_req};${queue_sms_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+
+
+###########################################  private ##########################################################
+
+CG Run Standard MOC CGS
+    [Documentation]  Runs a standard MOC session (meaning a session that needs only mscAddress and mocBPartyMsisdn parameters) for the passed cgs file
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cgs_filename      #name without path and extension - it's extended to ${CURDIR}/${cgs_filename}.cgs
+    ...                cg_imsi
+    ...                cg_msisdn
+    ...                cd_msisdn
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cgs_filename}    ${cg_imsi}    ${cg_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_moc_req}    ${queue_moc_res}   
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/${cgs_filename}-subscribers.csv   
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/${cgs_filename}-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/${cgs_filename}-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/${cgs_filename}.cgs        
+    Comment          ****** create subscribers.csv ****** 
+                     Create File        ${subscribers_csv_absolute_path}    ${cg_imsi};${cg_msisdn}\n 
+    Comment          ****** create fleXml ****** 
+                     Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;mocBPartyMsisdn\n                                         
+                     Append To File    ${flexml_csv_absolute_path}         ${cgs_filename} parameters;${msc_address};${cd_msisdn}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MOC;${queue_moc_req};${queue_moc_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+
+CG Run Standard MFC CGS
+    [Documentation]  Runs a standard MFC session (meaning a session that needs only mscAddress, mfcAPartyMsisdn and mfcCPartyMsisdn paramters) for the passed cgs file
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since tey are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cgs_filename    #name without path and extension - it's extended to ${CURDIR}/${cgs_filename}.cgs
+    ...                cg_msisdn       A-party MSISDN
+    ...                rd_imsi         B-party IMSI  
+    ...                rd_msisdn       B-party MSISDN
+    ...                cd_msisdn       C-party MSISDN
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_mfc_req
+    ...                queue_mfc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]     ${cgs_filename}    ${cg_msisdn}    ${rd_imsi}    ${rd_msisdn}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mfc_req}    ${queue_mfc_res} 
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/${cgs_filename}-subscribers.csv 
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/${cgs_filename}-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/${cgs_filename}-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/${cgs_filename}.cgs        
+    Comment          ****** create subscribers.csv ****** 
+                     Create File       ${subscribers_csv_absolute_path}    ${rd_imsi};${rd_msisdn}\n 
+    Comment          ****** create fleXml ****** 
+                     Create File       ${flexml_csv_absolute_path}        \#Header: comment;mscAddress;gmscAddress;mfcAPartyMsisdn;mfcCPartyMsisdn\n                                         
+                     Append To File    ${flexml_csv_absolute_path}         ${cgs_filename} parameters;${msc_address};${msc_address};${cg_msisdn};${cd_msisdn}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MFC;${queue_mfc_req};${queue_mfc_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+
+
+
+CG Run Standard MTC CGS
+    [Documentation]  Runs a standard (non-roaming) MTC session (meaning a session that needs only mscAddress and mtcAPartyMsisdn parameters) for the passed cgs file
+    ...              WARNING: All arguments postfixed by "_absolute_path" are not allowed to be passed in relative form
+    ...                       since they are passed to CG after the working directory has been changed to CG's home.
+    ...
+    ...              Arguments:              
+    ...                cgs_filename      #name without path and extension - it's extended to ${CURDIR}/${cgs_filename}.cgs
+    ...                cg_msisdn         A-Party
+    ...                cd_imsi           B-Party
+    ...                cd_msisdn         B-Party
+    ...                msc_address
+    ...                callsgen_home
+    ...                callsgen_jar_name
+    ...                callsgen_unified_workspace_absolute_path
+    ...                amq_host
+    ...                amq_port
+    ...                queue_moc_req
+    ...                queue_moc_res
+    ... 
+    ...              Returns:                
+    ...                rc                 the CallsGenerator return code
+    ...
+    ...              Fails:       
+    ...                1. In case one of the temporary files (subscribers.csv, fleXml.csv and workspace.ini) could not be created
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]    ${cgs_filename}    ${cg_msisdn}    ${cd_imsi}    ${cd_msisdn}    ${msc_address}    ${callsgen_home}    ${callsgen_jar_name}    ${callsgen_unified_workspace_absolute_path}    ${amq_host}    ${amq_port}    ${queue_mtc_req}    ${queue_mtc_res}   
+    ${subscribers_csv_absolute_path}=   Set Variable    ${CURDIR}/tmp/${cgs_filename}-subscribers.csv     
+    ${flexml_csv_absolute_path}=        Set Variable    ${CURDIR}/tmp/${cgs_filename}-fleXml.csv      
+    ${workspace_ini_absolute_path}=     Set Variable    ${CURDIR}/tmp/${cgs_filename}-workspace.ini        
+    ${cgs_absolute_path}=               Set Variable    ${CURDIR}/${cgs_filename}.cgs        
+    Comment          ****** create subscribers.csv ****** 
+                     Create File        ${subscribers_csv_absolute_path}    ${cd_imsi};${cd_msisdn}\n 
+    Comment          ****** create fleXml ****** 
+                     Create File       ${flexml_csv_absolute_path}         \#Header: comment;mscAddress;mtcAPartyMsisdn\n                                         
+                     Append To File    ${flexml_csv_absolute_path}         ${cgs_filename} parameters;${msc_address};${cg_msisdn}\n
+    Comment          ****** create workspace.ini ****** 
+                     Create File       ${workspace_ini_absolute_path}      ${WORKSPACE_INI_DEFAULTS}                                          
+                     Append To File    ${workspace_ini_absolute_path}      \ninAMQHost=${amq_host} \ninAMQPort=${amq_port} \ninQueuePair1=true;CAP2_MTC;${queue_mtc_req};${queue_mtc_res};6;1;1
+    Comment          ****** Exec CG ****** 
+    ${rc}=           Run And Return Rc  cd ${callsgen_home};java -jar ${callsgen_jar_name} ${cgs_absolute_path} ${callsgen_unified_workspace_absolute_path} -i ${workspace_ini_absolute_path} -s ${subscribers_csv_absolute_path} -f ${flexml_csv_absolute_path}    
+    [Return]         ${rc}
+

@@ -1,0 +1,3697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 2.8.7 (Jython 2.7rc1 on java1.7.0_79)" generated="20150619 01:12:40.893">
+<suite source="/opt/robot/robotworkspace/robot_testsuites" id="s1" name="Robot Testsuites">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/xdr" id="s1-s1" name="Xdr">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/xdr/XDR-ticket-verification" id="s1-s1-s1" name="XDR-ticket-verification">
+<suite source="/opt/robot/robotworkspace/robot_testsuites/xdr/XDR-ticket-verification/XDR_Test-robot-suite.txt" id="s1-s1-s1-s1" name="XDR Test-robot-suite">
+<kw type="setup" name="Setup Suite">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${time} = OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>date</arg>
+</arguments>
+<msg timestamp="20150619 01:12:42.168" level="INFO">Running command 'date 2&gt;&amp;1'</msg>
+<msg timestamp="20150619 01:12:42.171" level="INFO">${time} = Fri Jun 19 01:12:42 CEST 2015</msg>
+<status status="PASS" endtime="20150619 01:12:42.170" starttime="20150619 01:12:42.151"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Date and time: ${time}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150619 01:12:42.175" level="INFO">Date and time: Fri Jun 19 01:12:42 CEST 2015</msg>
+<status status="PASS" endtime="20150619 01:12:42.176" starttime="20150619 01:12:42.172"></status>
+</kw>
+<kw type="kw" name="Log The XDR Version">
+<doc>Called at suite setup procedure to check if XDR is running and to see which version is there.</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:42.322" starttime="20150619 01:12:42.186"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:42.328" level="INFO">Logging into '10.105.113.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20150619 01:12:43.525" level="INFO">Read output: Last login: Thu Jun 18 23:12:41 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m</msg>
+<msg timestamp="20150619 01:12:43.528" level="INFO">${output_login} = Last login: Thu Jun 18 23:12:41 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150619 01:12:43.526" starttime="20150619 01:12:42.325"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${output_login}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:43.533" level="INFO">Last login: Thu Jun 18 23:12:41 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150619 01:12:43.534" starttime="20150619 01:12:43.531"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo service inew-mvno-xdr status</arg>
+</arguments>
+<msg timestamp="20150619 01:12:43.538" level="INFO">Executing command 'sudo service inew-mvno-xdr status'.</msg>
+<msg timestamp="20150619 01:12:44.488" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150619 01:12:44.491" level="INFO">${output} = I-New UMS MVNO - XDR - Server 5.3.0.22932 is running PID: 5666 </msg>
+<status status="PASS" endtime="20150619 01:12:44.489" starttime="20150619 01:12:43.537"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR Version and pid: ${output}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150619 01:12:44.505" level="INFO">XDR Version and pid: I-New UMS MVNO - XDR - Server 5.3.0.22932 is running PID: 5666 </msg>
+<status status="PASS" endtime="20150619 01:12:44.508" starttime="20150619 01:12:44.499"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>I-New UMS MVNO - XDR</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:44.517" starttime="20150619 01:12:44.511"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+<arg>SSHLibrary.Close Connection</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:44.525" starttime="20150619 01:12:44.520"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:44.528" starttime="20150619 01:12:42.178"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>SUT:${SUT_RESOURCE}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150619 01:12:44.539" level="INFO">SUT:/opt/robot/robotworkspace/suts/TNZ-resource.txt</msg>
+<status status="PASS" endtime="20150619 01:12:44.541" starttime="20150619 01:12:44.532"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>XDR IP address:${XDR HOST}</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150619 01:12:44.544" level="INFO">XDR IP address:10.105.113.171</msg>
+<status status="PASS" endtime="20150619 01:12:44.545" starttime="20150619 01:12:44.542"></status>
+</kw>
+<kw type="kw" name="Check AMQ Availability">
+<doc>Called at suite setup procedure to check if AMQ is UP</doc>
+<arguments>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${AMQ-XDR HOST}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:44.600" starttime="20150619 01:12:44.556"></status>
+</kw>
+<kw type="kw" name="${output_login} = SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:44.606" level="INFO">Logging into '10.105.113.124:22' as 'qa_automation'.</msg>
+<msg timestamp="20150619 01:12:45.887" level="INFO">Read output: Last login: Thu Jun 18 23:11:43 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@amq02.tb13 ~]$[m</msg>
+<msg timestamp="20150619 01:12:45.891" level="INFO">${output_login} = Last login: Thu Jun 18 23:11:43 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@amq02.tb13 ~]$[m </msg>
+<status status="PASS" endtime="20150619 01:12:45.889" starttime="20150619 01:12:44.602"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>netstat -an | grep ${AMQ-SIG PORT}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:45.895" level="INFO">Executing command 'netstat -an | grep 61616'.</msg>
+<msg timestamp="20150619 01:12:45.980" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150619 01:12:45.984" level="INFO">${output} = tcp        0      0 :::61616                    :::*                        LISTEN      
+tcp        0      0 ::ffff:10.105.113.124:61616 ::ffff:10.105.80.196:48501  ESTABLISHED 
+tcp        0      0 ::...</msg>
+<status status="PASS" endtime="20150619 01:12:45.983" starttime="20150619 01:12:45.892"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Should Contain">
+<doc>Fails if `item1` does not contain `item2` one or more times.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>LISTEN</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:45.994" starttime="20150619 01:12:45.988"></status>
+</kw>
+<kw type="kw" name="${output} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>sudo /etc/init.d/${AMQ-XDR SERVICE SCRIPT NAME} query -QQueue=${AMQ-XDR CRCE CDR QUEUE} | grep ConsumerCount</arg>
+</arguments>
+<msg timestamp="20150619 01:12:46.006" level="INFO">Executing command 'sudo /etc/init.d/amq-xdr-tb13 query -QQueue=inew-cs.crce.cdr | grep ConsumerCount'.</msg>
+<msg timestamp="20150619 01:12:47.265" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150619 01:12:47.271" level="INFO">${output} = ConsumerCount = 10</msg>
+<status status="PASS" endtime="20150619 01:12:47.268" starttime="20150619 01:12:45.997"></status>
+</kw>
+<kw type="kw" name="${count} = String.Get Substring">
+<doc>Returns a substring from `start` index to `end` index.</doc>
+<arguments>
+<arg>${output}</arg>
+<arg>16</arg>
+</arguments>
+<msg timestamp="20150619 01:12:47.281" level="INFO">${count} = 10</msg>
+<status status="PASS" endtime="20150619 01:12:47.280" starttime="20150619 01:12:47.274"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>0 &lt; ${count}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.298" starttime="20150619 01:12:47.284"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Comment">
+<doc>Displays the given messages in the log file as keyword arguments.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.301" starttime="20150619 01:12:47.300"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Close Connection">
+<doc>Closes the current connection.</doc>
+<arguments>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.305" starttime="20150619 01:12:47.302"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:47.307" starttime="20150619 01:12:44.547"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>AMQ and consumers are UP</arg>
+<arg>console=yes</arg>
+</arguments>
+<msg timestamp="20150619 01:12:47.310" level="INFO">AMQ and consumers are UP</msg>
+<status status="PASS" endtime="20150619 01:12:47.311" starttime="20150619 01:12:47.309"></status>
+</kw>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Connect To Database">
+<doc></doc>
+<arguments>
+<arg>org.postgresql.Driver</arg>
+<arg>jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}</arg>
+<arg>${XDR DB USER}</arg>
+<arg>${XDR DB PWD}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.384" starttime="20150619 01:12:47.315"></status>
+</kw>
+<kw type="kw" name="OperatingSystem.Run">
+<doc>Runs the given command in the system and returns the output.</doc>
+<arguments>
+<arg>rm -f ssh_tail_log-xdr.log</arg>
+</arguments>
+<msg timestamp="20150619 01:12:47.396" level="INFO">Running command 'rm -f ssh_tail_log-xdr.log 2&gt;&amp;1'</msg>
+<status status="PASS" endtime="20150619 01:12:47.398" starttime="20150619 01:12:47.387"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>crce_cdr_2015w08</arg>
+<arg>sessionid</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.469" starttime="20150619 01:12:47.440"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:47.471" starttime="20150619 01:12:47.426"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>crce_cdr</arg>
+<arg>sessionid</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:47.580" starttime="20150619 01:12:47.506"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:47.583" starttime="20150619 01:12:47.493"></status>
+</kw>
+<kw type="kw" name="${JNDI_PROVIDER_URL} = BuiltIn.Set Variable">
+<doc>Returns the given values which can then be assigned to a variables.</doc>
+<arguments>
+<arg>tcp://${AMQ-XDR HOST}:${AMQ-SIG PORT}?jms.useAsyncSend=false</arg>
+</arguments>
+<msg timestamp="20150619 01:12:47.594" level="INFO">${JNDI_PROVIDER_URL} = tcp://10.105.113.124:61616?jms.useAsyncSend=false</msg>
+<status status="PASS" endtime="20150619 01:12:47.593" starttime="20150619 01:12:47.585"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Init Provider">
+<doc></doc>
+<arguments>
+<arg>${INITIAL_CONTEXT_FACTORY}</arg>
+<arg>${JNDI_PROVIDER_URL}</arg>
+<arg>connect=true</arg>
+<arg>start=true</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.037" starttime="20150619 01:12:47.597"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:48.039" starttime="20150619 01:12:42.141"></status>
+</kw>
+<test id="s1-s1-s1-s1-t1" name="Test MOC ticket processing">
+<kw type="kw" name="Send Ticket And Analyse">
+<doc>General test case skeleton to be executed. Contains all steps for single test case</doc>
+<arguments>
+<arg>MOC</arg>
+<arg>crce_cdr_2015w08</arg>
+<arg>sessionid</arg>
+<arg>OK</arg>
+</arguments>
+<kw type="kw" name="${ssh_connection} = ssh-support-resource.SSH Login And Start File Monitor">
+<doc>Combines 'SSH Login' and 'SSH Start File Monitor' for compacter coding style</doc>
+<arguments>
+<arg>${XDR USER}</arg>
+<arg>${XDR PWD}</arg>
+<arg>${EMPTY}</arg>
+<arg>${XDR_LOG_FILE_PATH}</arg>
+<arg>host=${XDR HOST}</arg>
+</arguments>
+<kw type="kw" name="${ssh_connection} = ssh-support-resource.SSH Login">
+<doc>Does a password or RSA key file based login at the passed SSH connection depending whether or not the passed password is .</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+<arg>${rsa_key_file}</arg>
+<arg>ssh_connection=${ssh_connection}</arg>
+<arg>host=${host}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Set Default Configuration">
+<doc>Update the default `configuration`.</doc>
+<arguments>
+<arg>loglevel=INFO</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.097" starttime="20150619 01:12:48.095"></status>
+</kw>
+<kw type="kw" name="${ssh_connection} = BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${ssh_connection}'=='${EMPTY}'</arg>
+<arg>Open Connection</arg>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Open Connection">
+<doc>Opens a new SSH connection to the given `host` and `port`.</doc>
+<arguments>
+<arg>${host}</arg>
+<arg>port=22</arg>
+<arg>timeout=3</arg>
+<arg>prompt=$</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.215" starttime="20150619 01:12:48.104"></status>
+</kw>
+<msg timestamp="20150619 01:12:48.219" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150619 01:12:48.217" starttime="20150619 01:12:48.098"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Run Keyword If">
+<doc>Runs the given keyword with the given arguments, if `condition` is true.</doc>
+<arguments>
+<arg>'${pswd}'=='${EMPTY}'</arg>
+<arg>Login With Public Key</arg>
+<arg>${user}</arg>
+<arg>${rsa_key_file}</arg>
+<arg>ELSE</arg>
+<arg>Login</arg>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Login">
+<doc>Logs into the SSH server with the given `username` and `password`.</doc>
+<arguments>
+<arg>${user}</arg>
+<arg>${pswd}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:48.238" level="INFO">Logging into '10.105.113.171:22' as 'qa_automation'.</msg>
+<msg timestamp="20150619 01:12:48.822" level="INFO">Read output: Last login: Thu Jun 18 23:12:42 2015 from 10.105.80.196
+id: cannot find name for group ID 20007
+[1m[qa_automation@xdr01.tb13 ~]$</msg>
+<status status="PASS" endtime="20150619 01:12:48.823" starttime="20150619 01:12:48.233"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:48.824" starttime="20150619 01:12:48.221"></status>
+</kw>
+<msg timestamp="20150619 01:12:48.827" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150619 01:12:48.826" starttime="20150619 01:12:48.086"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Start File Monitor">
+<doc>Executes a 'tail -f' for the passed file on the passed SSH connection</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+<arg>${monitored_file_path}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.842" starttime="20150619 01:12:48.839"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Start Command">
+<doc>Starts execution of the `command` on the remote machine and returns immediately.</doc>
+<arguments>
+<arg>tail -f ${monitored_file_path} &gt; tmpfilemonitor${ssh_connection}.log</arg>
+</arguments>
+<msg timestamp="20150619 01:12:48.846" level="INFO">Starting command 'tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log'.</msg>
+<status status="PASS" endtime="20150619 01:12:48.850" starttime="20150619 01:12:48.843"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:48.851" starttime="20150619 01:12:48.829"></status>
+</kw>
+<msg timestamp="20150619 01:12:48.853" level="INFO">${ssh_connection} = 3</msg>
+<status status="PASS" endtime="20150619 01:12:48.853" starttime="20150619 01:12:48.074"></status>
+</kw>
+<kw type="kw" name="CleanDBTable">
+<doc>Runs the sql query - deletes only selected rows of the ${table}</doc>
+<arguments>
+<arg>${affectedDbTable}</arg>
+<arg>${affectedDbTableKeyColumnName}</arg>
+</arguments>
+<kw type="kw" name="org.robot.database.keywords.DatabaseLibrary.Execute Sql">
+<doc></doc>
+<arguments>
+<arg>delete from ${table} where ${search_key} like '${UNIQUE_SEARCH_STRING}';</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.898" starttime="20150619 01:12:48.876"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:48.901" starttime="20150619 01:12:48.867"></status>
+</kw>
+<kw type="kw" name="Send Ticket To Queue">
+<doc>Keyword using JMSLibrary to send text from ticket file to JMS queue</doc>
+<arguments>
+<arg>${ticketSignature}</arg>
+</arguments>
+<kw type="kw" name="${TICKET} = OperatingSystem.Get File">
+<doc>Returns the contents of a specified file.</doc>
+<arguments>
+<arg>/opt/robot/robotworkspace/robot_testsuites/xdr/XDR-ticket-verification/tickets/${ticket_type}.txt</arg>
+</arguments>
+<msg timestamp="20150619 01:12:48.924" html="yes" level="INFO">Getting file '&lt;a href="file:///opt/robot/robotworkspace/robot_testsuites/xdr/XDR-ticket-verification/tickets/MOC.txt"&gt;/opt/robot/robotworkspace/robot_testsuites/xdr/XDR-ticket-verification/tickets/MOC.txt&lt;/a&gt;'</msg>
+<msg timestamp="20150619 01:12:48.927" level="INFO">${TICKET} = 5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|Charge|BasicSession|1|5309920...</msg>
+<status status="PASS" endtime="20150619 01:12:48.926" starttime="20150619 01:12:48.919"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>${TICKET}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:48.933" level="INFO">5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||1.2|Charge|BasicSession|1|530992041999740|642041999740|true|642041999415|(network) XdrComponentTest|Local (on-net)|Originating||||Voice|false||(network) XdrComponentTest|2015-02-22T09:15:45.930+0000|0|120000|120000|0|0|1|false|101026|15734486|101026|2|2|Minutes|15|PREPAID|OK||
+</msg>
+<status status="PASS" endtime="20150619 01:12:48.935" starttime="20150619 01:12:48.930"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Create Text Message">
+<doc></doc>
+<arguments>
+<arg>${TICKET}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.958" starttime="20150619 01:12:48.937"></status>
+</kw>
+<kw type="kw" name="JMSLibrary.Send To Queue">
+<doc></doc>
+<arguments>
+<arg>${AMQ-XDR CRCE CDR QUEUE}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:48.976" starttime="20150619 01:12:48.961"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:48.978" starttime="20150619 01:12:48.904"></status>
+</kw>
+<kw type="kw" name="${tailed_text} = ssh-support-resource.SSH Close File Monitor And Logout">
+<doc>Combines 'SSH Close File Monitor' and 'SSH Logout' for compacter coding style</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<kw type="kw" name="${tailed_text} = ssh-support-resource.SSH Close File Monitor">
+<doc>Closes a file monitor created via 'SSH Start File Monitor' and returns all grabbed text</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:49.014" starttime="20150619 01:12:49.009"></status>
+</kw>
+<kw type="kw" name="${CTRL_C} = BuiltIn.Evaluate">
+<doc>Evaluates the given expression in Python and returns the results.</doc>
+<arguments>
+<arg>chr(int(3))</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.024" level="INFO">${CTRL_C} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.023" starttime="20150619 01:12:49.016"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Write">
+<doc>Writes the given `text` on the remote machine and appends a newline.</doc>
+<arguments>
+<arg>${CTRL_C}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.036" level="INFO">[m ^C</msg>
+<status status="PASS" endtime="20150619 01:12:49.037" starttime="20150619 01:12:49.027"></status>
+</kw>
+<kw type="kw" name="ssh-support-resource.SSH Kill User Processes">
+<doc>This is a helper to cleanup zombie processes left by the SSH lib's 'Start Command'</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+<arg>tail</arg>
+</arguments>
+<kw type="kw" name="SSHLibrary.Switch Connection">
+<doc>Switches the active connection by index or alias.</doc>
+<arguments>
+<arg>${ssh_connection}</arg>
+</arguments>
+<status status="PASS" endtime="20150619 01:12:49.060" starttime="20150619 01:12:49.057"></status>
+</kw>
+<kw type="kw" name="${user} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>id -un</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.062" level="INFO">Executing command 'id -un'.</msg>
+<msg timestamp="20150619 01:12:49.151" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150619 01:12:49.153" level="INFO">${user} = qa_automation</msg>
+<status status="PASS" endtime="20150619 01:12:49.153" starttime="20150619 01:12:49.061"></status>
+</kw>
+<kw type="kw" name="${processes_string} = SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>ps U ${user} --no-heading | grep ${command_name}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.157" level="INFO">Executing command 'ps U qa_automation --no-heading | grep tail'.</msg>
+<msg timestamp="20150619 01:12:49.365" level="INFO">Command exited with return code 0.</msg>
+<msg timestamp="20150619 01:12:49.367" level="INFO">${processes_string} =   311 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log
+  338 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log
+  436 ?        Ss     0:00 bash -c tail -f /va...</msg>
+<status status="PASS" endtime="20150619 01:12:49.366" starttime="20150619 01:12:49.154"></status>
+</kw>
+<kw type="kw" name="@{processes_list} = String.Split String">
+<doc>Splits the `string` using `separator` as a delimiter string.</doc>
+<arguments>
+<arg>${processes_string}</arg>
+<arg>${\n}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.377" level="INFO">@{processes_list} = [   311 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log |   338 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log |   436 ?        Ss     0:00 bash -c tail ...</msg>
+<status status="PASS" endtime="20150619 01:12:49.371" starttime="20150619 01:12:49.368"></status>
+</kw>
+<kw type="for" name="${process} IN [ @{processes_list} ]">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="foritem" name="${process} =   311 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.383" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.382" starttime="20150619 01:12:49.380"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.386" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:49.448" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:49.449" starttime="20150619 01:12:49.384"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:49.450" starttime="20150619 01:12:49.379"></status>
+</kw>
+<kw type="foritem" name="${process} =   338 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.454" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.453" starttime="20150619 01:12:49.451"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.457" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:49.548" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:49.550" starttime="20150619 01:12:49.455"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:49.550" starttime="20150619 01:12:49.450"></status>
+</kw>
+<kw type="foritem" name="${process} =   436 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.555" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.554" starttime="20150619 01:12:49.552"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.557" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:49.675" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:49.677" starttime="20150619 01:12:49.556"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:49.679" starttime="20150619 01:12:49.551"></status>
+</kw>
+<kw type="foritem" name="${process} =   440 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor18.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.688" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.687" starttime="20150619 01:12:49.682"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.694" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:49.802" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:49.804" starttime="20150619 01:12:49.690"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:49.806" starttime="20150619 01:12:49.680"></status>
+</kw>
+<kw type="foritem" name="${process} =   451 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.814" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.813" starttime="20150619 01:12:49.808"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.820" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:49.933" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:49.935" starttime="20150619 01:12:49.816"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:49.937" starttime="20150619 01:12:49.807"></status>
+</kw>
+<kw type="foritem" name="${process} =   456 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.946" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:49.945" starttime="20150619 01:12:49.940"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:49.952" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.062" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.064" starttime="20150619 01:12:49.949"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.067" starttime="20150619 01:12:49.938"></status>
+</kw>
+<kw type="foritem" name="${process} =   528 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor6.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.075" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.074" starttime="20150619 01:12:50.071"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.089" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.141" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.142" starttime="20150619 01:12:50.085"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.143" starttime="20150619 01:12:50.069"></status>
+</kw>
+<kw type="foritem" name="${process} =   565 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor9.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.147" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.147" starttime="20150619 01:12:50.144"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.150" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.251" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.252" starttime="20150619 01:12:50.148"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.252" starttime="20150619 01:12:50.143"></status>
+</kw>
+<kw type="foritem" name="${process} =   577 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.257" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.256" starttime="20150619 01:12:50.254"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.259" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.362" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.363" starttime="20150619 01:12:50.258"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.364" starttime="20150619 01:12:50.253"></status>
+</kw>
+<kw type="foritem" name="${process} =   580 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.368" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.367" starttime="20150619 01:12:50.365"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.371" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.472" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.473" starttime="20150619 01:12:50.369"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.474" starttime="20150619 01:12:50.364"></status>
+</kw>
+<kw type="foritem" name="${process} =   592 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.478" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.478" starttime="20150619 01:12:50.475"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.481" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.568" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.569" starttime="20150619 01:12:50.479"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.570" starttime="20150619 01:12:50.474"></status>
+</kw>
+<kw type="foritem" name="${process} =   593 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.574" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.573" starttime="20150619 01:12:50.571"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.577" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.652" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.654" starttime="20150619 01:12:50.575"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.656" starttime="20150619 01:12:50.570"></status>
+</kw>
+<kw type="foritem" name="${process} =   654 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor5.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.664" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.663" starttime="20150619 01:12:50.658"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.669" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.747" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.749" starttime="20150619 01:12:50.666"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.751" starttime="20150619 01:12:50.657"></status>
+</kw>
+<kw type="foritem" name="${process} =   669 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.760" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.759" starttime="20150619 01:12:50.754"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.766" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:50.879" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:50.881" starttime="20150619 01:12:50.762"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:50.883" starttime="20150619 01:12:50.752"></status>
+</kw>
+<kw type="foritem" name="${process} =   705 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.894" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:50.893" starttime="20150619 01:12:50.886"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:50.901" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.053" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.055" starttime="20150619 01:12:50.897"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.059" starttime="20150619 01:12:50.884"></status>
+</kw>
+<kw type="foritem" name="${process} =   720 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.069" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.068" starttime="20150619 01:12:51.063"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.075" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.199" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.201" starttime="20150619 01:12:51.071"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.203" starttime="20150619 01:12:51.061"></status>
+</kw>
+<kw type="foritem" name="${process} =   730 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor4.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.211" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.210" starttime="20150619 01:12:51.205"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.217" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.292" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.294" starttime="20150619 01:12:51.213"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.296" starttime="20150619 01:12:51.204"></status>
+</kw>
+<kw type="foritem" name="${process} =   744 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor14.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.304" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.303" starttime="20150619 01:12:51.298"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.310" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.443" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.445" starttime="20150619 01:12:51.306"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.446" starttime="20150619 01:12:51.296"></status>
+</kw>
+<kw type="foritem" name="${process} =   746 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.454" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.453" starttime="20150619 01:12:51.449"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.459" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.584" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.585" starttime="20150619 01:12:51.457"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.586" starttime="20150619 01:12:51.447"></status>
+</kw>
+<kw type="foritem" name="${process} =   759 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.590" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.589" starttime="20150619 01:12:51.587"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.593" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.709" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.711" starttime="20150619 01:12:51.591"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.713" starttime="20150619 01:12:51.586"></status>
+</kw>
+<kw type="foritem" name="${process} =   764 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.721" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.720" starttime="20150619 01:12:51.716"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.727" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.838" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:51.840" starttime="20150619 01:12:51.724"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:51.841" starttime="20150619 01:12:51.714"></status>
+</kw>
+<kw type="foritem" name="${process} =   779 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.850" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:51.849" starttime="20150619 01:12:51.844"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:51.856" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:51.970" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.059" starttime="20150619 01:12:51.852"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.066" starttime="20150619 01:12:51.842"></status>
+</kw>
+<kw type="foritem" name="${process} =   784 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor11.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.079" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.078" starttime="20150619 01:12:52.072"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.085" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.153" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.156" starttime="20150619 01:12:52.081"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.158" starttime="20150619 01:12:52.068"></status>
+</kw>
+<kw type="foritem" name="${process} =   799 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.168" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.167" starttime="20150619 01:12:52.161"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.174" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.258" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.260" starttime="20150619 01:12:52.170"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.262" starttime="20150619 01:12:52.159"></status>
+</kw>
+<kw type="foritem" name="${process} =   825 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor9.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.271" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.270" starttime="20150619 01:12:52.265"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.277" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.373" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.376" starttime="20150619 01:12:52.273"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.378" starttime="20150619 01:12:52.263"></status>
+</kw>
+<kw type="foritem" name="${process} =   843 ?        S      0:02 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.388" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.387" starttime="20150619 01:12:52.382"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.394" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.505" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.506" starttime="20150619 01:12:52.390"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.507" starttime="20150619 01:12:52.379"></status>
+</kw>
+<kw type="foritem" name="${process} =   897 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.511" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.511" starttime="20150619 01:12:52.508"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.515" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.615" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.617" starttime="20150619 01:12:52.512"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.618" starttime="20150619 01:12:52.508"></status>
+</kw>
+<kw type="foritem" name="${process} =   912 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.623" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.622" starttime="20150619 01:12:52.619"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.628" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.715" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.717" starttime="20150619 01:12:52.626"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.718" starttime="20150619 01:12:52.618"></status>
+</kw>
+<kw type="foritem" name="${process} =   930 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor13.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.727" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.726" starttime="20150619 01:12:52.721"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.733" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.804" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.805" starttime="20150619 01:12:52.729"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.806" starttime="20150619 01:12:52.720"></status>
+</kw>
+<kw type="foritem" name="${process} =   947 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.810" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.810" starttime="20150619 01:12:52.807"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.814" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:52.921" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:52.923" starttime="20150619 01:12:52.811"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:52.924" starttime="20150619 01:12:52.807"></status>
+</kw>
+<kw type="foritem" name="${process} =  1030 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor12.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.928" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:52.927" starttime="20150619 01:12:52.925"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:52.931" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.021" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.024" starttime="20150619 01:12:52.929"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.027" starttime="20150619 01:12:52.924"></status>
+</kw>
+<kw type="foritem" name="${process} =  1045 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.036" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.035" starttime="20150619 01:12:53.031"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.042" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.128" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.130" starttime="20150619 01:12:53.038"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.132" starttime="20150619 01:12:53.029"></status>
+</kw>
+<kw type="foritem" name="${process} =  1154 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor14.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.141" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.140" starttime="20150619 01:12:53.135"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.146" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.230" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.233" starttime="20150619 01:12:53.143"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.234" starttime="20150619 01:12:53.133"></status>
+</kw>
+<kw type="foritem" name="${process} =  1155 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.243" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.242" starttime="20150619 01:12:53.237"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.249" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.340" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.342" starttime="20150619 01:12:53.245"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.343" starttime="20150619 01:12:53.235"></status>
+</kw>
+<kw type="foritem" name="${process} =  1163 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor10.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.352" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.350" starttime="20150619 01:12:53.346"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.357" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.451" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.453" starttime="20150619 01:12:53.354"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.454" starttime="20150619 01:12:53.344"></status>
+</kw>
+<kw type="foritem" name="${process} =  1170 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.462" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.461" starttime="20150619 01:12:53.457"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.467" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.530" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.531" starttime="20150619 01:12:53.464"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.533" starttime="20150619 01:12:53.455"></status>
+</kw>
+<kw type="foritem" name="${process} =  1172 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.541" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.540" starttime="20150619 01:12:53.535"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.547" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.676" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.677" starttime="20150619 01:12:53.543"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.679" starttime="20150619 01:12:53.534"></status>
+</kw>
+<kw type="foritem" name="${process} =  1174 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor3.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.687" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.686" starttime="20150619 01:12:53.681"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.692" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.822" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.824" starttime="20150619 01:12:53.689"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.826" starttime="20150619 01:12:53.680"></status>
+</kw>
+<kw type="foritem" name="${process} =  1176 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor8.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.834" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.833" starttime="20150619 01:12:53.828"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.839" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:53.947" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:53.949" starttime="20150619 01:12:53.836"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:53.950" starttime="20150619 01:12:53.826"></status>
+</kw>
+<kw type="foritem" name="${process} =  1178 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor6.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.958" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:53.957" starttime="20150619 01:12:53.953"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:53.964" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.080" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.086" starttime="20150619 01:12:53.960"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.089" starttime="20150619 01:12:53.951"></status>
+</kw>
+<kw type="foritem" name="${process} =  1180 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.098" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.097" starttime="20150619 01:12:54.092"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.103" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.207" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.209" starttime="20150619 01:12:54.100"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.210" starttime="20150619 01:12:54.090"></status>
+</kw>
+<kw type="foritem" name="${process} =  1191 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.219" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.218" starttime="20150619 01:12:54.213"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.224" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.328" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.330" starttime="20150619 01:12:54.221"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.331" starttime="20150619 01:12:54.211"></status>
+</kw>
+<kw type="foritem" name="${process} =  1195 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.340" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.339" starttime="20150619 01:12:54.334"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.346" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.417" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.419" starttime="20150619 01:12:54.342"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.420" starttime="20150619 01:12:54.332"></status>
+</kw>
+<kw type="foritem" name="${process} =  1225 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor6.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.428" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.427" starttime="20150619 01:12:54.423"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.434" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.500" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.501" starttime="20150619 01:12:54.431"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.503" starttime="20150619 01:12:54.421"></status>
+</kw>
+<kw type="foritem" name="${process} =  1240 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.511" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.510" starttime="20150619 01:12:54.506"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.517" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.610" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.611" starttime="20150619 01:12:54.513"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.612" starttime="20150619 01:12:54.504"></status>
+</kw>
+<kw type="foritem" name="${process} =  1261 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.616" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.615" starttime="20150619 01:12:54.613"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.618" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.729" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.730" starttime="20150619 01:12:54.616"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.730" starttime="20150619 01:12:54.612"></status>
+</kw>
+<kw type="foritem" name="${process} =  1276 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.734" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.734" starttime="20150619 01:12:54.732"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.737" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.847" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.849" starttime="20150619 01:12:54.735"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.850" starttime="20150619 01:12:54.731"></status>
+</kw>
+<kw type="foritem" name="${process} =  1303 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.860" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.856" starttime="20150619 01:12:54.853"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.876" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:54.951" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:54.953" starttime="20150619 01:12:54.872"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:54.955" starttime="20150619 01:12:54.851"></status>
+</kw>
+<kw type="foritem" name="${process} =  1309 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.963" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:54.962" starttime="20150619 01:12:54.958"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:54.969" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.024" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.026" starttime="20150619 01:12:54.965"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.029" starttime="20150619 01:12:54.956"></status>
+</kw>
+<kw type="foritem" name="${process} =  1318 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.038" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.037" starttime="20150619 01:12:55.032"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.044" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.140" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.141" starttime="20150619 01:12:55.040"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.142" starttime="20150619 01:12:55.031"></status>
+</kw>
+<kw type="foritem" name="${process} =  1382 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor18.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.149" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.148" starttime="20150619 01:12:55.145"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.156" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.270" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.272" starttime="20150619 01:12:55.153"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.273" starttime="20150619 01:12:55.143"></status>
+</kw>
+<kw type="foritem" name="${process} =  1399 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.282" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.281" starttime="20150619 01:12:55.276"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.287" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.397" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.399" starttime="20150619 01:12:55.284"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.400" starttime="20150619 01:12:55.274"></status>
+</kw>
+<kw type="foritem" name="${process} =  1425 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor13.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.409" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.408" starttime="20150619 01:12:55.403"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.414" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.520" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.522" starttime="20150619 01:12:55.411"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.524" starttime="20150619 01:12:55.401"></status>
+</kw>
+<kw type="foritem" name="${process} =  1440 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.533" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.531" starttime="20150619 01:12:55.527"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.538" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.620" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.622" starttime="20150619 01:12:55.535"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.623" starttime="20150619 01:12:55.525"></status>
+</kw>
+<kw type="foritem" name="${process} =  1466 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.631" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.630" starttime="20150619 01:12:55.626"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.637" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.697" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.699" starttime="20150619 01:12:55.633"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.700" starttime="20150619 01:12:55.624"></status>
+</kw>
+<kw type="foritem" name="${process} =  1482 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.709" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.708" starttime="20150619 01:12:55.703"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.714" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.809" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.811" starttime="20150619 01:12:55.711"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.812" starttime="20150619 01:12:55.701"></status>
+</kw>
+<kw type="foritem" name="${process} =  1522 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor4.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.820" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.819" starttime="20150619 01:12:55.815"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.826" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:55.924" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:55.926" starttime="20150619 01:12:55.822"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:55.927" starttime="20150619 01:12:55.813"></status>
+</kw>
+<kw type="foritem" name="${process} =  1537 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.936" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:55.935" starttime="20150619 01:12:55.930"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:55.942" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.029" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.031" starttime="20150619 01:12:55.938"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.033" starttime="20150619 01:12:55.928"></status>
+</kw>
+<kw type="foritem" name="${process} =  1542 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor15.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.043" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.042" starttime="20150619 01:12:56.037"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.049" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.128" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.130" starttime="20150619 01:12:56.045"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.131" starttime="20150619 01:12:56.035"></status>
+</kw>
+<kw type="foritem" name="${process} =  1557 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.139" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.138" starttime="20150619 01:12:56.134"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.145" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.222" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.224" starttime="20150619 01:12:56.141"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.225" starttime="20150619 01:12:56.132"></status>
+</kw>
+<kw type="foritem" name="${process} =  1708 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor13.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.234" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.233" starttime="20150619 01:12:56.228"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.239" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.332" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.333" starttime="20150619 01:12:56.236"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.335" starttime="20150619 01:12:56.226"></status>
+</kw>
+<kw type="foritem" name="${process} =  1723 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.343" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.342" starttime="20150619 01:12:56.337"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.349" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.453" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.455" starttime="20150619 01:12:56.345"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.456" starttime="20150619 01:12:56.336"></status>
+</kw>
+<kw type="foritem" name="${process} =  1848 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.464" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.463" starttime="20150619 01:12:56.459"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.469" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.565" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.567" starttime="20150619 01:12:56.466"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.568" starttime="20150619 01:12:56.457"></status>
+</kw>
+<kw type="foritem" name="${process} =  1865 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.576" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.575" starttime="20150619 01:12:56.571"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.582" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.666" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.668" starttime="20150619 01:12:56.578"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.669" starttime="20150619 01:12:56.569"></status>
+</kw>
+<kw type="foritem" name="${process} =  1977 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor13.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.677" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.676" starttime="20150619 01:12:56.672"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.683" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.756" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.758" starttime="20150619 01:12:56.679"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.759" starttime="20150619 01:12:56.670"></status>
+</kw>
+<kw type="foritem" name="${process} =  1992 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.767" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.766" starttime="20150619 01:12:56.761"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.772" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.833" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.835" starttime="20150619 01:12:56.769"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.836" starttime="20150619 01:12:56.760"></status>
+</kw>
+<kw type="foritem" name="${process} =  2009 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor12.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.844" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.843" starttime="20150619 01:12:56.839"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.850" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:56.949" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:56.951" starttime="20150619 01:12:56.846"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:56.953" starttime="20150619 01:12:56.837"></status>
+</kw>
+<kw type="foritem" name="${process} =  2012 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.961" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:56.960" starttime="20150619 01:12:56.955"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:56.966" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.055" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.057" starttime="20150619 01:12:56.963"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.058" starttime="20150619 01:12:56.954"></status>
+</kw>
+<kw type="foritem" name="${process} =  2024 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.062" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.061" starttime="20150619 01:12:57.059"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.064" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.163" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.165" starttime="20150619 01:12:57.063"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.167" starttime="20150619 01:12:57.059"></status>
+</kw>
+<kw type="foritem" name="${process} =  2105 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.175" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.174" starttime="20150619 01:12:57.169"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.181" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.291" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.293" starttime="20150619 01:12:57.177"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.295" starttime="20150619 01:12:57.168"></status>
+</kw>
+<kw type="foritem" name="${process} =  2120 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.303" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.302" starttime="20150619 01:12:57.297"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.308" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.406" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.408" starttime="20150619 01:12:57.305"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.410" starttime="20150619 01:12:57.296"></status>
+</kw>
+<kw type="foritem" name="${process} =  2123 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.418" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.417" starttime="20150619 01:12:57.412"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.423" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.624" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.626" starttime="20150619 01:12:57.420"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.627" starttime="20150619 01:12:57.411"></status>
+</kw>
+<kw type="foritem" name="${process} =  2136 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor5.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.635" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.634" starttime="20150619 01:12:57.630"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.641" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:57.832" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:57.833" starttime="20150619 01:12:57.637"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:57.834" starttime="20150619 01:12:57.628"></status>
+</kw>
+<kw type="foritem" name="${process} =  2166 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor9.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.838" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:57.837" starttime="20150619 01:12:57.835"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:57.840" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.035" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.036" starttime="20150619 01:12:57.839"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.037" starttime="20150619 01:12:57.834"></status>
+</kw>
+<kw type="foritem" name="${process} =  2181 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.042" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.041" starttime="20150619 01:12:58.039"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.044" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.159" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.160" starttime="20150619 01:12:58.043"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.161" starttime="20150619 01:12:58.038"></status>
+</kw>
+<kw type="foritem" name="${process} =  2204 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.164" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.164" starttime="20150619 01:12:58.162"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.167" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.299" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.301" starttime="20150619 01:12:58.166"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.303" starttime="20150619 01:12:58.161"></status>
+</kw>
+<kw type="foritem" name="${process} =  2216 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.311" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.310" starttime="20150619 01:12:58.305"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.317" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.410" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.412" starttime="20150619 01:12:58.313"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.413" starttime="20150619 01:12:58.303"></status>
+</kw>
+<kw type="foritem" name="${process} =  2231 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.422" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.421" starttime="20150619 01:12:58.416"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.428" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.530" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.532" starttime="20150619 01:12:58.424"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.533" starttime="20150619 01:12:58.414"></status>
+</kw>
+<kw type="foritem" name="${process} =  2246 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor18.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.542" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.541" starttime="20150619 01:12:58.536"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.548" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.598" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.600" starttime="20150619 01:12:58.544"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.601" starttime="20150619 01:12:58.534"></status>
+</kw>
+<kw type="foritem" name="${process} =  2261 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.610" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.608" starttime="20150619 01:12:58.604"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.615" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.692" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.694" starttime="20150619 01:12:58.612"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.695" starttime="20150619 01:12:58.602"></status>
+</kw>
+<kw type="foritem" name="${process} =  2287 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor4.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.704" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.703" starttime="20150619 01:12:58.698"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.710" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.810" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.811" starttime="20150619 01:12:58.706"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.813" starttime="20150619 01:12:58.696"></status>
+</kw>
+<kw type="foritem" name="${process} =  2302 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.821" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.820" starttime="20150619 01:12:58.815"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.826" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:58.930" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:58.932" starttime="20150619 01:12:58.823"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:58.933" starttime="20150619 01:12:58.814"></status>
+</kw>
+<kw type="foritem" name="${process} =  2347 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.942" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:58.941" starttime="20150619 01:12:58.936"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:58.947" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.066" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.068" starttime="20150619 01:12:58.944"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.070" starttime="20150619 01:12:58.934"></status>
+</kw>
+<kw type="foritem" name="${process} =  2354 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor11.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.079" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.078" starttime="20150619 01:12:59.073"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.084" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.140" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.142" starttime="20150619 01:12:59.081"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.142" starttime="20150619 01:12:59.072"></status>
+</kw>
+<kw type="foritem" name="${process} =  2355 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor14.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.148" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.146" starttime="20150619 01:12:59.144"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.155" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.258" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.260" starttime="20150619 01:12:59.151"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.261" starttime="20150619 01:12:59.143"></status>
+</kw>
+<kw type="foritem" name="${process} =  2363 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.270" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.268" starttime="20150619 01:12:59.264"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.275" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.382" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.384" starttime="20150619 01:12:59.272"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.386" starttime="20150619 01:12:59.262"></status>
+</kw>
+<kw type="foritem" name="${process} =  2369 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.396" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.395" starttime="20150619 01:12:59.390"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.402" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.511" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.513" starttime="20150619 01:12:59.398"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.514" starttime="20150619 01:12:59.388"></status>
+</kw>
+<kw type="foritem" name="${process} =  2377 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor6.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.523" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.522" starttime="20150619 01:12:59.517"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.528" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.623" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.625" starttime="20150619 01:12:59.525"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.626" starttime="20150619 01:12:59.515"></status>
+</kw>
+<kw type="foritem" name="${process} =  2378 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor15.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.635" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.634" starttime="20150619 01:12:59.630"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.641" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.736" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.738" starttime="20150619 01:12:59.637"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.739" starttime="20150619 01:12:59.628"></status>
+</kw>
+<kw type="foritem" name="${process} =  2385 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.747" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.746" starttime="20150619 01:12:59.742"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.752" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.821" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.823" starttime="20150619 01:12:59.749"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.824" starttime="20150619 01:12:59.740"></status>
+</kw>
+<kw type="foritem" name="${process} =  2393 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.832" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.831" starttime="20150619 01:12:59.827"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.837" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:12:59.953" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:12:59.955" starttime="20150619 01:12:59.834"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:12:59.956" starttime="20150619 01:12:59.825"></status>
+</kw>
+<kw type="foritem" name="${process} =  2394 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.966" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:12:59.964" starttime="20150619 01:12:59.959"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:12:59.971" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.061" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.062" starttime="20150619 01:12:59.968"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.063" starttime="20150619 01:12:59.957"></status>
+</kw>
+<kw type="foritem" name="${process} =  2396 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor4.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.068" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.067" starttime="20150619 01:13:00.065"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.070" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.180" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.181" starttime="20150619 01:13:00.069"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.182" starttime="20150619 01:13:00.064"></status>
+</kw>
+<kw type="foritem" name="${process} =  2403 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.186" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.185" starttime="20150619 01:13:00.183"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.188" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.305" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.306" starttime="20150619 01:13:00.187"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.307" starttime="20150619 01:13:00.182"></status>
+</kw>
+<kw type="foritem" name="${process} =  2411 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.311" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.310" starttime="20150619 01:13:00.308"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.313" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.441" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.442" starttime="20150619 01:13:00.312"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.442" starttime="20150619 01:13:00.307"></status>
+</kw>
+<kw type="foritem" name="${process} =  2418 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor11.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.446" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.446" starttime="20150619 01:13:00.444"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.449" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.560" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.562" starttime="20150619 01:13:00.447"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.563" starttime="20150619 01:13:00.443"></status>
+</kw>
+<kw type="foritem" name="${process} =  2443 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.571" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.570" starttime="20150619 01:13:00.566"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.576" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.685" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.687" starttime="20150619 01:13:00.573"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.688" starttime="20150619 01:13:00.564"></status>
+</kw>
+<kw type="foritem" name="${process} =  2476 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor8.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.696" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.695" starttime="20150619 01:13:00.691"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.701" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.782" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.784" starttime="20150619 01:13:00.698"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.785" starttime="20150619 01:13:00.689"></status>
+</kw>
+<kw type="foritem" name="${process} =  2491 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.792" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.791" starttime="20150619 01:13:00.788"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.794" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.867" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.868" starttime="20150619 01:13:00.793"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.869" starttime="20150619 01:13:00.786"></status>
+</kw>
+<kw type="foritem" name="${process} =  2500 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.873" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.872" starttime="20150619 01:13:00.870"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.875" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:00.987" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:00.988" starttime="20150619 01:13:00.873"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:00.988" starttime="20150619 01:13:00.869"></status>
+</kw>
+<kw type="foritem" name="${process} =  2574 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor12.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.993" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:00.992" starttime="20150619 01:13:00.990"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:00.998" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.119" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.121" starttime="20150619 01:13:00.995"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.124" starttime="20150619 01:13:00.989"></status>
+</kw>
+<kw type="foritem" name="${process} =  2577 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor12.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.132" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.131" starttime="20150619 01:13:01.127"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.138" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.246" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.248" starttime="20150619 01:13:01.135"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.249" starttime="20150619 01:13:01.125"></status>
+</kw>
+<kw type="foritem" name="${process} =  2592 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.257" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.256" starttime="20150619 01:13:01.251"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.262" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.431" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.433" starttime="20150619 01:13:01.259"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.434" starttime="20150619 01:13:01.250"></status>
+</kw>
+<kw type="foritem" name="${process} =  2613 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor11.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.442" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.441" starttime="20150619 01:13:01.437"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.448" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.564" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.566" starttime="20150619 01:13:01.444"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.567" starttime="20150619 01:13:01.435"></status>
+</kw>
+<kw type="foritem" name="${process} =  2628 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.575" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.574" starttime="20150619 01:13:01.570"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.580" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.691" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.692" starttime="20150619 01:13:01.577"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.692" starttime="20150619 01:13:01.568"></status>
+</kw>
+<kw type="foritem" name="${process} =  2668 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor8.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.696" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.696" starttime="20150619 01:13:01.694"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.699" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.842" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.844" starttime="20150619 01:13:01.697"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.846" starttime="20150619 01:13:01.693"></status>
+</kw>
+<kw type="foritem" name="${process} =  2683 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.855" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.854" starttime="20150619 01:13:01.849"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.860" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:01.965" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:01.967" starttime="20150619 01:13:01.857"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:01.968" starttime="20150619 01:13:01.847"></status>
+</kw>
+<kw type="foritem" name="${process} =  2700 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.977" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:01.976" starttime="20150619 01:13:01.971"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:01.982" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.071" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.074" starttime="20150619 01:13:01.979"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.076" starttime="20150619 01:13:01.969"></status>
+</kw>
+<kw type="foritem" name="${process} =  2734 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor10.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.085" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.084" starttime="20150619 01:13:02.080"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.091" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.202" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.203" starttime="20150619 01:13:02.088"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.203" starttime="20150619 01:13:02.078"></status>
+</kw>
+<kw type="foritem" name="${process} =  2745 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor12.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.207" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.207" starttime="20150619 01:13:02.205"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.210" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.326" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.328" starttime="20150619 01:13:02.208"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.329" starttime="20150619 01:13:02.204"></status>
+</kw>
+<kw type="foritem" name="${process} =  2750 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.335" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.334" starttime="20150619 01:13:02.331"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.339" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.467" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.468" starttime="20150619 01:13:02.337"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.470" starttime="20150619 01:13:02.330"></status>
+</kw>
+<kw type="foritem" name="${process} =  2760 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.477" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.476" starttime="20150619 01:13:02.472"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.482" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.585" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.587" starttime="20150619 01:13:02.479"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.588" starttime="20150619 01:13:02.470"></status>
+</kw>
+<kw type="foritem" name="${process} =  2788 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor18.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.596" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.595" starttime="20150619 01:13:02.591"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.601" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.716" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.718" starttime="20150619 01:13:02.598"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.719" starttime="20150619 01:13:02.589"></status>
+</kw>
+<kw type="foritem" name="${process} =  2803 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.727" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.726" starttime="20150619 01:13:02.722"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.733" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.837" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.839" starttime="20150619 01:13:02.730"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.840" starttime="20150619 01:13:02.720"></status>
+</kw>
+<kw type="foritem" name="${process} =  3009 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.848" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.847" starttime="20150619 01:13:02.842"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.853" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:02.964" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:02.966" starttime="20150619 01:13:02.850"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:02.967" starttime="20150619 01:13:02.841"></status>
+</kw>
+<kw type="foritem" name="${process} =  3024 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.975" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:02.974" starttime="20150619 01:13:02.970"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:02.980" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.084" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.086" starttime="20150619 01:13:02.977"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.089" starttime="20150619 01:13:02.968"></status>
+</kw>
+<kw type="foritem" name="${process} =  3093 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor16.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.098" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.097" starttime="20150619 01:13:03.092"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.103" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.202" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.204" starttime="20150619 01:13:03.100"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.206" starttime="20150619 01:13:03.091"></status>
+</kw>
+<kw type="foritem" name="${process} =  3105 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor17.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.213" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.212" starttime="20150619 01:13:03.208"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.220" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.347" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.348" starttime="20150619 01:13:03.216"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.350" starttime="20150619 01:13:03.206"></status>
+</kw>
+<kw type="foritem" name="${process} =  3109 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor4.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.358" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.357" starttime="20150619 01:13:03.352"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.363" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.487" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.489" starttime="20150619 01:13:03.360"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.490" starttime="20150619 01:13:03.351"></status>
+</kw>
+<kw type="foritem" name="${process} =  3110 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.498" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.497" starttime="20150619 01:13:03.493"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.504" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.609" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.611" starttime="20150619 01:13:03.500"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.612" starttime="20150619 01:13:03.491"></status>
+</kw>
+<kw type="foritem" name="${process} =  3121 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.620" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.619" starttime="20150619 01:13:03.615"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.626" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.728" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.730" starttime="20150619 01:13:03.622"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.731" starttime="20150619 01:13:03.613"></status>
+</kw>
+<kw type="foritem" name="${process} =  3125 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor7.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.739" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.738" starttime="20150619 01:13:03.734"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.744" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.851" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.853" starttime="20150619 01:13:03.741"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.855" starttime="20150619 01:13:03.732"></status>
+</kw>
+<kw type="foritem" name="${process} =  3127 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.863" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.862" starttime="20150619 01:13:03.857"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.868" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:03.969" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:03.971" starttime="20150619 01:13:03.865"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:03.972" starttime="20150619 01:13:03.856"></status>
+</kw>
+<kw type="foritem" name="${process} =  3131 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor9.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.980" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:03.979" starttime="20150619 01:13:03.975"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:03.986" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.098" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.100" starttime="20150619 01:13:03.983"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.103" starttime="20150619 01:13:03.973"></status>
+</kw>
+<kw type="foritem" name="${process} =  3141 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.112" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.111" starttime="20150619 01:13:04.106"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.117" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.235" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.237" starttime="20150619 01:13:04.113"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.238" starttime="20150619 01:13:04.104"></status>
+</kw>
+<kw type="foritem" name="${process} =  3147 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.246" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.245" starttime="20150619 01:13:04.241"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.251" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.357" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.358" starttime="20150619 01:13:04.248"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.359" starttime="20150619 01:13:04.239"></status>
+</kw>
+<kw type="foritem" name="${process} =  3157 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor10.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.362" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.362" starttime="20150619 01:13:04.360"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.364" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.506" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.508" starttime="20150619 01:13:04.363"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.509" starttime="20150619 01:13:04.359"></status>
+</kw>
+<kw type="foritem" name="${process} =  3161 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor14.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.517" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.516" starttime="20150619 01:13:04.511"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.522" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.641" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.643" starttime="20150619 01:13:04.519"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.644" starttime="20150619 01:13:04.510"></status>
+</kw>
+<kw type="foritem" name="${process} =  3172 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.652" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.651" starttime="20150619 01:13:04.647"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.657" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.760" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.761" starttime="20150619 01:13:04.653"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.763" starttime="20150619 01:13:04.645"></status>
+</kw>
+<kw type="foritem" name="${process} =  3177 ?        S      0:00 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.776" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.775" starttime="20150619 01:13:04.765"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.781" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.857" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.858" starttime="20150619 01:13:04.778"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.858" starttime="20150619 01:13:04.763"></status>
+</kw>
+<kw type="foritem" name="${process} =  3188 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log &gt; tmpfilemonitor18.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.862" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.862" starttime="20150619 01:13:04.860"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.865" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:04.989" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:04.990" starttime="20150619 01:13:04.863"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:04.991" starttime="20150619 01:13:04.859"></status>
+</kw>
+<kw type="foritem" name="${process} =  3203 ?        S      0:01 tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr.log">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="${pid} = String.Fetch From Left">
+<doc>Returns contents of the `string` before the first occurrence of `marker`.</doc>
+<arguments>
+<arg>${process}</arg>
+<arg>${SPACE}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.995" level="INFO">${pid} = </msg>
+<status status="PASS" endtime="20150619 01:13:04.994" starttime="20150619 01:13:04.992"></status>
+</kw>
+<kw type="kw" name="SSHLibrary.Execute Command">
+<doc>Executes `command` on the remote machine and returns its outputs.</doc>
+<arguments>
+<arg>kill -9 ${pid}</arg>
+</arguments>
+<msg timestamp="20150619 01:13:04.997" level="INFO">Executing command 'kill -9 '.</msg>
+<msg timestamp="20150619 01:13:05.124" level="INFO">Command exited with return code 1.</msg>
+<status status="PASS" endtime="20150619 01:13:05.126" starttime="20150619 01:13:04.995"></status>
+</kw>
+<status status="PASS" endtime="20150619 01:13:05.128" starttime="20150619 01:13:04.991"></status>
+</kw>
+<kw type="foritem" name="${process} =  3206 ?        Ss     0:00 bash -c tail -f /var/log/inew/xdr/5.3.0/inew-mvno-xdr

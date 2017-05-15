@@ -1,0 +1,65 @@
+*** Settings ***
+Documentation     Demonstrates usage of the global keyword resource for subscriber administration support
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported walter.heincz experimental End2EndTest, inactive
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Library           OperatingSystem
+
+
+*** Variables ***
+
+${INITIAL_BALANCE}=    123456
+
+
+
+
+*** Test Cases ***
+
+Run Test Subscriber Creation
+    [Documentation]  Creates 10 Testsubscribers via subscriber admin highlevel function
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${return_code}=  CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    10    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+                     Should Be Equal As Strings      ${return_code}    OK
+
+
+
+
+
+Run Low Level Test Subscriber Creation
+    [Documentation]  Demonstrates the "Run Test Subscriber Creation" flow by using the subscriber admin lowlevel functions
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+                     : FOR    ${loopIdx}    IN RANGE    0    10
+                     \    ${currentImsi}      Evaluate    ${TESTSUBCRIBERS IMSI RANGE START}+${loopIdx}
+                     \    ${currentMsisdn}    Evaluate    ${TESTSUBCRIBERS MSISDN RANGE START}+${loopIdx}
+                     \    ########## Delete ##########
+                     \    ${resultCode}    ${providerIdDummy}    ${msisdnDummy}    ${deletionSubscriberId}    ${stateDummy}    ${tariffIdDummy}    ${typeDummy}=    CRCE Get Subscriber Profile By Imsi    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${currentImsi}
+                     \    ${resultCode}=   Run Keyword If   '${resultCode}' == 'OK'                  CRCE Delete Subscriber    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${deletionSubscriberId}
+                     \                     ...    ELSE IF   '${resultCode}' == 'UnknownSubscriber'   Set Variable    OK
+                     \                     ...    ELSE      Fail     msg=Querying existance of IMSI ${currentImsi} failed with CRCE code ${resultCode}
+                     \    Should Be Equal As Strings    ${resultCode}    OK    msg=Deletion of IMSI ${currentImsi} failed with CRCE code ${resultCode}
+                     \    ########## Create ##########
+                     \    ${resultCode}    ${currentSubscriberId}=    CRCE Create Subscriber    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${currentImsi}    ${currentMsisdn}    PREPAID     ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}
+                     \                     Run Keyword If   '${resultCode}' != 'OK'   Fail    msg=Creating subscriber with IMSI ${currentImsi} failed with CRCE code ${resultCode}
+                     \    ########## Activate ##########
+                     \    Log    activation currentSubscriberId=${currentSubscriberId}
+                     \    ${resultCode}=   CRCE Activate Subscriber    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${currentSubscriberId}
+                     \                     Run Keyword If   '${resultCode}' != 'OK'   Fail    msg=Activation of new subscriber with IMSI ${currentImsi} failed with CRCE code ${resultCode}
+                     \    ########## Set balance ##########
+                     \    ${resultCode}    ${currentAccountId}   ${balanceDummy}    ${categoryDummy}    ${currencyIdDummy}=    CRCE Get Main Account    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${currentSubscriberId}
+                     \                     Run Keyword If    '${resultCode}' != 'OK'   Fail    msg=Querying main accound id of new subscriber with IMSI ${currentImsi} failed with CRCE code ${resultCode}
+                     \    ${resultCode}=  CRCE Set Balance    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    ${currentSubscriberId}    ${currentAccountId}    ${INITIAL_BALANCE}
+                     \                     Run Keyword If   '${resultCode}' != 'OK'   Fail    msg=Setting initial balance of new subscriber with IMSI ${currentImsi} failed with CRCE code ${resultCode}
+
+
+
+

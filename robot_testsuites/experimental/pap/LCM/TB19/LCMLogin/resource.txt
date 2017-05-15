@@ -1,0 +1,63 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+
+*** Variables ***
+
+${SERVER}         10.105.119.127:1085/evoweb/cms/lcm/
+${BROWSER}        firefox
+${DELAY}          0.5
+${VALID USER}     lcmmanager	
+${VALID PASSWD}   lcmmanager
+${LOGIN URL}      http://${SERVER}257_EN-LCM.htm
+${WELCOME URL}    http://${SERVER}257_EN-LCM.htm
+${ERROR URL}      http://${SERVER}/html/error.html
+
+*** Keywords ***
+Open Browser To Login Page
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+
+Go To Login Page
+    Go To    ${LOGIN URL}
+
+Input Username
+    [Arguments]    ${username}
+    Input Text    id=username    ${username}
+
+Input Password
+    [Arguments]    ${password}
+    Input Text    id=password    ${password}
+	
+InputUserAndPassword 
+    [Arguments]  ${username}  ${password}
+    Input Text  id=username  ${username}
+    Input Text  id=password  ${password}
+    Click Button  name=login_submit
+
+Submit Credentials
+    Click Button    name=login_submit
+	
+SelectReferenceProvider
+    Click Element	id=filter_provider_id_99
+
+Logout
+    Click Button    id=logout
+
+Open User
+    Click Element    link=User Management
+    #Click Element    //table[@id='mytable']/tbody/tr[1]/td[7]/input
+    Click Button	xpath=(//input[@value='Edit'])[1]
+
+
+Disable User
+    Select from List    id=db_enabled    0
+    Click Element    name=save
+
+Enable User
+    Select from List    id=db_enabled    1
+    Click Element    name=save

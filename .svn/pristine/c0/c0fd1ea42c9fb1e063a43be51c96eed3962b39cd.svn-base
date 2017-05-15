@@ -1,0 +1,31 @@
+*** Settings ***
+Documentation     This is an simple MOC demo to verify valid integration of CG into the workspace
+...               ---------------------------------------------------------------
+...               Run MOC Demo
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz 
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+
+
+
+*** Test Cases *** 
+
+Run MOC Demo
+    [Documentation]  
+    ...              =========================================================
+    Comment                ******* Create test subscriber *******
+    ${INITIAL_BALANCE}=    Set Variable    10000000    #10 million should be enough for some calls even if it's in millicent units
+    ${return_code}=        CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+                           Should Be Equal As Strings      ${return_code}    OK
+    Comment                ******* Run Auto-MOC *******
+    ${rc}=                 CG Run MOC 1s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+                           Should be equal as Integers  ${rc}  0   msg=CG session failed

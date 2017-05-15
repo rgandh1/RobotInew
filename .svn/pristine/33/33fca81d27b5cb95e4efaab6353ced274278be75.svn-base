@@ -1,0 +1,51 @@
+This table documents the agreed robotframework test suite tags that may be assigned by a test suite author.
+To describe the semantic of each tag and the rules how it is allowed to be combined with other tags, the table below groups the tags to different aspects (Groups/AttributeSets).
+
+Multiplicity:         Defines whether maultiple tags out of a group are allowed to be simultaneously assigned to a suite (inclusive) or maximal one (exclusive) and if at least one is mandatory
+Missing-Tag Semantic: Defines whether the absence of a tag in a test suite implicitely assignes his opposit meaning (e.g. MOC Service involved / MOC Service NOT involved) to the test suite or simply is interpreted as beeing undefined in this resspect (e.g. MOC Service involved / unknown whethter or not MOC Service is involved).
+Contradicting Groups: The tags of some groups may contradict the tags of other groups and therefore a combination of the 2 groups is not allowed.
+Folder Tags:          Tags can be assigned at folder level (meaning the tags are inherited to all subsequent test suites) or directly at test suite level. 
+                      To avoid contradiction or ambiguity most of the tags are dedicated either to folder level or to test suite level.
+                      
+
+
+Group (Aspect/Attribute(set))      Available Tags                                                                          Multiplicity  Folder Tags  Contradicting Groups  Missing-Tag Semantic  Created/Modifieyd by   Additional Comments
+=================================  ======================================================================================  ============  ===========  ====================  ====================  =====================  ===================================================================================================================================
+Flags                              experimental, inactive, UI, pybot_requiring, ...                                             0..n     experimental                       opposite              walter.heincz
+TestTypeRelations                  LoadTest, ComponentTest, FeatureTest, SmokeTest, End2EndTest, ...                            0..n     all                                opposite              walter.heincz
+
+SupportedProjects                  TNZ_supported, VIRGIN_COLUMBIA_supported, FALABELLA_CHILE_supported                          1..n     none                               opposite              walter.heincz          since this is a mandatory tag group at least one project (workspace, testbed) has to be supported by each and every test suite
+ProjectDedications                 TNZ_specific, VIRGIN_COLUMBIA_specific, ...                                                  0..n     all                                undefined             walter.heincz          The prefix e.g. TNZ is used as projectTagPrefix property in the suts' resoucefies  
+
+ServiceDedication                  MOC_only,     MTC_only,     MFC_only,     USSD_only,     SMS_only,     DATA_only             0..1     none         ServiceRelations      opposite              walter.heincz
+ServiceRelations                   MOC_involved, MTC_involved, MFC_involved, USSD_involved, SMS_involved, DATA_involved         0..n     none         ServiceDedication     undefined             walter.heincz
+
+ReleaseIntroduction                R5.1_intro, R5,2_intro, ...                                                                  0..1     all                                undefined             walter.heincz          The prefix Rm.n is used as releaseTagPrefix property in the suts' resoucefies  
+ReleaseExtroduction                R5.1_extro, R5.2_extro, ...                                                                  0..1     all                                undefined             walter.heincz          ...
+
+ComponentDedication                CRCE_only,     IN_only,     ...                                                              0..1     none         ComponentRelations    opposite              walter.heincz
+ComponentRelations                 CRCE_involved, IN_involved, ...                                                              0..n     none         ComponentDedication   undefined             walter.heincz
+
+FeatureRelations                   NumberNormalization, MNP, ...                                                                0..n     none                               undefined             walter.heincz
+Authors                            walter.heincz, ...                                                                           1..n     as needed                          undefined             walter.heincz          since this is a mandatory tag group at least one author has to be assigend to each and every test suite
+
+
+
+
+To unify the naming convention of project related tags (SupportedProjects, ProjectDedications, ...) we also need an agreement on a set of unique shortcuts used for tag prefixing.
+
+Project           Shortcut (TagPrefix)
+================  =====================
+Skinny            TNZ
+Virgin Mexico     VIRGIN_MEXICO
+Virgin Columbia   VIRGIN_COLUMBIA
+Virgin Chile      VIRGIN_CHILE
+Falabella Chile   FALABELLA_CHILE
+Dardafon          DFON
+Albafon           AFON
+
+
+
+
+
+  

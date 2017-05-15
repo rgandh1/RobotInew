@@ -1,0 +1,34 @@
+*** Settings ***
+Documentation     This is a global key words resource providing functions which 
+...               ensure the functionality of the INew compontents
+...               ============================================================
+...                
+...                 
+...                 
+...                 
+...
+...                 
+...                 
+...
+...                 
+...               ============================================================
+Library           SSHLibrary
+
+
+*** Keywords ***
+
+Verify CRCE
+    Open Connection    ${CRCE HOST}    Port=22    prompt=$
+    login    ${CRCE USER}    ${CRCE PWD}
+    write    sudo su -c 'service inew-mvno-crce status'
+    ${CRCESTATUS}    read until prompt
+    Should Contain    ${CRCESTATUS}    CRCE is running
+    Close All Connections
+
+Verify IN-MOC
+    Open Connection    ${IN-APP HOST}    Port=22    prompt=$
+    login    ${IN-APP USER}    ${IN-APP PWD}
+    write    sudo su -c 'service inew-mvno-corein-service-moc-${IN VERS} status'
+    ${CRCESTATUS}    read until prompt
+    Should Contain    ${CRCESTATUS}    Service ${IN Vers} is running
+    Close All Connections

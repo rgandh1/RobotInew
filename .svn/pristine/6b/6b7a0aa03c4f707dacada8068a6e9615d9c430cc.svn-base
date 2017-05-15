@@ -1,0 +1,39 @@
+#############################################################################
+# Cron job starter script that triggers the bulk execution job(s) 
+# Periodic job configuration is done by running following command
+# crontab -e
+# Typical job configuration (and we want to run the job at 01:00 in the night) looks like:
+# 00 01 * * * /opt/robot/robotworkspace/bulk_execution_scripts/nightly-cronjob.sh
+#
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * command to be executed
+#
+#
+# Author: matko.sanseovic
+##############################################################################
+#!/bin/bash
+
+# we should first sit in the correct directory
+cd /opt/robot/robotworkspace/bulk_execution_scripts/TNZ/
+
+# clean the robot logs of previous run
+echo "Cleaning previous Robot logs..."
+rm -f ./logs/*
+rm -f ../cronjob_logs/nightrun.log
+
+# push the XDR test execution
+echo "Starting the night run..."
+./run-XDR-tests.sh
+
+# copy robot XDR test log and output files from log dir to nightrun log dir
+timestamp=$(date +%Y%m%d)
+mkdir -p "../cronjob_logs/${timestamp}"
+echo "Moving the logs to the cronjob logs"
+mv ./log/* ../cronjob_logs/${timestamp}/
+#find ./logs/ -type f -printf '%T@ %p\n' | sort -n | tail -3 | cut -f2- -d" " | xargs cp -t ../cronjob_logs/${timestamp}

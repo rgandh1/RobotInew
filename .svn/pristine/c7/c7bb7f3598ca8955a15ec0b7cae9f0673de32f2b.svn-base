@@ -1,0 +1,36 @@
+#!/bin/bash
+
+
+
+WORKSPACE_PATH=/opt/robot/robotworkspace
+
+ESCAPE=star:STAR
+PYTHONPATH_ROBOT=/opt/robot
+PYTHONPATH_SOAPUI=/opt/soapui-4.5.1/bin/soapui-4.5.1.jar:/opt/soapui-4.5.1/lib/xulrunner-linux64-3.0.jar:/opt/soapui-4.5.1/lib/STAR.jar
+PYTHONPATH_DBLIBRARY=$WORKSPACE_PATH/libs/jar/dblibrary/dblibrary-2.0.jar:$WORKSPACE_PATH/libs/jar/dblibrary/postgresql-9.0-801.jdbc4.jar
+
+#remove /opt/robot/robotworkspace/libs/jar/activemq-all-5.9.1.jar from exiting CLASSPATH
+CLASSPATH=:/opt/robot/trilead-ssh2-1.0.0-build217.jar
+export CLASSPATH
+
+ROBOT_WORKSPACE_RESOURCE_FILE=$WORKSPACE_PATH/robotworkspace-resource.txt
+SUT_RESOURCE_FILE=$WORKSPACE_PATH/suts/TNZ-resource.txt
+
+
+#run the robot testsuite
+echo "Starting Robot ..."
+jybot --outputdir log --pythonpath $PYTHONPATH_ROBOT:$PYTHONPATH_SELENIUM:$PYTHONPATH_SOAPUI:$PYTHONPATH_DBLIBRARY --escape $ESCAPE --variable ROBOT_WORKSPACE_RESOURCE:$ROBOT_WORKSPACE_RESOURCE_FILE --variable SUT_RESOURCE:$SUT_RESOURCE_FILE regression-robot-suite.txt
+
+#remove SoapUI logs
+echo "Cleaning up SoapUI logs ..."
+rm ./global-groovy.log
+rm ./soapui.log
+rm ./soapui-errors.log
+
+#remove CG logs
+echo "Cleaning up CG files ..."
+#rm ./logfile.log
+#rm ./callsgen.log
+#rm ./callsgen.lck
+#rm ./workspaces.ini
+

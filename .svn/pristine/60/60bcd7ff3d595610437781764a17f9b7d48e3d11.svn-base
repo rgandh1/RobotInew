@@ -1,0 +1,57 @@
+*** Settings ***
+Documentation     A resource file containing the application specific keywords
+...               that create our own domain specific language. This resource
+...               implements keywords for testing HTML version of the test
+...               application.
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+
+*** Variables ***
+${SERVER}         10.107.82.220
+${BROWSER}        firefox
+${DELAY}          0.6
+${VALID USER}     crmmanager
+${VALID PASSWD}    crmmanager
+${LOGIN URL}      http://${SERVER}/257_EN.htm
+${TESTCASEPATH}    /opt/robot/robotframework-selenium2library-master/robotframework-selenium2library-master/demo/CRMRobot/
+${MSISDN}         573190002006
+${REF CODE}       111
+
+*** Keywords ***
+Open Browser To Login Page
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+
+Go To Login Page
+    Go To    ${LOGIN URL}
+
+Login To CRM
+    Open Browser    ${LOGIN URL}    ${BROWSER}
+    Maximize Browser Window
+    Set Selenium Speed    ${DELAY}
+    Go To    ${LOGIN URL}
+    Input Text    id=username    ${VALID USER}
+    Input Text    id=password    ${VALID PASSWD}
+    Click Element    name=login_submit
+    Input Text    name=filter_msisdn    ${MSISDN}
+    Click Element    //input[@value='Submit']
+    Click Element    //input[@id='activate-button']
+
+Insert Parameters
+    Input Text    name=db_firstname    First
+    Input Text    name=db_lastname    Last
+    Input Text    name=db_address    Address 1
+    Select from List    name=db_state    CUNDINAMARCA
+    Select from List    name=db_city    BOGOTA
+    Input Text    name=db_country    Columbia
+    Input Text    name=db_referral_code    ${REF CODE}
+    Input Text    name=db_phone    111111111
+    Input Text    name=db_email    test.user@i-new.com
+    Input Text    name=db_birthdate    05/06/1990
+    Select from List    name=db_identification_type    Identification Card
+    Input Text    name=db_identification_number    12345
+    Input Text    name=db_identification_date_valid    05/03/2013
+    Click Element    name=save

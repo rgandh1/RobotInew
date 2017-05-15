@@ -1,0 +1,160 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Library           BuiltIn
+Library           SSHLibrary
+Library           SudsLibrary
+Library           XML
+Library           Collections
+Library           DatabaseLibrary
+
+*** Variables ***
+${USERNAME}       tmaikis
+${PASSWORD}       hvJ66mAm
+${AMQ1_IP}        10.105.110.123
+${CRCE_IP}        10.105.110.125
+${DB_IP}          10.105.110.129
+${INAPP_IP}       10.105.110.135
+${CRCE_DB_USERNAME}    crce
+${CRCE_DB_PASSWORD}    crce
+${CRCE_DB_PORT}    5442
+${CRCE_DB_DBNAME}    crce
+${SUBSC_MSISDN}    56952999902
+${CG_PATH}        /opt/callsGenerator/
+${CG_VERSION}     4.0.0
+${CG_WORKSPACE}    TB_RegressionTest
+${TESTPATH}       /opt/robot/robotworkspace/robot_testsuites/experimental/mat/IN_Regression_Test/
+${ON-NET_PARTY}    52999904
+${OFF-NET_PARTY}    56912399904
+${INTERNATIONAL_PARTY}    35812399904
+${LOCAL_MSC}      569529
+${INTERNATIONAL_MSC}    35829123
+${LOCAL_VLR}      5695291
+${INTERNATIONAL_VLR}    35829122
+${MTC_ON-NET_PARTY}    56952999904
+
+*** Keywords ***
+Verify AMQ
+    Open Connection    ${AMQ1_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    service amq-sig-tb01 status
+    ${AMQSTATUS}    read until prompt
+    Should Contain    ${AMQSTATUS}    ActiveMQ is running
+    Close all Connections
+
+Verify CRCE
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    read
+    write    sudo su -c 'service inew-mvno-crce status'
+    ${CRCESTATUS}    read until prompt
+    Should Contain    ${CRCESTATUS}    CRCE is running
+    Close All Connections
+
+Verify IN-APP
+    Open Connection    ${INAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    Close All Connections
+
+Verify Subscribers
+    Connect to Database    psycopg2    ${CRCE_DB_DBNAME}    ${CRCE_DB_USERNAME}    ${CRCE_DB_PASSWORD}    ${DB_IP}    ${CRCE_DB_PORT}
+    Table must exist    profiler_subscriber_profiles
+    Check if Exists in Database    SELECT COUNT(*) \ FROM profiler_subscriber_profiles WHERE msisdn='${SUBSC_MSISDN}'
+
+Start Call
+    ${rc}=    Run And Return Rc    java -jar ${CG_PATH}callsgen-${CG_VERSION}.jar ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS} ${CG_PATH}workspaces/${CG_WORKSPACE}
+    Should be equal as Integers    ${rc}    0
+
+Get IN Log
+    Open Connection    ${INAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    tail -f /var/log/inew/core-in-service/1.2.0/moc/inew-in.log > test.log
+
+Verify IN Log
+    Open Connection    ${INAPP_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    SSHLibrary.Get File    test.log    ${TESTPATH}
+    ${EXCEPTIONS}    Grep File    test.log    Exception
+    Should be empty    ${EXCEPTIONS}
+
+Get CRCE Log
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    write    tail -f /var/log/inew/crce/4.2.17/negret-0.log > crcetest.log
+
+Verify CRCE Log Onnet
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    SSHLibrary.Get File    crcetest.log    ${TESTPATH}
+    ${EXCEPTIONS}    Grep File    crcetest.log    Exception
+    Should be empty    ${EXCEPTIONS}
+    ${ONNET}    Grep File    crcetest.log    Onnet
+    Should not be empty    ${ONNET}
+    ${FINAL}    Grep File    crcetest.log    FinalCommit
+    Should not be empty    ${FINAL}
+
+Verify CRCE Log Offnet
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    SSHLibrary.Get File    crcetest.log    ${TESTPATH}
+    ${EXCEPTIONS}    Grep File    crcetest.log    Exception
+    Should be empty    ${EXCEPTIONS}
+    ${OFFNET}    Grep File    crcetest.log    Offnet
+    Should not be empty    ${OFFNET}
+    ${FINAL}    Grep File    crcetest.log    FinalCommit
+    Should not be empty    ${FINAL}
+
+Verify CRCE Log International
+    Open Connection    ${CRCE_IP}    Port=22    prompt=$
+    login    ${USERNAME}    ${PASSWORD}
+    SSHLibrary.Get File    crcetest.log    ${TESTPATH}
+    ${EXCEPTIONS}    Grep File    crcetest.log    Exception
+    Should be empty    ${EXCEPTIONS}
+    ${INTERNATIONAL}    Grep File    crcetest.log    International
+    Should not be empty    ${INTERNATIONAL}
+    ${FINAL}    Grep File    crcetest.log    FinalCommit
+    Should not be empty    ${FINAL}
+
+Select the MTC Call
+    Run    sed -i '/mtc/s/false/true/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}
+    Run    sed -i '/moc/s/true/false/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}
+    Run    sed -i '/mfc/s/true/false/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/${CG_CGS}
+
+Set to On-Net
+    Run    sed -i '/ORIGINATING;reportNotification, calledPartyAddress/ s/"[0-9]*"/"${ON-NET_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+    Run    sed -i '/reportNotification, mscAddress, address/ s/"[0-9]*"/"${LOCAL_MSC}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+MOC 1seg Call
+    ${rc}=    Run And Return Rc    java -jar ${CG_PATH}callsgen-${CG_VERSION}.jar ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/MOC_call_1seg.cgs ${CG_PATH}workspaces/${CG_WORKSPACE}
+    Should be equal as Integers    ${rc}    0
+
+MOC 3seg Call
+    ${rc}=    Run And Return Rc    java -jar ${CG_PATH}callsgen-${CG_VERSION}.jar ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/MOC_call_3seg.cgs ${CG_PATH}workspaces/${CG_WORKSPACE}
+    Should be equal as Integers    ${rc}    0
+
+Set to Off-Net
+    Run    sed -i '/ORIGINATING;reportNotification, calledPartyAddress/ s/"[0-9]*"/"${OFF-NET_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+    Run    sed -i '/reportNotification, mscAddress, address/ s/"[0-9]*"/"${LOCAL_MSC}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+Set to International
+    Run    sed -i '/ORIGINATING;reportNotification, calledPartyAddress/ s/"[0-9]*"/"${INTERNATIONAL_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+    Run    sed -i '/reportNotification, mscAddress, address/ s/"[0-9]*"/"${INTERNATIONAL_MSC}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+Set Home VLR
+    Run    sed -i '/reportNotification, vlrAddress, address/ s/"[0-9]*"/"${LOCAL_VLR}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+Set International VLR
+    Run    sed -i '/reportNotification, vlrAddress, address/ s/"[0-9]*"/"${INTERNATIONAL_VLR}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+Set MTC Party to Home
+    Run    sed -i '/TERMINATING;reportNotification, callingPartyAddress/ s/"[0-9]*"/"${MTC_ON-NET_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+Set MTC Party to International
+    Run    sed -i '/TERMINATING;reportNotification, callingPartyAddress/ s/"[0-9]*"/"${INTERNATIONAL_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini
+
+MTC Call
+    ${rc}=    Run And Return Rc    java -jar ${CG_PATH}callsgen-${CG_VERSION}.jar ${CG_PATH}workspaces/${CG_WORKSPACE}/sessions/MTC_call_1seg.cgs ${CG_PATH}workspaces/${CG_WORKSPACE}
+    Should be equal as Integers    ${rc}    0
+
+Set Calling Party
+    Run    sed -i '/TERMINATING;reportNotification, callingPartyAddress/ s/"[0-9]*"/"${INTERNATIONAL_PARTY}"/g' ${CG_PATH}workspaces/${CG_WORKSPACE}/callsgen.ini

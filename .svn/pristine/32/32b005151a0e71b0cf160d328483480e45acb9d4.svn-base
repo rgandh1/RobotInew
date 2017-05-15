@@ -1,0 +1,28 @@
+*** Settings ***
+Documentation     
+...               ---------------------------------------------------------------
+...               Run SSH Tail-Kill Experiment
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz 
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Library           OperatingSystem
+
+
+
+*** Test Cases *** 
+
+Run SSH Tail-Kill Experiment
+    [Documentation]  
+    ...              =========================================================
+	:FOR  ${i}  IN RANGE    1    100
+	\  Log   \n*********** Experiment: ${i} ************    console=yes
+	\  ${ssh_connection}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR LOG FILE PATH}    host=${XDR HOST}
+	\  Sleep			10ms
+	\  ${tailed_text}=    SSH Close File Monitor and Logout    ${ssh_connection}	

@@ -1,0 +1,75 @@
+*** Settings ***
+Documentation     Demonstrates some SSH related tasks via the global ssh-support-resource.txt
+...               ============================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/TNZ-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz inactive
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Library           OperatingSystem
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+
+*** Variables ***
+
+
+
+*** Test Cases ***
+
+IN log monitoring via SSH
+    [Documentation]  Demonstrates logfile monitoring via ssh-support-resource
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${ssh_connection}=   Open Connection          ${IN-APP HOST}                               port=22                                            timeout=3              prompt=$  
+                         SSH Login                ${IN-APP USER}                               ${IN-APP PWD}                                      ${IN-APP RSA FILE}     ssh_connection=${ssh_connection}                               
+                         SSH Start File Monitor   ${ssh_connection}                            ${IN-APP MOC LOG FILE PATH}
+                         Sleep                    10s                                          #wait some seconds to record file changes
+    ${tailed_text}=      SSH Close File Monitor   ${ssh_connection}
+                         Create File              ./ssh_demo-in-moc-monitor1.log               ${tailed_text}
+                         SSH Logout               ${ssh_connection}
+
+
+
+Compacter IN log monitoring via SSH
+    [Documentation]  Demonstrates compacter logfile monitoring via ssh-support-resource
+    ...              Only 5 instead of 6 lines necessary when SSH connection creation 
+    ...              is delegated to the ssh-support-resource 
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${ssh_connection}=   SSH Login                ${IN-APP USER}                               ${IN-APP PWD}                                      ${IN-APP RSA FILE}     host=${IN-APP HOST}                               
+                         SSH Start File Monitor   ${ssh_connection}                            ${IN-APP MOC LOG FILE PATH}
+                         Sleep                    10s                                          #wait some seconds to record file changes
+    ${tailed_text}=      SSH Close File Monitor   ${ssh_connection}
+                         Create File              ./ssh_demo-in-moc-monitor2.log               ${tailed_text}
+                         SSH Logout               ${ssh_connection}
+   
+
+
+Even compacter IN log monitoring via SSH
+    [Documentation]  Demonstrates even more compact logfile monitoring via ssh-support-resource 
+    ...              Only 3 instead of 5 lines necessary if login and tail-ing
+    ...              as well as logout and retrieving the tailed text can be compressed 
+    ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${ssh_connection}=   SSH Login And Start File Monitor    ${IN-APP USER}                    ${IN-APP PWD}                                       ${IN-APP RSA FILE}     ${IN-APP MOC LOG FILE PATH}    host=${IN-APP HOST}
+                         Sleep                               10s                               #wait some seconds to record file changes
+    ${tailed_text}=      SSH Close File Monitor And Logout   ${ssh_connection}      
+                         Create File                         ./ssh_demo-in-moc-monitor3.log    ${tailed_text}
+ 
+
+
+Compactest IN log monitoring via SSH
+    [Documentation]  Demonstrates compactest logfile monitoring via ssh-support-resource 
+    ...              Only 2 instead of 3 lines necessary if even storing the tailed text
+    ...              is delegated to the ssh-support-resource 
+     ...
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${ssh_connection}=   SSH Login And Start File Monitor    ${IN-APP USER}                    ${IN-APP PWD}                                       ${IN-APP RSA FILE}     ${IN-APP MOC LOG FILE PATH}    host=${IN-APP HOST}
+                         Sleep                               10s                               #wait some seconds to record file changes
+                         SSH Close File Monitor And Logout   ${ssh_connection}                 store_to_file_path=./ssh_demo-in-moc-monitor4.log 
+

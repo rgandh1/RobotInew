@@ -1,0 +1,158 @@
+*** Settings ***
+Documentation     This is an end-to-end testing implementation of the IN_PP_MTC_005 - Prepaid MTC - Busy TC
+...               This is nearly an exact copy of IN_PP_MOC_009-PrepaidMOC-Busy-robot-suite.txt except that Phone 2 calls Phone 1 instead of the other way round
+...               and the faking part is an MTC call instead of a MOC
+...               ---------------------------------------------------------------
+...               Run Prepaid MTC Busy
+...
+...               ===============================================================================
+...               Run with arguments:
+...               --variable ROBOT_WORKSPACE_RESOURCE:/opt/robot/robotworkspace/robotworkspace-resource.txt 
+...               --variable SUT_RESOURCE:/opt/robot/robotworkspace/suts/MEX-resource.txt
+...               ============================================================
+Force Tags        TNZ_supported  walter.heincz  End2EndTest
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/android-remoting/ars_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ../../configuration-resource.txt
+Resource          ../../suite-global-keyword-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crm-support/crm_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Library           OperatingSystem
+#Library          #Selenium2Library
+Library           ${ROBOT WORKSPACE PATH}/libs/py/InewSelenium2Library.py
+
+Suite Setup       Setup Suite        
+Suite Teardown    Teardown Suite
+
+
+
+*** Variables ***
+
+
+${NEWLINE}=  \n
+
+#${CRM_PORTAL_LOGIN_URL}=             #ia initialized by SUITE SETUP
+#${CRM_PORTAL_SUBSCRIBER_INPUT_URL}=  #ia initialized by SUITE SETUP
+
+
+
+*** Keywords ***
+
+Establish Voice Call
+    [Documentation]  establishes a voice call between 2 phones 
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone that shall act as the calling phone
+    ...                cd_device_imsi         IMSI of the phone that should be called when dialMsisdn (see below) is dialed on the calling phone
+    ...                cd_device_msisdn       MSISDN that shall be dialed on the calling phone (specified via cgDeviceImsi).
+    ...
+    ...              Returns:                 Nothing - fails if the connection could not be established
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${cd_device_imsi}  ${cd_device_msisdn}    
+    Comment         ********************* Dial ***********************************      
+    ${resultCode}=    ARS Dial                      ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   ${cd_device_msisdn}
+                      Should Be Equal As Strings    ${resultCode}              OK
+    Comment         ********************* Wait until RINGING ***********************************      
+    ${voice_state}=   Set Variable    unknown
+                      : FOR    ${second}    IN RANGE    1    20     #wait max 20s for cd_device switch to RINGING state
+                      \    Sleep                        1s
+                      \    ${resultCode}               ${voice_state}                   ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cd_device_imsi}   
+                      \    Should Be Equal As Strings   ${resultCode}                   OK      msg=Querying called device (IMSI=${cd_device_imsi}) state failed with resultCode=${resultCode}
+                      \    Run Keyword If               '${voice_state}' == 'RINGING'    Exit For Loop
+                      Should Be Equal As Strings    ${voice_state}              RINGING    msg=Timeout on waiting for called device (IMSI=${cd_device_imsi}) state switching to RINGING
+    Comment         ********************* Answer ***********************************      
+    ${resultCode}=    ARS Answer                   ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cd_device_imsi}
+                      Should Be Equal As Strings    ${resultCode}               OK         msg=Answering on called device (IMSI=${cd_device_imsi}) failed with resultCode=${resultCode}
+
+                    
+
+
+Run Voice Call Busy
+    [Documentation]  establishes a voice call between 2 phones and then calls one of them from a 3rd phone 
+    ...              what should redirect it to IVR (mailbox).
+    ...
+    ...              Arguments:
+    ...                cg_device_imsi         IMSI of the phone 2 that shall act as the calling phone
+    ...                busy_device_imsi       IMSI of the phone 1 that should be busy with a call to cd_device_imsi (cd_device_msisdn)
+    ...                cd_device_imsi         IMSI of the phone 12 that should be busy with a call from busy_device_imsi
+    ...                busy_device_msisdn     MSISDN that shall be dialed on the calling phone to coontact busy_device_imsi
+    ...                cd_device_msisdn       MSISDN that shall be dialed on the busy device to get busy with cd_device_imsi
+    ...
+    ...              Returns:                 Nothing - fails if the call to the busy phone (i.e. its mailbox) did not succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}  ${busy_device_imsi}  ${cd_device_imsi}  ${busy_device_msisdn}  ${cd_device_msisdn}    
+    Comment         ********************* Make 2 phones busy ***********************************      
+                      Establish Voice Call    ${busy_device_imsi}  ${cd_device_imsi}    ${cd_device_msisdn}
+    Comment         ********************* Dial to the busy phone ***********************************      
+    ${resultCode}=    ARS Dial                      ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   ${busy_device_msisdn}
+                      Should Be Equal As Strings    ${resultCode}              OK    msg: Dialing MSISDN=${busy_device_msisdn} on phone 1 failed with resultCode=${resultCode}
+    Comment         ********************* Wait until CONNECTED to mailbox ***********************************      
+    ${voice_state}=   Set Variable    unknown
+                      : FOR    ${second}    IN RANGE    1    20     #wait max 20s for mailbox CONNECTION 
+                      \    Sleep                        1s
+                      \    ${resultCode}               ${voice_state}                   ARS Get Current Voice State     ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}   
+                      \    Should Be Equal As Strings   ${resultCode}                   OK    msg=Querying calling device (IMSI=${cg_device_imsi}) state failed with resultCode=${resultCode}
+                      \    Run Keyword If               '${voice_state}' == 'CONNECTED'    Exit For Loop
+                      Should Be Equal As Strings    ${voice_state}              CONNECTED    msg=Timeout on waiting for calling device (IMSI=${cg_device_imsi}) state switching to CONNECTED
+    Comment         ********************* CleanUp ***********************************      
+                      ARS Release                   ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${cg_device_imsi}
+                      ARS Release                   ${ANDROID REMOTING HOST}    ${ANDROID REMOTING PORT}    ${busy_device_imsi}
+                      Run Keyword If   '${FAKE_CALLS}'=='true'               Fake Voice Call Impact On Testbed
+
+
+
+Run Voice Call Busy And Check Nonexistent Ticket
+    [Documentation]  Runs an busy call between the passed devices and
+    ...              verifies that NO CRM ticket was written for Phone 1
+    ...              Arguments:               
+    ...                cg_device_imsi         IMSI of the phone 2 that shall act as the calling phone
+    ...                busy_device_imsi       IMSI of the phone 1 that should be busy with a call to cd_device_imsi (cd_device_msisdn)
+    ...                cd_device_imsi         IMSI of the phone 12 that should be busy with a call from busy device
+    ...                busy_device_msisdn     MSISDN that shall be dialed on the calling phone to contact busy device
+    ...                cd_device_msisdn       MSISDN that shall be dialed on the busy device to get busy with cd_device_imsi
+    ...
+    ...              Returns:                 Nothing - the function fails if the call or CRM query doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    [Arguments]  ${cg_device_imsi}   ${busy_device_imsi}   ${cd_device_imsi}    ${busy_device_msisdn}    ${cd_device_msisdn}
+
+    ${phone1_imsi}=  Run Keyword If  '${FAKE_CALLS}'=='true'   Set Variable             ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}      #On faked calls replace the ${cg_device_imsi} with the faked call subscriber imsi
+                     ...             ELSE                      Set Variable             ${busy_device_imsi}
+    ${marker_ticket_timestamp}       ${type_dummy}=            CRM Get Latest Ticket    ${phone1_imsi}
+                     Run Voice Call Busy                       ${cg_device_imsi}        ${busy_device_imsi}          ${cd_device_imsi}    ${busy_device_msisdn}    ${cd_device_msisdn}
+                     CRM New Ticket Should Not Exist           ${phone1_imsi}           ${marker_ticket_timestamp}     ticket_type=Voice
+  
+
+Fake Voice Call Impact On Testbed
+    [Documentation]  Runs a CG MTC Busy session for the faked phone 1 
+    ...              This FAKING strategy is neccessary during suite development time 
+    ...              when there is no connection between the Android Phones's mobile network
+    ...              and the testbed.
+    ...              By faking the Android call's impact on the testbed with a CG session 
+    ...              we can verify all other aspects of the test suite apart from 
+    ...              the Android Remoting functionality.
+    ...              Arguments:               None
+    ...              Returns:                 Nothing - the function fails if the CG call doesn't succeed
+    ...              Author: walter.heincz 
+    ...              =========================================================
+    ${rc}=           CG Run MTC Busy    ${FAKE_ORIGINATION_MSISDN}    ${FAKE_ATTACHED_ONNET_PHONE_1_IMSI}    ${FAKE_ATTACHED_ONNET_PHONE_1_MSISDN}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MtC REQ QUEUE}    ${AMQ-SIG MtC RES QUEUE} 
+                     Should be equal as Integers  ${rc}  0   msg=Faking CG session failed
+
+
+
+
+
+*** Test Cases ***
+
+
+Run Prepaid MTC Busy
+    [Documentation]  Establishes an on-net Phone 1 Call to off-net Phone 12 and then calls phone 1 from phone 2 
+    ...              Plus verification that NO ticket was written for the Phone 1 subscriber
+    ...              =========================================================
+    [Setup]          Open Browser    ${CRM_PORTAL_LOGIN_URL}    firefox
+                     Run Voice Call Busy And Check Nonexistent Ticket    ${ATTACHED_ONNET_PHONE_2_IMSI}   ${ATTACHED_ONNET_PHONE_1_IMSI}    ${ATTACHED_OFFNET_PHONE_12_IMSI}      ${ATTACHED_PHONE_1_MSISDN_FORMAT1}       ${ATTACHED_PHONE_12_MSISDN_FORMAT1} 
+    [Teardown]       Close Browser    

@@ -1,0 +1,168 @@
+*** Settings ***
+Documentation     This suite uses USSDtest.py class to test the USSD interface. Various test cases (scenarios) will be checked. As USSD self care menus are different from customer to customer - so are these tests. The goal is to make a rough check of the main (and not all) functions - menu items.
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite	
+Force Tags        USSD_only  SMARTSPACE_specific   matko.sanseovic  
+Resource          ${ROBOT_WORKSPACE_RESOURCE}    #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           JMSLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+
+*** Variables ***
+${USSD_PY_TOOL}		${ROBOT WORKSPACE PATH}/robot_testsuites/ussd/tool/USSDtest.py
+
+*** Keywords ***
+Setup Suite
+	[Documentation]		Log the time and target system, copy the tool to the target system and create the test subscribers
+    ${time}=    		Run    date
+    Log    				Date and time: ${time}    console=yes
+	Log					USSD test on Smartspace TB	console=yes	
+	# copy the tool class to the target test machine
+	${conn_id}			Open Connection    ${USSD HOST}
+	Set Suite Variable	${conn_id} 
+    ${output_login}=    Login    ${USSD USER}    ${USSD PWD}
+	Log  				${output_login}
+	Put File 			${USSD_PY_TOOL} 	${USSD HOME}/ussd/
+	SSHLibrary.File Should Exist	${USSD HOME}/ussd/USSDtest.py	
+	Set Suite Variable	${ussd_tool}	${USSD HOME}/ussd/USSDtest.py
+	# we will create subscriber first, we need MSISDN to check over USSD
+	Create Subscriber	
+
+Teardown Suite
+	Close All Connections
+
+Create Subscriber
+    [Documentation]    		Suite will create two subscribers that will attempt different USSD scenarios
+    ...
+	${INITIAL_BALANCE}=    	Set Variable    10000000
+    ${return_code}=        	CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    2    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+	Should Be Equal As Strings      ${return_code}    OK
+	Log  				   	Test Subscribers Created!    console=yes
+
+USSD Start
+    [Documentation]    		Keyword for starting the USSD menu and getting to the initial point. Returns the complete menu for further evaluation
+    ...
+    Write    		${ussd_tool} ${TESTSUBCRIBERS MSISDN RANGE START} ${USSD CODE} ${USSD LOCATION}
+    ${output}=  	Read Until    User input:	
+	Log    			USSD Start: ${output}
+	Sleep			2s
+	[Return]		${output}
+	
+	
+*** Test Cases ***
+Test USSD Start
+    [Documentation]    Simple test that checks if USSD can be started
+    ...
+	${output}		USSD Start		
+	Should Contain	${output}	Please select:
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+		
+Test USSD Check Balance
+    [Documentation]    Basic test for balance check. Expected value is set at subscriber creation
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 1 for checking balance    console=yes
+	Write			1
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	Your balance: 10 EUR
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test USSD Subscription Check
+    [Documentation]    Check the subscriptions of test subscriber. Since there is no active subscription per default, subscriber is on default (basic) tariff
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 2 for subscription check     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:	
+	Should Contain	${output}	You are on standard rates.
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+	
+Test Buying
+    [Documentation]    Test will attempt to start the subscription management USSD menu and make a data bundle purchase
+    ...	
+	${output}		USSD Start		
+	Log    			Pressing 3 for buying menu     console=yes
+	Write			3
+    ${output}=    	Read Until    User input:	
+	Log    			Pressing 2 for bundle purchase     console=yes
+	Write			2
+    ${output}=    	Read Until    User input:
+	Log    			Pressing 1 for One-Off bundle    console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	Bundle A 5 EUR
+	Log    			Pressing 1 to select     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log    			Pressing 1 to confirm     console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	Successful. Bundle A was purchased. The cost was 5,00 EUR
+	## Exit
+	SSH Kill User Processes		${conn_id}	python
+
+Test What Is My Number
+    [Documentation]    Test will start the USSD menu item that shows subscriber's MSISDN
+    ...	
+	${output}		USSD Start		
+	Log    			Pressing 5 for last menu item     console=yes
+	Write			5
+	${output}=    	Read Until    User input:	
+	Log				Pressing 4 for what is my number service	console=yes
+	Write			4
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	${TESTSUBCRIBERS MSISDN RANGE START}
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+
+Test USSD Credit Transfer
+    [Documentation]    Test the USSD functionality of credit transfer to MSISDN of subscriber's choice
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 5 for last menu item     console=yes
+	Write			5
+	${output}=    	Read Until    User input:
+	Log				Pressing 3 for credit transfer	console=yes
+	Write			3
+	${output}=    	Read Until    User input:	
+	Log				Entering recipient mobile number	console=yes
+	${recipient}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write			${recipient}
+	${output}=    	Read Until    User input:	
+	Log				Entering amount to transfer     console=yes
+	Write			2
+	${output}=    	Read Until    User input:	
+	Log				Final confirmation   console=yes
+	Write			1
+	${output}=    	Read Until    User input:	
+	Should Contain	${output}	Success.
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	
+	
+Test Call Me Back
+    [Documentation]    Test tries to send a SMS with call me back message to the MSISDN of subscriber's choice
+    ...
+	${output}		USSD Start		
+	Log    			Pressing 5 for last menu item     console=yes
+	Write			5
+	${output}=    	Read Until    User input:	
+	Log				Pressing 1 for call me back service		console=yes
+	Write			1
+	${output}=    	Read Until    User input:
+	Log				Entering the mobile number	console=yes
+	${recipient}=  	Evaluate  ${TESTSUBCRIBERS MSISDN RANGE START}+1
+	Write			${recipient}	
+	${output}=    	Read Until    User input:
+	Should Contain	${output}	 Successful. An SMS was sent
+	## Exit
+	SSH Kill User Processes		${conn_id}	python	

@@ -1,0 +1,46 @@
+*** Settings ***
+Documentation     A test suite with a single test for valid login. This test has
+...               a workflow that is created using keywords from the resource file.
+Resource          resource.txt
+
+*** Test Cases ***
+CRM_ADM_001 - Create Role
+    Open CRM
+    Login To CRM as manager
+    create User Role
+    Close all browsers
+
+CRM_ADM_003 - Assign User To Role
+    [Documentation]    Prerequisites: CRM_ADM_001 executed
+    Open CRM
+    Login To CRM as manager
+    Create User
+    Select User Role
+    Close All Browsers
+    Open CRM
+    Login To CRM as new user
+    Open Subscriber
+    Close All Browsers
+
+CRM_ADM_006 - User Management
+    Open CRM
+    Login To CRM as Manager
+    Create User Customercare
+    Create User CustomercareLimited
+    Create User Shop Agent
+
+CRM_ADM_007 - Shops
+    Open CRM
+    Login To CRM as manager
+    Create new Shop
+
+CRM_ADM_008 - Shop Agents
+    Open CRM
+    Login To CRM as manager
+    Create new Shopagent
+
+Cleanup
+    Delete User From Database
+    Open CRM
+    Login to CRM as manager
+    Delete User Role

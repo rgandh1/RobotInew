@@ -1,0 +1,138 @@
+[2014-06-24 12:43:13,930][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Single Call START:  I-New Calls Generator 5.2.0 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Application Host:   Name=test-dev01.inew-cs.com IP=<unknown> 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Operating System:   Linux 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] JavaVM Infos:       CPUs=4 Memory(initHeap/maxHeap/allocatedMem(usedHeap/freeMem))=122.971/1,749.5/118(28.214/89.786) MB 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Application Mode:   Console 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] User:               root 
+[2014-06-24 12:43:13,933][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.logSessionLogHeader()             ] Session File:       /opt/robot/robotworkspace/libs/global-keyword-resources/cg-support/sms.cgs 
+[2014-06-24 12:43:13,934][INFO ][  19][CallsGeneratorThread     ][CgSessionLogger.callOpening()                     ] Testcase: /opt/robot/robotworkspace/external_tests/CG_unified_workspace/testcases/iSig/MAPv3/sms/01_1segment_submission 
+[2014-06-24 12:43:13,939][INFO ][  19][CallsGeneratorThread     ][AbstractMessagesDispatcher.openSession()          ] New CALL#1 MAP3_SMS SID 5014400000 started 
+[2014-06-24 12:43:14,106][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 MAP3_SMS SID 5014400000 [65ms](gettingRidTime 55ms) - sent xml with msg(s) messageSubmissionReq,  
+[2014-06-24 12:43:14,113][TRACE][   9][SessionCtxWorkerThread-0 ][IsigSendState.process()                           ] CALL#1 MAP3_SMS SID 5014400000 - whole sent msg: <?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/smsMessages.xsd">
+    <version>1</version>
+    <sessionId>5014400000</sessionId>
+    <networkProtocolId>MAPv3</networkProtocolId>
+    <trafficType>ShortMessage</trafficType>
+    <messages>
+        <messageSubmissionReq>
+            <invokeId>0</invokeId>
+            <subscriberLocation>
+                <mscAddress>
+                    <address>64278</address>
+                    <natureOfAddress>International</natureOfAddress>
+                    <numberingPlan>E164</numberingPlan>
+                 </mscAddress>
+            </subscriberLocation>
+            <originatingAddress>
+                <address>642041999009</address>
+                <natureOfAddress>International</natureOfAddress>
+                <numberingPlan>E164</numberingPlan>
+            </originatingAddress>
+            <smscAddress>
+                <address>64278</address>
+                <natureOfAddress>International</natureOfAddress>
+                <numberingPlan>E164</numberingPlan>
+            </smscAddress>
+			      <originatingImsi>530052041010000</originatingImsi>
+            <segmentationUsed>false</segmentationUsed>
+            <messageTag>false</messageTag>
+            <smsSubmit>
+                <rejectDuplicates>false</rejectDuplicates>
+                <headerPresentInUserData>false</headerPresentInUserData>
+                <replyPath>false</replyPath>
+                <statusReportRequested>false</statusReportRequested>
+                <messageReference>4</messageReference>
+                <destinationAddress>
+                    <address>642041010001</address>
+                    <natureOfAddress>International</natureOfAddress>
+                    <numberingPlan>E164</numberingPlan>
+                </destinationAddress>
+                <protocolId>0</protocolId>
+                <dataCodingScheme>0</dataCodingScheme>
+                <userDataLength>15</userDataLength>
+                <userData>
+                    <messagePart>d232bd2e7783dae5f93c7c2e8300</messagePart>
+                </userData>
+                <userDataDecoded>false</userDataDecoded>
+                <totalSegments>1</totalSegments>
+            </smsSubmit>
+        </messageSubmissionReq>
+    </messages>
+</iSig>
+
+ 
+[2014-06-24 12:43:14,280][WARN ][  17][ActiveMQ Session Task    ][JmsMessagesDispatcher.dispatchInputMessage()      ] message received highly delayed from JMS broker: transportOnlyLatency=169654ms (jmsTimestamp=12:40:24.623 UTC, receivedTimestamp=12:43:14.277 UTC) msg=<?xml version="1.0"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>5014400000</sessionId>
+  <networkProtocolId>MAPv3</networkProtocolId>
+  <trafficType>ShortMessage</trafficType>
+  <messages>
+    <messageSubmissionRes>
+      <invokeId>0</invokeId>
+      <tagged>false</tagged>
+      <smsSubmitReport>
+        <headerPresentInUserData>true</headerPresentInUserData>
+        <protocolId>1</protocolId>
+        <dataCodingScheme>1</dataCodingScheme>
+        <userDataLength>15</userDataLength>
+        <userData>
+          <messagePart>null</messagePart>
+        </userData>
+        <userDataDecoded>false</userDataDecoded>
+        <serviceCentreTimeStamp>2014-06-24T12:40:03.034+00:00</serviceCentreTimeStamp>
+        <parameterIndicator>1</parameterIndicator>
+      </smsSubmitReport>
+    </messageSubmissionRes>
+  </messages>
+</iSig>
+ 
+[2014-06-24 12:43:14,316][DEBUG][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 MAP3_SMS SID 5014400000 - got xml with responseLatency=171ms and transportOnlyLatency=169654 (jmsTimestamp=12:40:24.623 UTC, receivedTimestamp=12:43:14.277 UTC) and Msg(s) messageSubmissionRes 
+[2014-06-24 12:43:14,317][WARN ][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 MAP3_SMS SID 5014400000 - transportOnlyLatency (169654ms) of received msg exceeded warning level (2000ms 
+[2014-06-24 12:43:14,318][TRACE][   9][SessionCtxWorkerThread-0 ][IsigInputValidatingState.process()                ] CALL#1 MAP3_SMS SID 5014400000 [1ms] - Expectation of file /opt/robot/robotworkspace/external_tests/CG_unified_workspace/testcases/iSig/MAPv3/sms/01_1segment_submission/2_scp_messageSubmissionRes.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/smsMessages.xsd">
+	<version>1</version>
+	<sessionId>[taken from the request]</sessionId>
+	<networkProtocolId>MAPv3</networkProtocolId>
+	<trafficType>ShortMessage</trafficType>
+	<messages>
+		<messageSubmissionRes>
+			<invokeId>0</invokeId>
+			<tagged>false</tagged>
+		</messageSubmissionRes>
+	</messages>
+</iSig>
+
+is satisfied by the received msg:
+<?xml version="1.0"?>
+<iSig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.inew-cs.com/xml/isig/1.0/camelMessages.xsd">
+  <version>1</version>
+  <sessionId>5014400000</sessionId>
+  <networkProtocolId>MAPv3</networkProtocolId>
+  <trafficType>ShortMessage</trafficType>
+  <messages>
+    <messageSubmissionRes>
+      <invokeId>0</invokeId>
+      <tagged>false</tagged>
+      <smsSubmitReport>
+        <headerPresentInUserData>true</headerPresentInUserData>
+        <protocolId>1</protocolId>
+        <dataCodingScheme>1</dataCodingScheme>
+        <userDataLength>15</userDataLength>
+        <userData>
+          <messagePart>null</messagePart>
+        </userData>
+        <userDataDecoded>false</userDataDecoded>
+        <serviceCentreTimeStamp>2014-06-24T12:40:03.034+00:00</serviceCentreTimeStamp>
+        <parameterIndicator>1</parameterIndicator>
+      </smsSubmitReport>
+    </messageSubmissionRes>
+  </messages>
+</iSig>
+ 
+[2014-06-24 12:43:14,319][INFO ][   9][SessionCtxWorkerThread-0 ][AbstractMessagesDispatcher.sessionTerminated()    ] CALL#1 MAP3_SMS SID 5014400000 closed 
+[2014-06-24 12:43:14,319][INFO ][   9][SessionCtxWorkerThread-0 ][CgSessionLogger.callClosed()                      ] Single Call Session END 
+[2014-06-24 12:43:14,448][DEBUG][  19][CallsGeneratorThread     ][AbstractMessagesDispatcher.dispose()              ] Thread 'CallsGeneratorThread' entered HardCleanUp block 
+[2014-06-24 12:43:14,449][TRACE][  19][CallsGeneratorThread     ][AbstractMessagesDispatcher.dispose()              ] Thread 'CallsGeneratorThread' leaves HardCleanUp block 

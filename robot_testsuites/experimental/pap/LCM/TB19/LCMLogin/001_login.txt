@@ -1,0 +1,39 @@
+*** Settings ***
+
+Documentation  A test suite with test cases for login and user management. 
+...            This test suite has a workflow that is created using keywords from the resource file.
+Resource       resource.txt
+
+
+*** Test Cases ***	
+
+TC_LcmUI_ValidLogin
+    Open Browser To Login Page
+    InputUserAndPassword    lcmmanager  lcmmanager    
+    Logout
+    Close All Browsers
+
+TC_LcmUI_InvalidLogin
+    Open Browser To Login Page
+    InputUserAndPassword    manfred  wrongpw
+    Element Should Contain	id=errormsg		The following error(s) occured:
+    Element Should Contain	id=errormsg		The provided username or password do not match.
+    Close All Browsers
+	
+TC_LcmUI_DisableUser
+    Open Browser To Login Page
+    InputUserAndPassword    lcmadmin  lcmadmin    
+    SelectReferenceProvider
+    Open User
+    Disable User
+    Logout
+    Close All Browsers
+	
+TC_LcmUI_EnableUser
+    Open Browser To Login Page
+    InputUserAndPassword    lcmadmin  lcmadmin
+    SelectReferenceProvider
+    Open User
+    Enable User
+    Logout
+    Close All Browsers

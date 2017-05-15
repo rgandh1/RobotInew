@@ -1,0 +1,271 @@
+*** Settings ***
+Documentation     This suite tests the set of "standard" calls (MOC, MTC, MFC and SMS)
+...
+...               ============================================================
+Suite Setup       Setup Suite
+Suite Teardown	  Teardown Suite
+Force Tags        TNZ_supported  matko.sanseovic
+Resource          ${ROBOT_WORKSPACE_RESOURCE}  #Be aware that variables imported with a resource file are NOT visible in the local Variables table (but in all other local tables)
+Resource          ${SUT_RESOURCE}
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/crce-subscriberadmin/subscriber-admin-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/cg-support/cg_support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/ssh-support/ssh-support-resource.txt
+Resource          ${ROBOT WORKSPACE PATH}/libs/global-keyword-resources/db-support/dblib_support-resource.txt
+Library           String
+Library           SSHLibrary
+Library           OperatingSystem
+Library           org.robot.database.keywords.DatabaseLibrary
+
+*** Variables ***
+${XDR_LOG_FILE_PATH}    	/var/log/inew/xdr/5.3.0/inew-mvno-xdr.log
+${ETL_LOG_FILE_PATH}    	/var/log/inew/etl/5.3.1/inew-mvno-etl.log
+${IN_MOC_LOG_FILE_PATH}    		/var/log/inew/core-in/log-mem/inew-in-moc-00.log
+${IN_MTC_LOG_FILE_PATH}    		/var/log/inew/core-in/log-mem/inew-in-mtc-00.log
+${IN_MFC_LOG_FILE_PATH}    		/var/log/inew/core-in/log-mem/inew-in-mfc-00.log
+${IN_SMS_LOG_FILE_PATH}    		/var/log/inew/core-in/log-mem/inew-in-smsc-submit-00.log
+${TAILED_XDR_LOG_FILE}    	ssh_tail_log-xdr.log
+${TAILED_ETL_LOG_FILE}    	ssh_tail_log-etl.log
+${TAILED_IN_LOG_FILE}    	ssh_tail_log-in.log
+
+*** Keywords ***
+Check XDR log
+    [Documentation]    Checks the tailed log file created on XDR. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    ${TESTSUBCRIBERS MSISDN RANGE START}
+    Should Contain    ${temp}    Originating||Voice
+
+Check ETL log
+    [Documentation]    Checks the tailed log file created on ETL. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Comment			Should Not Contain    ${temp}    Exception
+	Comment			Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    subscriberImsi=${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    ${temp}    callDuration=1000
+	
+Check IN log
+    [Documentation]    Checks the tailed log file created on ETL. 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    ${temp}    UsedTime: 1000
+	
+Check MTC log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    ${temp}    UsedTime: 36000
+	Should Contain    ${temp}    TrafficType: Terminating
+	
+	
+Check MFC log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Comment		Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    ${temp}    UsedTime: 1000
+	Should Contain    ${temp}    TrafficType: Forwarding
+
+Check SMS log
+    [Documentation]    Checks the tailed log file created during MTC test case 
+    ...
+    ...    		Arguments:
+	...				log_file - file path where log was written
+	...         Returns:
+    ...             nothing    
+	...         Fails:
+	...            
+    ...    =========================================================
+    [Arguments]    ${log_file}
+    ${temp}=    OperatingSystem.Get File    ${log_file}
+    Log    ${temp}
+	Should Not Contain    ${temp}    Exception
+	Comment		Run Keyword If		'${test_type}' == 'NOK'  Should Contain    ${temp}    Exception
+    Should Contain    ${temp}    Imsi: ${TESTSUBCRIBERS IMSI RANGE START}
+    Should Contain    ${temp}    ErrorCode: OK
+	Should Contain    ${temp}    TrafficType: ShortMessage	
+	
+CountDBTableRows	
+    [Documentation]    	
+    ...
+    ...    =========================================================
+    [Arguments]    ${table}
+	@{queryRows}=      	DBLIB Query  select * from ${table};
+	${number_of_rows}=  Get Length 	${queryRows}
+	Log  ${number_of_rows}
+	[Return]  ${number_of_rows}
+
+AnalyseDBTable
+    [Documentation]    	Look into the ${table} and check if entry exists.
+    ...
+    ...    		Arguments:
+	...				table - DB table to look for
+	...             called_party - B party in the call
+	...             call_length
+	...         Returns:
+    ...             nothing
+	...         Fails:
+	...             in OK case when no new row is found in table
+	...             in NOK case when there is a new row in the table
+    ...
+    ...    =========================================================
+    [Arguments]    ${table}   ${called_party}   ${call_length}
+	@{queryRows}=      	DBLIB Query  select b_party_msisdn, duration from ${table} where id in (select max(id) from ${table});
+	@{fields}=       	Split String  @{queryRows}[0]  |                   #split 1st (and only) row
+	Comment		Log  Latest Ticket id: @{fields}[0]  WARN
+    ${b_party}=			Set Variable	@{fields}[0]       #log 1st field
+	${duration}=		Set Variable	@{fields}[1]       #log 2nd field	
+	Should be Equal		${b_party}		${called_party}
+	Should be Equal 	${duration}		${call_length}	
+
+Setup Suite
+	Log 				   Setup is running ...
+	${INITIAL_BALANCE}=    Set Variable    10000000    #10 million should be enough for some calls even if it's in millicent units
+    ${return_code}=        CRCE Create Test Subscribers    ${CRCE01 HOST}    ${CRCE01 WEBSERVICES PORT}    ${CRCE01 WEBSERVICES BASE PATH}    1    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    PREPAID    ${TESTSUBCRIBERS DEFAULT LANGUAGEID}    ${TESTSUBCRIBERS DEFAULT TARIFFID}    ${INITIAL_BALANCE}
+    Should Be Equal As Strings      ${return_code}    OK
+	Log  				   Test Subscribers Created!    WARN
+	
+Teardown Suite
+    Disconnect From Database
+	Log  Cleaning up    WARN
+	
+*** Test Cases ***
+
+Run MOC Call
+    [Documentation]  
+    ...              =========================================================
+	Comment				   ******* Connect with XDR and start the log monitoring
+	${ssh_connection_xdr}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${XDR_LOG_FILE_PATH}    host=${XDR HOST}
+	${ssh_connection_etl}=    SSH Login And Start File Monitor    ${XDR USER}    ${XDR PWD}    ${EMPTY}    ${ETL_LOG_FILE_PATH}    host=${XDR HOST}						   
+	${ssh_connection_in}=    SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MOC_LOG_FILE_PATH}    host=${IN-APP HOST}						   
+	Comment                ******* Check DB *******
+    Connect To Database    org.postgresql.Driver  jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}   ${XDR DB USER}  ${XDR DB PWD}
+	${rows_count_before}=   	   CountDBTableRows  crce_cdr_2015w21
+	Disconnect From Database
+    Comment                ******* Run Auto-MOC *******
+    Log					   Running the MOC call...  WARN
+    ${rc}=                 CG Run MOC 1s    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MOC REQ QUEUE}    ${AMQ-SIG MOC RES QUEUE}                      
+                           Should be equal as Integers  ${rc}  0   msg=CG session failed
+	Sleep  				   2s
+	Log					   Do the checks...   WARN
+	${tailed_text}=        SSH Close File Monitor and Logout    ${ssh_connection_xdr}    MOC_${TAILED_XDR_LOG_FILE}
+	Check XDR log    	   MOC_${TAILED_XDR_LOG_FILE}
+    ${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_etl}    MOC_${TAILED_ETL_LOG_FILE}						
+	Check ETL log    	   MOC_${TAILED_ETL_LOG_FILE}
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MOC_${TAILED_IN_LOG_FILE}						
+	Check IN log    	   MOC_${TAILED_IN_LOG_FILE}
+	Comment                **** Check XDR DB ****
+    Connect To Database    org.postgresql.Driver  jdbc:postgresql://${XDR DB HOST}:${XDR DB PORT}/${XDR DB NAME}   ${XDR DB USER}  ${XDR DB PWD}
+	${rows_count_after}=   	   CountDBTableRows  crce_cdr_2015w21
+	Disconnect From Database
+	${result}=			   Evaluate  ${rows_count_after}-${rows_count_before}
+	${result_s}=		   Convert To String  ${result}
+	Should Be Equal		   ${result_s}  1  msg=CRCE CDR table difference is wrong....
+	Comment				   **** Check DWH DB ****
+	Connect To Database    org.postgresql.Driver  jdbc:postgresql://${DWH DB HOST}:${DWH DB PORT}/${DWH DB NAME}  ${DWH DB USER}  ${DWH DB PWD}
+	AnalyseDBTable  	   fact_cdr  ${TESTSUBCRIBERS MSISDN RANGE START}  1000
+	Close All Connections
+
+Run MTC Call
+    [Documentation]  
+    ...              =========================================================
+	${ssh_connection_in}=  SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MTC_LOG_FILE_PATH}    host=${IN-APP HOST}						   
+	Log					   Running the MTC call...   WARN
+	Comment                ******* Run Auto-MTC *******
+	${rc}=                 CG Run MTC 1s    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MTC REQ QUEUE}    ${AMQ-SIG MTC RES QUEUE}                      
+    Should be equal as Integers  ${rc}  0   msg=CG session failed
+	Sleep				   2s
+	Log					   Do the checks...   WARN
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MTC_${TAILED_IN_LOG_FILE}						
+	Check MTC log    	   MTC_${TAILED_IN_LOG_FILE}
+	Comment				   **** Check DWH DB ****
+	Connect To Database    org.postgresql.Driver  jdbc:postgresql://${DWH DB HOST}:${DWH DB PORT}/${DWH DB NAME}  ${DWH DB USER}  ${DWH DB PWD}
+	AnalyseDBTable  	   fact_cdr  ${TESTSUBCRIBERS MSISDN RANGE START}  36000
+	Close All Connections
+
+Run MFC Call
+    [Documentation]  
+    ...              =========================================================
+	${ssh_connection_in}=  SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_MFC_LOG_FILE_PATH}    host=${IN-APP HOST}						   
+	Log					   Running the MFC call...   WARN	
+    Comment                ******* Run Auto-MFC *******
+	${rc}=                 CG Run MFC 1s    ${TESTSUBCRIBERS MSISDN RANGE START}   ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    642042484199   ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG MFC REQ QUEUE}    ${AMQ-SIG MFC RES QUEUE}                      
+	Sleep				   2s
+	Log					   Do the checks...   WARN
+    Should be equal as Integers  ${rc}  0   msg=CG session failed
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    MFC_${TAILED_IN_LOG_FILE}						
+	Check MFC log    	   MFC_${TAILED_IN_LOG_FILE}
+	Comment				   **** Check DWH DB ****
+	Connect To Database    org.postgresql.Driver  jdbc:postgresql://${DWH DB HOST}:${DWH DB PORT}/${DWH DB NAME}  ${DWH DB USER}  ${DWH DB PWD}
+	AnalyseDBTable  	   fact_cdr  642042484199  1000
+	Close All Connections
+
+	
+Run SMS
+    [Documentation]  
+    ...              =========================================================
+	${ssh_connection_in}=  SSH Login And Start File Monitor    ${IN-APP USER}    ${IN-APP PWD}    ${EMPTY}    ${IN_SMS_LOG_FILE_PATH}    host=${IN-APP HOST}						   
+	Log					   Sending the SMS...   WARN
+    Comment                ******* Send SMS *******
+	${rc}=				   CG Send SMS    ${TESTSUBCRIBERS IMSI RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${TESTSUBCRIBERS MSISDN RANGE START}    ${MSC ADDRESS}    ${CALLSGEN HOME}    ${CALLSGEN JAR NAME}    ${CG UNIFIED WS PATH}    ${AMQ-SIG HOST}   ${AMQ-SIG PORT}    ${AMQ-SIG SMS REQ QUEUE}    ${AMQ-SIG SMS RES QUEUE}
+	Sleep				   2s
+	Log					   Do the checks...   WARN	
+  	Comment				   Should be equal as Integers  ${rc}  0   msg=CG session failed
+	${tailed_text}=		   SSH Close File Monitor and Logout    ${ssh_connection_in}    SMS_${TAILED_IN_LOG_FILE}						
+	Check SMS log    	   SMS_${TAILED_IN_LOG_FILE}
+	Close All Connections

@@ -1,0 +1,76 @@
+[2015-07-07 08:54:36,414][INFO ][Camel (ticket-router) thread #48 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][  96] Received ticket [ticket=5.3|101|true|1|CRCE|CDR|crce01.tb13|2015-02-23T11:06:11.236+0000|2015-02-22T09:15:50.025+0000|MOC_NOK_ASCII123456XdrComponentTest|1|1|27800|642041999740|PREPAID|ACTIVE||0|NONE|OK||fdgdfgdüu|Y&quot;Y&apos;&apos;&apos;{}fdfdfd@|#kk,,1111111111111111111122222222222222|khjflkd8|9^^6fdgkj||||fklgjlkhjlkhlklhasdk;|klf;ldskf;sdl]
+[2015-07-07 08:54:36,419][ERROR][Camel (ticket-router) thread #48 - JmsConsumer[inew-cs.crce.cdr]][PartitionedTicketRoute                            ][ 145] An unknown exception occurred:
+org.beanio.InvalidRecordException: Invalid 'callChargeTicket' record at line 1
+ ==> Invalid 'chargeAmount':  Expected minimum 1 occurrences
+ ==> Invalid 'accountId':  Expected minimum 1 occurrences
+ ==> Invalid 'numberOfSegments':  Expected minimum 1 occurrences
+ ==> Invalid 'bearerType':  Expected minimum 1 occurrences
+ ==> Invalid 'referenceNumber':  Expected minimum 1 occurrences
+ ==> Invalid 'tariffId':  Expected minimum 1 occurrences
+ ==> Invalid 'chargedDuration':  Expected minimum 1 occurrences
+ ==> Invalid 'ratingGroupId':  Expected minimum 1 occurrences
+ ==> Invalid 'maximumCallCost':  Expected minimum 1 occurrences
+ ==> Invalid 'roaming':  Expected minimum 1 occurrences
+ ==> Invalid 'apn':  Expected minimum 1 occurrences
+ ==> Invalid 'subscriberLocation':  Expected minimum 1 occurrences
+ ==> Invalid 'chargingResult':  Expected minimum 1 occurrences
+ ==> Invalid 'callDuration':  Expected minimum 1 occurrences
+ ==> Invalid 'accountReferenceId':  Expected minimum 1 occurrences
+ ==> Invalid 'transparentData':  Expected minimum 1 occurrences
+ ==> Invalid 'accountCurrency':  Expected minimum 1 occurrences
+ ==> Invalid 'messageType':  Expected minimum 1 occurrences
+ ==> Invalid 'transferredUnits':  Expected minimum 1 occurrences
+ ==> Invalid 'chargeFreeAction':  Expected minimum 1 occurrences
+ ==> Invalid 'trafficType':  Expected minimum 1 occurrences
+ ==> Invalid 'sequenceTotal':  Type conversion error: Invalid Integer value 'khjflkd8'
+ ==> Invalid 'accountDifference':  Expected minimum 1 occurrences
+ ==> Invalid 'accountType':  Expected minimum 1 occurrences
+ ==> Invalid 'accountClosingBalance':  Expected minimum 1 occurrences
+ ==> Invalid 'additionalRatingInformation':  Expected minimum 1 occurrences
+ ==> Invalid 'answerTimestamp':  Expected minimum 1 occurrences
+ ==> Invalid 'locationNetwork':  Expected minimum 1 occurrences
+	at org.beanio.internal.parser.UnmarshallingContext.validate(UnmarshallingContext.java:196)
+	at org.beanio.internal.parser.BeanReaderImpl.internalRead(BeanReaderImpl.java:111)
+	at org.beanio.internal.parser.BeanReaderImpl.read(BeanReaderImpl.java:67)
+	at com.inew.xdr.api.format.XdrCsvMarshaller.unmarshall(XdrCsvMarshaller.java:62)
+	at sun.reflect.GeneratedMethodAccessor129.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:601)
+	at org.apache.camel.component.bean.MethodInfo.invoke(MethodInfo.java:408)
+	at org.apache.camel.component.bean.MethodInfo$1.doProceed(MethodInfo.java:279)
+	at org.apache.camel.component.bean.MethodInfo$1.proceed(MethodInfo.java:252)
+	at org.apache.camel.component.bean.BeanProcessor.process(BeanProcessor.java:167)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.component.direct.DirectProducer.process(DirectProducer.java:51)
+	at org.apache.camel.processor.SendProcessor.process(SendProcessor.java:120)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.RedeliveryErrorHandler.process(RedeliveryErrorHandler.java:398)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:589)
+	at org.apache.camel.processor.MulticastProcessor.doProcessSequential(MulticastProcessor.java:517)
+	at org.apache.camel.processor.MulticastProcessor.process(MulticastProcessor.java:226)
+	at org.apache.camel.management.InstrumentationProcessor.process(InstrumentationProcessor.java:72)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:118)
+	at org.apache.camel.processor.Pipeline.process(Pipeline.java:80)
+	at org.apache.camel.processor.CamelInternalProcessor.process(CamelInternalProcessor.java:191)
+	at org.apache.camel.util.AsyncProcessorHelper.process(AsyncProcessorHelper.java:105)
+	at org.apache.camel.processor.DelegateAsyncProcessor.process(DelegateAsyncProcessor.java:87)
+	at org.apache.camel.component.jms.EndpointMessageListener.onMessage(EndpointMessageListener.java:103)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doInvokeListener(AbstractMessageListenerContainer.java:685)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.invokeListener(AbstractMessageListenerContainer.java:623)
+	at org.springframework.jms.listener.AbstractMessageListenerContainer.doExecuteListener(AbstractMessageListenerContainer.java:591)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.doReceiveAndExecute(AbstractPollingMessageListenerContainer.java:308)
+	at org.springframework.jms.listener.AbstractPollingMessageListenerContainer.receiveAndExecute(AbstractPollingMessageListenerContainer.java:246)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.invokeListener(DefaultMessageListenerContainer.java:1142)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.executeOngoingLoop(DefaultMessageListenerContainer.java:1134)
+	at org.springframework.jms.listener.DefaultMessageListenerContainer$AsyncMessageListenerInvoker.run(DefaultMessageListenerContainer.java:1031)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
+	at java.lang.Thread.run(Thread.java:722)
